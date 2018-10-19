@@ -31,9 +31,6 @@ def get_all_masks(image_max=10000):
                 image_max -= 1
     return list_images
 
-def hello():
-    print("TEST")
-
 def get_boolean_mask(image, info):
     """
     info :list of list: des informations de l'image sous la forme :
@@ -63,3 +60,6 @@ def get_boolean_mask(image, info):
 
 def get_face(image, info):
     return get_boolean_mask(image, info) * cv2.imread(image)
+
+def get_face_from_mask(image, mask):
+    return mask * cv2.imread(image)
