@@ -7,30 +7,25 @@ Functions to convert an input color image to probabilities of skin pixels
 
 import numpy as np
 import cv2
+from info_image import *
+import pickle
 
 def compute_histograms(imgs_set, mode_color='rgb', Q=8):
     """
     Computation of histograms h and hT defined in subject. The histograms are
-    stored in .txt files in order to be loaded in colors -> skin probabilities 
+    stored in .txt files in order to be loaded in colors -> skin probabilities
     conversion with the following format for each line :
-    
+
     r g b h(pix)\n where r : red color, g : green color, b : blue color, h(pix) : #pix
 
     Parameters
     ----------
     imgs_set    .txt file containing training images paths to be read
     """
-    file_paths = open(imgs_set, "r")
-    paths_list = file_paths.readlines()
-    # removing the '\n' character
-    paths_list = [f.split('\n')[0] for f in paths_list]
-    print(paths_list)
-    file_paths.close()
-    f_hist_h = open("LAB1_hist_h.txt", "w")
-    f_hist_hT = open("LAB1_hist_hT.txt", "w")
+    paths_list = get_all_masks(50)
     hist_h = np.zeros((256, 256, 256))
     hist_hT = np.zeros((256, 256, 256))
-    for img_path in paths_list:
+    for img_path, mask in paths_list:
         img = cv2.imread(img_path)
         if (img is None):
             raise ValueError("Could not read the image")
@@ -38,49 +33,74 @@ def compute_histograms(imgs_set, mode_color='rgb', Q=8):
             for ind_c in range(img.shape[1]):
                 pix = img[ind_r, ind_c]
                 hist_h[pix[0], pix[1], pix[2]] += 1
-                #TODO : update histogram hT with ground truth function
-    (nb_r, nb_g, nb_b) = hist_h.shape
-    for r in range(nb_r):
-        for g in range(nb_g):
-            for b in range(nb_b):
-                f_hist_h.write("{} {} {} {}\n".format(r, g, b, hist_h[r, g, b]))
-                f_hist_hT.write("{} {} {} {}\n".format(r, g, b, hist_hT[r, g, b]))
-    f_hist_h.close()
-    f_hist_hT.close()
-    
-compute_histograms("paths.txt")
+                if mask[ind_r, ind_c] == 1:
+                    hist_hT[pix[0], pix[1], pix[2]] += 1
+
+    with open("LAB1_hist_h.b", "wb") as h:
+        pickle.dump(hist_h, h, pickle.HIGHEST_PROTOCOL)
+    with open("LAB1_hist_hT.b", "wb") as hT:
+        pickle.dump(hist_hT, hT, pickle.HIGHEST_PROTOCOL)
+
+# compute_histograms("paths.txt")
 
 def load_histograms(imgs_set, mode_color='rgb', Q=8):
     """
     Loads the histograms from training images data set if they are already computed.
     Otherwise, the compute_histogram method is called.
-    
+
     Parameters
     ----------
     imgs_set        .txt file containing training images paths to be read
-    
+
     Returns
     -------
     h, hT           ndarray
-                    h : histogram h for all images
+                    h :paths histogram h for all images
                     hT : histogram of skin pixels
     """
     try:
-        f_h = open("LAB1_hist_h.txt", "r")
-        f_hT = open("LAB1_hist_hT.txt", "r")
+        with open("LAB1_hist_h.b", "rb") as h:
+            res_h = pickle.load(h)
+        with open("LAB1_hist_hT.b", "rb") as hT:
+            res_hT = pickle.load(hT)
     except:
         compute_histograms(imgs_set, mode_color=mode_color, Q=Q)
-        f_h = open("LAB1_hist_h.txt", "r")
-        f_hT = open("LAB1_hist_hT.txt", "r")
-    res_h = np.zeros((256, 256, 256))
-    res_hT = np.zeros((256, 256, 256))
-    h_lines = f_h.read().splitlines()
-    hT_lines = f_hT.read().splitlines()
-    for h_line, hT_line  in zip(h_lines, hT_lines):
-        h_vals= [int(i) for i in h_line.split(" ")]
-        hT_vals = [int(i) for i in hT_line.split(" ")]
-        res_h[h_vals[0], h_vals[1], h_vals[2]] = h_vals[3]
-        res_hT[hT_vals[0], hT_vals[1], hT_vals[2]] = hT_vals[3]
+        with open("LAB1_hist_h.b", "rb") as h:
+            res_h = pickle.load(h)
+        with open("LAB1_hist_hT.b", "rb") as hT:
+            res_hT = pickle.load(hT)
     return (res_h, res_hT)
-        
-        
+
+def convert_colors_probalities(img, hist_h, hist_hT):
+    """
+    Conversion of colors field to probability for an input color image.
+
+    Parameters
+    ----------
+    img         ndarray
+                input image array containing pixels values
+    hist_h      ndarray
+                histogram of pixels from training images
+    hist_hT     ndarray
+                histogram of skin pixels from training images
+
+    Returns
+    -------
+    ndarray     same dimension image containing for each pixel to be a skin
+    """
+    res = np.zeros(img.shape[0:2])
+    for ind_r in range(img.shape[0]):
+        for ind_c in range(img.shape[1]):
+            pix = img[ind_r, ind_c]
+            if (hist_h[pix[0], pix[1], pix[2]] != 0):
+                res[ind_r, ind_c] = hist_hT[pix[0], pix[1], pix[2]] / hist_h[pix[0], pix[1], pix[2]]
+    return res
+
+def get_prediction(img, hist_h, hist_hT, seuil):
+    proba = convert_colors_probalities(img, hist_h, hist_hT)
+    image_base = img
+    for i in range(image_base.shape[0]):
+        for j in range(image_base.shape[1]):
+            if proba[i, j] < seuil:
+                image_base[i, j] = [0, 0, 0]
+    return np.array(image_base)

@@ -42,7 +42,7 @@ def get_boolean_mask(image, info):
     if im is None:
         return None
 
-    mask = np.zeros(im.shape)
+    mask = np.zeros(im.shape[0:2])
 
     # ellipse coefficients :
     for minor_axis_radius, major_axis_radius, angle, center_y, center_x, one in info:

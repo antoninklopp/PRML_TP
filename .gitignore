@@ -1,3 +1,5 @@
 Images/
 *.pyc
 src/__pycache__/*
+*.png
+*.b
