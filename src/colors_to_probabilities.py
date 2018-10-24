@@ -9,8 +9,9 @@ import numpy as np
 import cv2
 from info_image import *
 import pickle
+from info_image import get_all_masks
 
-def compute_histograms(imgs_set, mode_color='rgb', Q=8):
+def compute_histograms(imgs_set, mode_color='rgb', Q=256):
     """
     Computation of histograms h and hT defined in subject. The histograms are
     stored in .txt files in order to be loaded in colors -> skin probabilities
@@ -21,10 +22,17 @@ def compute_histograms(imgs_set, mode_color='rgb', Q=8):
     Parameters
     ----------
     imgs_set    .txt file containing training images paths to be read
+    mode_color  (optional) color representation modes : {'rgb', 'chr'}
+    Q           quantification factor, default = 256    
+    
     """
     paths_list = get_all_masks(50)
-    hist_h = np.zeros((256, 256, 256))
-    hist_hT = np.zeros((256, 256, 256))
+    if (mode_color == 'rgb'):
+        hist_h = np.zeros((Q, Q, Q))
+        hist_hT = np.zeros((Q, Q, Q))    
+    elif (mode_color == 'chr'):
+        hist_h = np.zeros((Q, Q))
+        hist_hT = np.zeros((Q, Q)) 
     for img_path, mask in paths_list:
         img = cv2.imread(img_path)
         if (img is None):
