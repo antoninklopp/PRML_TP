@@ -10,7 +10,7 @@ import cv2
 from src.info_image import *
 import pickle
 
-def compute_histograms(imgs_set, mode_color='rgb', Q=256):
+def compute_histograms(mode_color='rgb', Q=256, number_files=50):
     """
     Computation of histograms h and hT defined in subject. The histograms are
     stored in .txt files in order to be loaded in colors -> skin probabilities
@@ -20,12 +20,11 @@ def compute_histograms(imgs_set, mode_color='rgb', Q=256):
 
     Parameters
     ----------
-    imgs_set    .txt file containing training images paths to be read
     mode_color  (optional) color representation modes : {'rgb', 'chr'}
     Q           quantification factor, default = 256    
     
     """
-    paths_list = get_all_masks(50)
+    paths_list = get_all_masks(number_files) # get the files for the mask
     if (mode_color == 'rgb'):
         hist_h = np.zeros((Q, Q, Q))
         hist_hT = np.zeros((Q, Q, Q))    
@@ -50,14 +49,17 @@ def compute_histograms(imgs_set, mode_color='rgb', Q=256):
 
 # compute_histograms("paths.txt")
 
-def load_histograms(imgs_set, mode_color='rgb', Q=8):
+def load_histograms(mode_color='rgb', Q=8, number_files=50):
     """
     Loads the histograms from training images data set if they are already computed.
     Otherwise, the compute_histogram method is called.
 
     Parameters
     ----------
-    imgs_set        .txt file containing training images paths to be read
+    mode_color      The color mode used for the image
+    Q               
+    number_files    The number of files to test on
+
 
     Returns
     -------
@@ -71,7 +73,7 @@ def load_histograms(imgs_set, mode_color='rgb', Q=8):
         with open("LAB1_hist_hT.b", "rb") as hT:
             res_hT = pickle.load(hT)
     except:
-        compute_histograms(imgs_set, mode_color=mode_color, Q=Q)
+        compute_histograms(mode_color=mode_color, Q=Q, number_files=number_files)
         with open("LAB1_hist_h.b", "rb") as h:
             res_h = pickle.load(h)
         with open("LAB1_hist_hT.b", "rb") as hT:
@@ -104,6 +106,9 @@ def convert_colors_probalities(img, hist_h, hist_hT):
     return res
 
 def get_prediction(img, hist_h, hist_hT, seuil):
+    """
+    Get the prediction from one base array. 
+    """
     proba = convert_colors_probalities(img, hist_h, hist_hT)
     image_base = img
     for i in range(image_base.shape[0]):

@@ -3,9 +3,6 @@
 import os,sys,inspect
 import cv2
 
-# import sys,os
-# sys.path.append(os.path.join(os.path.dirname(__file__),os.pardir,"PRML"))
-
 from src.info_image import *
 
 import glob
@@ -16,7 +13,7 @@ import pytest
 
 class TestClass:
 
-    def simple_test(self):
+    def test_simple(self):
         assert True
 
     def test_mask(self):
