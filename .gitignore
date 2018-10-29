@@ -10,3 +10,4 @@ docs/*
 dist/*
 .cache/*
 .eggs/*
+.vscode/

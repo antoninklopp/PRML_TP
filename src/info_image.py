@@ -4,7 +4,7 @@ import glob
 import numpy as np
 import math
 
-path_to_image_folder = "../Images/"
+path_to_image_folder = "Images/"
 
 def get_all_masks(image_max=10000, all=False):
     """
@@ -26,6 +26,24 @@ def get_all_masks(image_max=10000, all=False):
                 if mask is not None:
                     list_images.append([name_file, mask])
                 image_max -= 1
+    return list_images
+
+def get_mask_from_file(file_name, image_max):
+    list_images = []
+    with open(file_name) as file_info:
+        while (image_max >= 0):
+            name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
+            if not name_file:
+                break
+            number_faces = int(file_info.readline())
+            list_info = []
+            for _ in range(number_faces):
+                face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
+                list_info.append(face)
+            mask = get_boolean_mask(name_file, list_info)
+            if mask is not None:
+                list_images.append([name_file, mask])
+            image_max -= 1
     return list_images
 
 def get_boolean_mask(image, info):

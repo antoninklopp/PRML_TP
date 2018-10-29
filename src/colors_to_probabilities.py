@@ -31,6 +31,10 @@ def compute_histograms(mode_color='rgb', Q=256, number_files=50):
     elif (mode_color == 'chr'):
         hist_h = np.zeros((Q, Q))
         hist_hT = np.zeros((Q, Q)) 
+    else:
+        print("Unimplemented color mode")
+        raise 
+    print(hist_h.shape)
     for img_path, mask in paths_list:
         img = cv2.imread(img_path)
         if (img is None):
@@ -49,7 +53,7 @@ def compute_histograms(mode_color='rgb', Q=256, number_files=50):
 
 # compute_histograms("paths.txt")
 
-def load_histograms(mode_color='rgb', Q=8, number_files=50):
+def load_histograms(mode_color='rgb', Q=256, number_files=50, recompute=False):
     """
     Loads the histograms from training images data set if they are already computed.
     Otherwise, the compute_histogram method is called.
@@ -67,6 +71,14 @@ def load_histograms(mode_color='rgb', Q=8, number_files=50):
                     h :paths histogram h for all images
                     hT : histogram of skin pixels
     """
+    if (recompute is True):
+        compute_histograms(mode_color=mode_color, Q=Q, number_files=number_files)
+        with open("LAB1_hist_h.b", "rb") as h:
+            res_h = pickle.load(h)
+        with open("LAB1_hist_hT.b", "rb") as hT:
+            res_hT = pickle.load(hT)
+        return (res_h, res_hT)
+
     try:
         with open("LAB1_hist_h.b", "rb") as h:
             res_h = pickle.load(h)
@@ -111,8 +123,9 @@ def get_prediction(img, hist_h, hist_hT, seuil):
     """
     proba = convert_colors_probalities(img, hist_h, hist_hT)
     image_base = img
+    prediction = np.zeros((image_base.shape[0], image_base.shape[1]))
     for i in range(image_base.shape[0]):
         for j in range(image_base.shape[1]):
-            if proba[i, j] < seuil:
-                image_base[i, j] = [0, 0, 0]
-    return np.array(image_base)
+            if proba[i, j] > seuil:
+                prediction[i, j] = 1
+    return prediction
