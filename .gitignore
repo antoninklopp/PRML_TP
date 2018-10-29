@@ -3,3 +3,11 @@ Images/
 src/__pycache__/*
 *.png
 *.b
+
+PRML.egg-info
+tests/__pychache__/*
+build/*
+docs/*
+dist/*
+.cache/*
+.eggs/*

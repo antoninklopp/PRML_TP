@@ -8,7 +8,7 @@ path_to_image_folder = "../Images/"
 
 def get_all_masks(image_max=10000):
     """
-    image_max :  Nombre maximal d'images à traiter pour ne pas être obligé de traiter tous les masques
+    image_max :  Nombre maximal d'images a traiter pour ne pas etre oblige de traiter tous les masques
     """
     list_images = []
     for f in glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"):
@@ -36,7 +36,7 @@ def get_boolean_mask(image, info):
     info :list of list: des informations de l'image sous la forme :
     [major_axis_radius, minor_axis_radius, angle, center_x, center_y, 1]
 
-    image :str: path vers l'image à lire avec openCV
+    image :str: path vers l'image a lire avec openCV
     """
     im = cv2.imread(image)
     if im is None:
