@@ -10,7 +10,7 @@ class TestComputeHistograms:
         """
         A method to test the creation and the load of all histograms
         """
-        compute_histograms(number_files=100)
+        compute_histograms(number_files=10)
 
     def test_files_exists(self):
         """

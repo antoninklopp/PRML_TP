@@ -17,11 +17,11 @@ class TestClass:
         assert True
 
     def test_mask(self):
-        liste_masks = get_all_masks(image_max=10)
+        liste_masks = get_all_masks(image_max=2)
         for i, info in enumerate(liste_masks):
             print(i)
             if i > 10:
                 break
             print(info[0])
-            cv2.imwrite("test" + str(i) + ".png", cv2.imread(info[0]) * info[1])
+            cv2.imwrite("test" + str(i) + ".png", cv2.imread(info[0])[np.where(info[1]==1)])
         assert True

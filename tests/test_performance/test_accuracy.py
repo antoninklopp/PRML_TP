@@ -3,12 +3,9 @@ from src.info_image import *
 
 class TestClass:
 
-    def __init__(self):
-        pass
-
     def test_accuracy(self):
         seuil = 0.7
-        res_t, res_th = load_histograms(number_files=100, recompute=True)
+        res_t, res_th = load_histograms(number_files=10, recompute=True)
         test_files = get_mask_from_file("Images/FDDB-folds/FDDB-fold-10-ellipseList.txt", 50)
         prediction_precision = []
         for name, image in test_files:
