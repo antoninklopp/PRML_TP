@@ -1,4 +1,5 @@
 [![Build Status](https://semaphoreci.com/api/v1/antoninklopp/prml_tp/branches/master/badge.svg)](https://semaphoreci.com/antoninklopp/prml_tp)
+[![CodeFactor](https://www.codefactor.io/repository/github/antoninklopp/prml_tp/badge)](https://www.codefactor.io/repository/github/antoninklopp/prml_tp)
 
 # PRML_TP
 TP de Pattern recognition and machine learning
