@@ -1,5 +1,7 @@
-from src.colors_to_probabilities import *
-from src.info_image import *
+from src.colors_to_probabilities import load_histograms, get_prediction
+from src.info_image import get_mask_from_file
+import cv2
+import numpy as np
 
 class TestClass:
 
@@ -14,6 +16,3 @@ class TestClass:
             print(np.sum(prediction))
             prediction_precision.append(np.sum(prediction[np.where(image==1)])/np.sum(prediction))
         print(prediction_precision)
-
-t = TestClass()
-t.test_accuracy()

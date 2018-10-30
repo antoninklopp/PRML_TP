@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from src.colors_to_probabilities import *
+from src.colors_to_probabilities import compute_histograms, get_boolean_mask
+import glob
 
 path_to_image_folder = "Images/"
 
@@ -34,5 +35,3 @@ class TestComputeHistograms:
                     list_info.append(face)
                 mask = get_boolean_mask(name_file, list_info)
                 assert mask is not None
-
-        assert True
