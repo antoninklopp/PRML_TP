@@ -13,3 +13,11 @@ Face annotations : http://vis-www.cs.umass.edu/fddb/FDDB-folds.tgz
 Décompresser ces dossiers dans un dossier Images/ à la racine du projet  
 
 Lien de la page du cours : http://www-prima.inrialpes.fr/Prima/Homepages/jlc/Courses/2018/PRML/ENSI3.PRML.html
+
+# How to test the code on personnal computer
+After every commit, the code will be tested by a bot, but you need to test the code on your computer before. 
+
+```console
+me@machine:~$ pip install -e . # Only first time
+me@machine:~$ python3 setup.py test
+```

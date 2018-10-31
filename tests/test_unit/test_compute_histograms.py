@@ -35,3 +35,10 @@ class TestComputeHistograms:
                     list_info.append(face)
                 mask = get_boolean_mask(name_file, list_info)
                 assert mask is not None
+
+    def test_color_mode(self):
+        """
+        Test the different color modes
+        """
+        compute_histograms('rg', number_files=5)
+        compute_histograms('rgb', number_files=5)
