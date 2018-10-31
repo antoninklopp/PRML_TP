@@ -6,14 +6,14 @@ import math
 
 path_to_image_folder = "Images/"
 
-def get_all_masks(image_max=10000, all=False):
+def get_all_masks(image_max=10000, _all=False):
     """
     image_max :  Nombre maximal d'images a traiter pour ne pas etre oblige de traiter tous les masques
     """
     list_images = []
     for f in glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"):
         with open(f) as file_info:
-            while (image_max >= 0) or (all is True):
+            while (image_max >= 0) or (_all is True):
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
                 if not name_file:
                     break

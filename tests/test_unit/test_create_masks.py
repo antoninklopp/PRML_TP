@@ -23,3 +23,5 @@ class TestClass:
                 break
             print(info[0])
             cv2.imwrite("test" + str(i) + ".png", cv2.imread(info[0])[np.where(info[1]==1)])
+
+            

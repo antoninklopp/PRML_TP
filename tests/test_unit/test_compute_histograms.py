@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-from src.colors_to_probabilities import compute_histograms, get_boolean_mask
+from src.colors_to_probabilities import compute_histograms
+from src.info_image import get_boolean_mask
 import glob
 
 path_to_image_folder = "Images/"
@@ -41,4 +42,5 @@ class TestComputeHistograms:
         Test the different color modes
         """
         compute_histograms('rg', number_files=5)
-        compute_histograms('rgb', number_files=5)
+        compute_histograms('RGB', number_files=5)
+
