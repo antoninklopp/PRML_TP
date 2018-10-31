@@ -33,9 +33,7 @@ def RGB_to_rg(img):
         for ind_c in range(img.shape[1]):
             pix = img[ind_r, ind_c]
             res[ind_r, ind_c, 0] =int(pix[0]) + int(pix[1]) + int(pix[2])
-            if (res[ind_r, ind_c, 0]==0):
-                print(ind_r, ind_c, "Eh oh là c'est pas bien")
-            else:
+            if (res[ind_r, ind_c, 0]!=0):
                 res[ind_r, ind_c, 1] = pix[0] / res[ind_r, ind_c, 0]
                 res[ind_r, ind_c, 2] = pix[1] / res[ind_r, ind_c, 0]
     return res
