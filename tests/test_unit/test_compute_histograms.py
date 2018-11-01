@@ -41,6 +41,7 @@ class TestComputeHistograms:
         """
         Test the different color modes
         """
-        compute_histograms('rg', number_files=5)
-        compute_histograms('RGB', number_files=5)
-
+        compute_histograms(number_files=5)
+        compute_histograms(mode_color='rg', number_files=5)
+        compute_histograms(Q=32, number_files=5)
+        compute_histogram(mode_color='rg', Q=32, number_files=5)

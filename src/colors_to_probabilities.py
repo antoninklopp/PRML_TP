@@ -14,11 +14,13 @@ import math as m
 def RGB_to_rg(img):
     """
     Do the conversion from RGB space to chrominance space described in the subjectself.
-    For each pixel p = [R, G, B] of the input image img, the new pixel value is
+    For each pixel p = [B, G, R] of the input image img, the new pixel value is
 
         new_p = [L, r, g] where : L = R + G + B
                                   r = R / L
                                   g = G / L
+
+    # WARNING: In OpenCV, the images are basically encoded in BGR (Blue, Green, Red)
 
     Parameters
     ----------
@@ -29,9 +31,9 @@ def RGB_to_rg(img):
     image in rg Chromaticity format of same shape as input image img
     """
     res = np.zeros(img.shape)
-    R_values = img[:, :, 0].astype(int)
+    B_values = img[:, :, 0].astype(int)
     G_values = img[:, :, 1].astype(int)
-    B_values = img[:, :, 2].astype(int)
+    R_values = img[:, :, 2].astype(int)
     res[:, :, 0] = R_values + G_values + B_values
     # Slightly correction to avoid 0 division
     inds_null_L = np.where(res[:, :, 0] == 0)
@@ -53,6 +55,10 @@ def compute_histograms(mode_color='RGB', Q=256, number_files=50):
 
      l r b, where  l : lightness r : 1st chrominance b : 2nd chrominance
 
+     The histograms data are stored in .b files with name convention :
+
+     LAB1_hist_h_Q_{Q value}_{mode color}.b and LAB1_hist_hT_Q_{Q value}_{mode color}.b
+
     Parameters
     ----------
     mode_color  (optional) color representation modes : {'RGB', 'rg'}
@@ -71,23 +77,29 @@ def compute_histograms(mode_color='RGB', Q=256, number_files=50):
         raise
     print(hist_h.shape)
     for img_path, mask in paths_list:
-        img = cv2.imread(img_path) # read image in RGB mode
-        if (mode_color == 'rg'): # change color mode to rb chrominaticity
-            img = RGB_to_rg(img)
+        img = cv2.imread(img_path).astype(int)
+        # img_quantified allowed to use the quantification factor Q
+        img_quantified = (img / (256 // Q)).astype(int)
+        if (mode_color == 'rg'):
+            img_quantified = ((Q - 1) * RGB_to_rg(img)).astype(int)
         if (img is None):
             raise ValueError("Could not read the image")
-        for ind_r in range(img.shape[0]):
-            for ind_c in range(img.shape[1]):
-                pix = img[ind_r, ind_c]
-                if (mode_color == 'RGB'): # update histograms in rgb
-                    T = 256 // Q
-                    hist_h[m.floor(pix[0] / T), m.floor(pix[1] / T), m.floor(pix[2] / T)] += 1
-                    if mask[ind_r, ind_c] == 1:
-                        hist_hT[m.floor(pix[0] / T), m.floor(pix[1] / T), m.floor(pix[2] / T)] += 1
-                elif (mode_color == 'rg'): # in rg mode, we only store r and b
-                    hist_h[m.floor((Q - 1) * pix[1]), m.floor((Q - 1) * pix[2])] += 1
-                    if mask[ind_r, ind_c] == 1:
-                        hist_hT[m.floor((Q - 1) * pix[1]), m.floor((Q - 1) * pix[2])] += 1
+        img_R, img_C = img_quantified.shape[0:2]
+        for ind_r in range(img_R):
+            for ind_c in range(img_C):
+                pix0 = img_quantified.item(ind_r, ind_c, 0)
+                pix1 = img_quantified.item(ind_r, ind_c, 1)
+                pix2 = img_quantified.item(ind_r, ind_c, 2)
+                y_pix = mask[ind_r, ind_c] == 1
+                if (mode_color=='RGB'):
+                    np.add.at(hist_h, (pix0, pix1, pix2), 1)
+                    if (y_pix):
+                        np.add.at(hist_hT, (pix0, pix1, pix2), 1)
+                elif (mode_color=='rg'):
+                    np.add.at(hist_h, (pix1, pix2), 1)
+                    if (y_pix):
+                        np.add.at(hist_hT, (pix1, pix2), 1)
+                # Other colors spaces can be added here
 
     with open("LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "wb") as h:
         pickle.dump(hist_h, h, pickle.HIGHEST_PROTOCOL)
