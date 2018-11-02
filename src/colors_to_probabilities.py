@@ -36,8 +36,8 @@ def RGB_to_rg(img):
     R_values = img[:, :, 2].astype(int)
     res[:, :, 0] = R_values + G_values + B_values
     # Slightly correction to avoid 0 division
-    inds_null_L = np.where(res[:, :, 0] == 0)
-    res[:, :, inds_null_L] = 1
+    inds_null_L_x, inds_null_L_y = np.where(res[:, :, 0] == 0)
+    res[inds_null_L_x, inds_null_L_y, 0] = 1
     res[:, :, 1] = R_values / res[:, :, 0]
     res[:, :, 2] = G_values / res[:, :, 0]
     return res
