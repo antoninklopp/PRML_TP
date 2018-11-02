@@ -29,6 +29,7 @@ def sliding_windows(img, w, h, s=(8, 8)):
     Iterator object on (ci, cj, ROI) where ci,cj are the center coordinates of the
     ROI and ROI contains the values.
     """
+    s = (w//2, h//2)
     (sx, sy) = s
     (nb_R, nb_C) = img.shape[0:2]
     for t in range(0, nb_R, sx):
@@ -46,7 +47,7 @@ def sliding_windows(img, w, h, s=(8, 8)):
                 yield (ci, cj, roi)
 
 
-def recognition_function(img, img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 20, 0)):
+def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 20, 0)):
     """
     Builds the recognition image from an input tab containing skin color probabilites
     P(i,j) by computing the likehood g and the bias B. The Gaussian mask correction
@@ -66,9 +67,10 @@ def recognition_function(img, img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=
 
     Returns
     -------
-    array of {0, 1} same shape as img such as 1 : pixel is in a face and 0 otherwise.
+    dictionnary containing X faces as keys and g(X) as associated value, each face
+    is encoded as [ci, cj, w, h]
     """
-    img_faces = np.copy(img)
+    dict_res = dict()
     nb_faces = 0
     chosen_w = w
     chosen_h = h
@@ -94,13 +96,8 @@ def recognition_function(img, img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=
         g_X = np.mean(used_roi)
         # Decision function R(g(X)+B)
         if (g_X + B > 0.5):
+            new_face = (ci, cj, chosen_w, chosen_h)
+            dict_res[new_face] = g_X
             nb_faces += 1
-            center = (ci, cj)
-            major_axis = (w-1) // 2
-            minor_axis = (h-1) // 2
-            axes = (major_axis, minor_axis)
-            color = (0, 0, 255)
-            cv2.ellipse(img_faces, center, axes, 0, 0, 360, color, 2)
-            # img_faces[t:t+chosen_h, l:l+chosen_w] = 1
     print("# detected faces : {}".format(str(nb_faces)))
-    return img_faces
+    return dict_res
