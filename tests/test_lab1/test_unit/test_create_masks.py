@@ -13,7 +13,7 @@ import numpy as np
 
 import pytest
 
-class TestClass:
+class TestCreateMasks:
 
     def test_mask(self):
         liste_masks = get_all_masks(image_max=2)
@@ -22,6 +22,6 @@ class TestClass:
             if i > 10:
                 break
             print(info[0])
-            cv2.imwrite("test" + str(i) + ".png", cv2.imread(info[0])[np.where(info[1]==1)])
+            cv2.imwrite("output/test" + str(i) + ".png", cv2.imread(info[0])[np.where(info[1]==1)])
 
             

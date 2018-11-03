@@ -91,7 +91,9 @@ def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 
             det = sig_i ** 2 * sig_j ** 2 - sig_ij ** 2
             gauss_mask = np.exp(-0.5 / det * (sig_j ** 2  * np.power(x, 2) - 2 * sig_ij * x *y + sig_i ** 2 * np.power(y, 2)))
             # gauss_mask /= 2 * np.pi * np.sqrt(det)
-            used_roi = used_roi * gauss_mask
+            used_roi[:, :, 0] = used_roi[:, :, 0] * gauss_mask
+            used_roi[:, :, 1] = used_roi[:, :, 1] * gauss_mask
+            used_roi[:, :, 2] = used_roi[:, :, 2] * gauss_mask
             # print(np.amax(used_roi))
         g_X = np.mean(used_roi)
         # Decision function R(g(X)+B)

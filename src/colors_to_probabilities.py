@@ -101,9 +101,9 @@ def compute_histograms(mode_color='RGB', Q=256, number_files=50):
                         np.add.at(hist_hT, (pix1, pix2), 1)
                 # Other colors spaces can be added here
 
-    with open("LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "wb") as h:
+    with open("binary_histograms/LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "wb") as h:
         pickle.dump(hist_h, h, pickle.HIGHEST_PROTOCOL)
-    with open("LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "wb") as hT:
+    with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "wb") as hT:
         pickle.dump(hist_hT, hT, pickle.HIGHEST_PROTOCOL)
 
 # compute_histograms("paths.txt")
@@ -128,22 +128,22 @@ def load_histograms(mode_color='RGB', Q=256, number_files=50, recompute=False):
     """
     if (recompute is True):
         compute_histograms(mode_color=mode_color, Q=Q, number_files=number_files)
-        with open("LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
+        with open("binary_histograms/LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
             res_h = pickle.load(h)
-        with open("LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
+        with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
             res_hT = pickle.load(hT)
         return (res_h, res_hT)
 
     try:
-        with open("LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
+        with open("binary_histograms/LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
             res_h = pickle.load(h)
-        with open("LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
+        with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
             res_hT = pickle.load(hT)
     except:
         compute_histograms(mode_color=mode_color, Q=Q, number_files=number_files)
-        with open("LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
+        with open("binary_histograms/LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
             res_h = pickle.load(h)
-        with open("LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
+        with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
             res_hT = pickle.load(hT)
     return (res_h, res_hT)
 

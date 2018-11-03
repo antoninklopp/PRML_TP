@@ -12,5 +12,5 @@ if __name__ == "__main__":
     img_test = cv2.imread("/user/2/klopptoa/Documents/3A/PRML_TP/Images/2003/03/03/big/img_3.jpg")
     h, ht = load_histograms(" ")
     res_test = get_prediction(img_test, h, ht, 0.2)
-    cv2.imwrite("resultat.png", res_test)
+    cv2.imwrite("output/resultat.png", res_test)
     print("fini")

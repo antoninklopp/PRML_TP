@@ -21,3 +21,18 @@ After every commit, the code will be tested by a bot, but you need to test the c
 me@machine:~$ pip install -e . # Only first time
 me@machine:~$ python3 setup.py test
 ```
+
+If you want to test only one folder of test files you can use the following command :  
+```console
+me@machine:~$ pytest --pyargs tests/test_folder/
+```
+
+#Folders needed to run the project
+
+To run the project you will need the *Images* folder to have all the images to test the code on.  
+You will also need an *output* folder for all the images and a *binary_histograms* folder for 
+the outputed binary histograms.  
+You can clean these folders with the **clean.sh** file using :  
+```console
+me@machine:~$ ./clean.sh
+```

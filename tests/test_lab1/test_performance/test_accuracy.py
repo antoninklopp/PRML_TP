@@ -3,12 +3,12 @@ from src.info_image import get_mask_from_file
 import cv2
 import numpy as np
 
-class TestClass:
+class TestAccuracy:
 
     def test_accuracy(self):
         seuil = 0.7
         res_t, res_th = load_histograms(number_files=10, recompute=True)
-        test_files = get_mask_from_file("Images/FDDB-folds/FDDB-fold-10-ellipseList.txt", 50)
+        test_files = get_mask_from_file("Images/FDDB-folds/FDDB-fold-10-ellipseList.txt", 5)
         prediction_precision = []
         for name, image in test_files:
             image_test = cv2.imread(name)
