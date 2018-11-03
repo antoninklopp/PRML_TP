@@ -14,7 +14,7 @@ Décompresser ces dossiers dans un dossier Images/ à la racine du projet
 
 Lien de la page du cours : http://www-prima.inrialpes.fr/Prima/Homepages/jlc/Courses/2018/PRML/ENSI3.PRML.html
 
-# How to test the code on personnal computer
+## How to test the code on personnal computer
 After every commit, the code will be tested by a bot, but you need to test the code on your computer before. 
 
 ```console
@@ -27,7 +27,7 @@ If you want to test only one folder of test files you can use the following comm
 me@machine:~$ pytest --pyargs tests/test_folder/
 ```
 
-#Folders needed to run the project
+## Folders needed to run the project
 
 To run the project you will need the *Images* folder to have all the images to test the code on.  
 You will also need an *output* folder for all the images and a *binary_histograms* folder for 
