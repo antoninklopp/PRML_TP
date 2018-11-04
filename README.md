@@ -22,6 +22,8 @@ me@machine:~$ pip install -e . # Only first time
 me@machine:~$ python3 setup.py test
 ```
 
+If you have any import problem, try to remove *.pyc and __pychache__/. Try to reinstall the package with the commands above.  
+
 If you want to test only one folder of test files you can use the following command :  
 ```console
 me@machine:~$ pytest --pyargs tests/test_folder/
