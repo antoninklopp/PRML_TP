@@ -103,3 +103,25 @@ def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 
             nb_faces += 1
     print("# detected faces : {}".format(str(nb_faces)))
     return dict_res
+
+def get_prediction_masks(img, set_faces):
+    """
+    Builds a mask in {0,1} telling the predicted pixels from the recognition algo.
+
+    Parameters
+    ----------
+    img         numpy.ndarray
+                input colors space image
+    set_faces   dictionnary containing predicted faces stored as ellipses [cx cy w h]
+
+    Returns
+    -------
+    Mask in {0,1} of same shape as img telling if a pixel is in predicted faces or not.
+    """
+    mask=np.zeros(img.shape[0:2])
+    for X_ellipse in set_faces.keys():
+        (cx, cy, w, h) = X_ellipse
+        center=(int(cx), int(cy))
+        axes = (w//2, h//2)
+        cv2.ellipse(center, axes, 0, 0, 360, 255, -1)
+    return mask
