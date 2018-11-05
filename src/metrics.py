@@ -25,8 +25,15 @@ def get_confusion_matrix(Y_true, Y_pred):
     """
     pass
 
-def plot_roc(Y_true, Y_pred):
+def plot_roc(Y_true, Y_proba):
     """
     trace la courbe roc d'une prediction
     """
-    pass
+    fpr, tpr, thresholds = met.roc_curve(Y_true, Y_proba)
+    roc_auc = met.auc(fpr, tpr)
+    plt.plot(fpr, tpr)
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.text(0.50, 0.10,"AUC = "+str(roc_auc))
+    plt.show()
+    
