@@ -11,3 +11,5 @@ dist/*
 .cache/*
 .eggs/*
 .vscode/
+output/*.png
+output/*.jpg
