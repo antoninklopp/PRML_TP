@@ -21,6 +21,17 @@ def get_accuracy(Y_true, Y_pred):
     """
     return met.accuracy_score(Y_true, Y_pred, average="macro")
 
+def get_all_metric(Y_true, Y_pred):
+    """
+    renvoie un dictionnaire contenant toutes les metrique utile pour carracteriser un modele
+    :return: un dictionnaire contenant les metrics
+    """
+    return {
+        "recall": get_recall(Y_true, Y_pred),
+        "precision": get_precision(Y_true, Y_pred),
+        "accuracy": get_accuracy(Y_true, Y_pred)
+           }
+
 def get_confusion_matrix(Y_true, Y_pred):
     """
     calcul la matrice de confusion d'un prédiction
@@ -30,6 +41,7 @@ def get_confusion_matrix(Y_true, Y_pred):
 def plot_roc(Y_true, Y_proba):
     """
     trace la courbe roc d'une prediction
+    :param Y_proba: vecteur contentant les scores de chaque pixel
     """
     fpr, tpr, thresholds = met.roc_curve(Y_true, Y_proba)
     roc_auc = met.auc(fpr, tpr)
