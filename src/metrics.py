@@ -44,11 +44,11 @@ def plot_roc(Y_true, Y_proba):
     :param Y_proba: vecteur contentant les scores de chaque pixel
     """
     fpr, tpr, thresholds = met.roc_curve(Y_true, Y_proba)
-    roc_auc = met.auc(fpr, tpr)
+    roc_auc = met.roc_auc_score(Y_true, Y_proba)
     plt.plot(fpr, tpr)
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.text(0.50, 0.10,"AUC = "+str(roc_auc))
+    plt.text(0.50, 0.10,"AUC = "+ str(roc_auc))
     plt.show()
     
 
@@ -61,7 +61,9 @@ def plot_presion_recall_cruve(Y_true, Y_proba):
     :return: rien trace une courbe
     """
     precision, recall, a = met.precision_recall_curve(Y_true, Y_proba)
+    auc = met.auc(recall, precision)
     plt.plot(recall, precision)
     plt.xlabel('recall')
     plt.ylabel('precision')
+    plt.text(0.50, 0.10,"AUC = "+ str(auc))
     plt.show()
