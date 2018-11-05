@@ -5,5 +5,3 @@ setup(name="PRML",
     tests_require=["pytest"],
     packages=find_packages(), 
     author=["Yoan Souty", "Florent Geslin", "Antonin Klopp-Tosser"])
-
-    

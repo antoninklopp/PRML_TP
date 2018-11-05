@@ -1,7 +1,12 @@
 import numpy as np
 import sklearn.metrics as met
-import matplotlib.pyplot as plt
 
+MACHINE_ENSIMAG=False
+try:
+	import matplotlib.pyplot as plt
+except ImportError:
+	print("Machine ENSIMAG")
+	MACHINE_ENSIMAG = True
 
 def get_recall(Y_true, Y_pred):
     """
@@ -44,6 +49,11 @@ def plot_roc(Y_true, Y_proba, save=False):
     :param Y_proba: vecteur contentant les scores de chaque pixel
 	:param (optionnal) save: Saves the curve. If set to false it shows the plot to the user
     """
+
+	if MACHINE_ENSIMAG:
+		print("Impossible to run this on Ensimag machines. Needs pyplot.")
+		exit()
+
     fpr, tpr, thresholds = met.roc_curve(Y_true, Y_proba)
     roc_auc = met.roc_auc_score(Y_true, Y_proba)
     plt.close()
@@ -66,6 +76,11 @@ def plot_presion_recall_curve(Y_true, Y_proba, save=False):
 	:param (optionnal) save: Saves the curve. If set to false it shows the plot to the user
     :return: rien trace une courbe
     """
+
+	if MACHINE_ENSIMAG:
+		print("Impossible to run this on Ensimag machines. Needs pyplot.")
+		exit()
+
     precision, recall, a = met.precision_recall_curve(Y_true, Y_proba)
     auc = met.auc(recall, precision)
 	plt.close()
