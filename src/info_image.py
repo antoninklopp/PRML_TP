@@ -59,12 +59,18 @@ def get_training_masks():
     number = 0
     list_images = []
     for f in glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")[:-1]:
+        print("fichier", f)
         with open(f) as file_info:
             while True:
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
                 if not name_file:
                     break
-                number_faces = int(file_info.readline())
+                try:
+                    number_faces = int(file_info.readline())
+                except ValueError:
+                    print("Error in file")
+                    print("number face", number_faces)
+                    break
                 list_info = []
                 for _ in range(number_faces):
                     face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
@@ -111,16 +117,10 @@ def get_boolean_mask(image, info):
     mask = np.zeros(im.shape[0:2])
 
     # ellipse coefficients :
-    for minor_axis_radius, major_axis_radius, angle, center_y, center_x, one in info:
-        rotation_matrix = np.array([[math.cos(angle), -math.sin(angle), center_x - math.cos(angle) * center_x + math.sin(angle) * center_y],\
-        [math.sin(angle), math.cos(angle), center_y - math.sin(angle) * center_x - math.cos(angle) * center_y], \
-        [0, 0, 1]])
-        for i in range(im.shape[0]):
-            for j in range(im.shape[1]):
-                rotated_point = np.dot(rotation_matrix, np.array([i, j, 1]))
-                if ((rotated_point[0] - center_x)/major_axis_radius)**2 + ((rotated_point[1] - center_y)/minor_axis_radius)**2 < 1:
-                    # Dans ce cas, on est en dans l'ellipse, on ajoute le pixel dans le mask
-                    mask[i, j] = 1
+    for minor_axis_radius, major_axis_radius, angle, center_x, center_y, one in info:
+        axes = (int(minor_axis_radius), int(major_axis_radius))
+        center = (int(center_x), int(center_y))
+        cv2.ellipse(mask, center, axes, angle*180/math.pi, 0, 360, 1, -1)
 
     return mask
 
