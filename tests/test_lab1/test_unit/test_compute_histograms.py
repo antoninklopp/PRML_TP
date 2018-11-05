@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
 
 from src.colors_to_probabilities import compute_histograms
-from src.info_image import get_boolean_mask
+from src.info_image import get_boolean_mask, get_all_masks
 import glob
 
 path_to_image_folder = "Images/"
 
 class TestComputeHistograms:
-
-    def test_create(self):
-        """
-        A method to test the creation and the load of all histograms
-        """
-        compute_histograms(number_files=5)
 
     def test_files_exists(self):
         """
@@ -41,7 +35,8 @@ class TestComputeHistograms:
         """
         Test the different color modes
         """
-        compute_histograms(number_files=5)
-        compute_histograms(mode_color='rg', number_files=5)
-        compute_histograms(Q=32, number_files=5)
-        compute_histograms(mode_color='rg', Q=32, number_files=5)
+        masks = get_all_masks(5)
+        compute_histograms(masks)
+        compute_histograms(masks, mode_color='rg')
+        compute_histograms(masks, Q=32)
+        compute_histograms(masks, mode_color='rg', Q=32)

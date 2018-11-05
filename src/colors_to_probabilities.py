@@ -43,7 +43,7 @@ def RGB_to_rg(img):
     return res
 
 
-def compute_histograms(mode_color='RGB', Q=256, number_files=50):
+def compute_histograms(masks, mode_color='RGB', Q=256):
     """
     Computation of histograms h and hT defined in subject. The histograms are
     stored in .b files in order to be loaded in colors -> skin probabilities
@@ -65,7 +65,6 @@ def compute_histograms(mode_color='RGB', Q=256, number_files=50):
     Q           quantification factor, default = 256
 
     """
-    paths_list = get_all_masks(number_files) # get the files for the mask
     if (mode_color == 'RGB'):
         hist_h = np.zeros((Q, Q, Q))
         hist_hT = np.zeros((Q, Q, Q))
@@ -76,7 +75,7 @@ def compute_histograms(mode_color='RGB', Q=256, number_files=50):
         print("Unimplemented color mode")
         raise
     print(hist_h.shape)
-    for img_path, mask in paths_list:
+    for img_path, mask in masks:
         img = cv2.imread(img_path).astype(int)
         # img_quantified allowed to use the quantification factor Q
         img_quantified = (img / (256 // Q)).astype(int)
@@ -108,7 +107,7 @@ def compute_histograms(mode_color='RGB', Q=256, number_files=50):
 
 # compute_histograms("paths.txt")
 
-def load_histograms(mode_color='RGB', Q=256, number_files=50, recompute=False):
+def load_histograms(mode_color='RGB', Q=256, number_files=50, recompute=False, masks=None):
     """
     Loads the histograms from training images data set if they are already computed.
     Otherwise, the compute_histogram method is called.
@@ -127,7 +126,10 @@ def load_histograms(mode_color='RGB', Q=256, number_files=50, recompute=False):
                     hT : histogram of skin pixels
     """
     if (recompute is True):
-        compute_histograms(mode_color=mode_color, Q=Q, number_files=number_files)
+        if masks is None:
+            print("If you want to recompute the histogram, you must provide the masks")
+            raise
+        compute_histograms(masks, mode_color=mode_color, Q=Q)
         with open("binary_histograms/LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
             res_h = pickle.load(h)
         with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
@@ -199,8 +201,9 @@ def get_prediction(img, hist_h, hist_hT, seuil, Q=256, mode_color='RGB'):
     proba = convert_colors_probalities(img, hist_h, hist_hT)
     image_base = img
     prediction = np.zeros((image_base.shape[0], image_base.shape[1]))
-    for i in range(image_base.shape[0]):
-        for j in range(image_base.shape[1]):
-            if proba[i, j] > seuil:
-                prediction[i, j] = 1
+    prediction = (proba > seuil)
+    # for i in range(image_base.shape[0]):
+    #     for j in range(image_base.shape[1]):
+    #         if proba[i, j] > seuil:
+    #             prediction[i, j] = 1
     return prediction
