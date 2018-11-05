@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 """
 Functions to convert an input color image to probabilities of skin pixels
 

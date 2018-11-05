@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import cv2
 import os
 import glob
@@ -11,11 +13,11 @@ def get_all_masks(image_max=10000, _all=False):
     image_max :  Nombre maximal d'images a traiter pour ne pas etre oblige de traiter tous les masques
     """
     list_images = []
-    for f in glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"):
+    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")):
         with open(f) as file_info:
             while (image_max >= 0) or (_all is True):
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
-                if not name_file:
+                if not name_file or name_file == path_to_image_folder + ".jpg":
                     break
                 number_faces = int(file_info.readline())
                 list_info = []
@@ -34,11 +36,11 @@ def get_test_masks():
     """
     number = 0
     list_images = []
-    for f in glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")[-1]:
+    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"))[-1]:
         with open(f) as file_info:
             while True:
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
-                if not name_file:
+                if not name_file or name_file == path_to_image_folder + ".jpg":
                     break
                 number_faces = int(file_info.readline())
                 list_info = []
@@ -58,19 +60,14 @@ def get_training_masks():
     """
     number = 0
     list_images = []
-    for f in glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")[:-1]:
+    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"))[:-1]:
         print("fichier", f)
         with open(f) as file_info:
             while True:
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
-                if not name_file:
+                if not name_file or name_file == path_to_image_folder + ".jpg":
                     break
-                try:
-                    number_faces = int(file_info.readline())
-                except ValueError:
-                    print("Error in file")
-                    print("number face", number_faces)
-                    break
+                number_faces = int(file_info.readline())
                 list_info = []
                 for _ in range(number_faces):
                     face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
