@@ -24,7 +24,7 @@ class TestMetrics:
         ax.set_xlabel("width ellipse")
         ax.set_ylabel("height ellipse")
         ax.set_zlabel(name)
-        plt.savefig("output/" + name + "distance" + str(distance) ".png")
+        plt.savefig("output/" + name + "_distance_" + str(distance) + ".png")
 
     def metric(self):
         """
@@ -42,7 +42,7 @@ class TestMetrics:
         precision = np.zeros((10, 10))
         accuracy = np.zeros((10, 10))
 
-        distance = 200
+        distance = 400
 
         for w in range(50, 501, 50):
             for h in range(50, 501, 50):
