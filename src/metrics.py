@@ -44,7 +44,7 @@ def get_confusion_matrix(Y_true, Y_pred):
     return met.confusion_matrix(Y_true, Y_pred)
 
 
-def plot_roc(Y_true, Y_proba, save=False):
+def plot_roc(Y_true, Y_proba, name="output/plot_roc.png", save=False):
     """
     trace la courbe roc d'une prediction
     :param Y_proba: vecteur contentant les scores de chaque pixel
@@ -62,13 +62,13 @@ def plot_roc(Y_true, Y_proba, save=False):
     plt.ylabel('True Positive Rate')
     plt.text(0.50, 0.10,"AUC = "+ str(roc_auc))
     if save is True:
-        plt.savefig("output/plot_roc.png")
+        plt.savefig(name)
     else:
         plt.show()
 
 
 
-def plot_presion_recall_curve(Y_true, Y_proba, save=False):
+def plot_presion_recall_curve(Y_true, Y_proba, name="output/plot_pression_recall_curve.png", save=False):
     """
     trace la precision en fonction du rappel
     :param Y_true: vecteur contenant les bonnes prediction
@@ -89,6 +89,6 @@ def plot_presion_recall_curve(Y_true, Y_proba, save=False):
     plt.ylabel('precision')
     plt.text(0.50, 0.10,"AUC = "+ str(auc))
     if save is True:
-        plt.savefig("output/plot_pression_recall_curve.png")
+        plt.savefig(name)
     else:
         plt.show()
