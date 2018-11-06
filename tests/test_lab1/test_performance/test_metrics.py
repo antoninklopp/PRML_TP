@@ -1,7 +1,7 @@
 import src.metrics as met
 from src.colors_to_probabilities import load_histograms, get_prediction
 from src.info_image import get_mask_from_file, get_all_masks, get_training_masks, get_test_masks
-from src.lab1 import get_predicted_masks
+from src.lab1 import get_predicted_masks, plot_faces
 import cv2
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
@@ -68,6 +68,27 @@ class TestMetrics:
         self.plot(w, h, precision, "precision", distance)
         self.plot(w, h, accuracy, "accuracy", distance)
 
+    def plot_face_test(self):
+        """
+        Plot one face
+        """
+        masks = get_training_masks()[:150]
+
+        print("Training model")
+        res_t, res_th = load_histograms(masks=masks)
+
+        print("Testing model")
+        test_files = get_test_masks()[:20]
+
+        distance = 25
+        w = 25
+        h = 25
+
+        for name, mask in test_files:
+            image_test = cv2.imread(name)
+            plot_faces(image_test, mask, w, h, 1, res_t, res_th, distance, "face_" + name.split("/")[-1])
+
 if __name__ == "__main__":
     t = TestMetrics()
-    t.metric()
+    # t.metric()
+    t.plot_face_test()
