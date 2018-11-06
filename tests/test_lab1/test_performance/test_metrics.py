@@ -53,7 +53,7 @@ class TestMetrics:
                 for name, mask in test_files:
                     image_test = cv2.imread(name)
                     proba = get_proba_predic(image_test, res_t, res_th)
-                    prediction = get_predicted_masks(image_test, mask, w, h, 0.2, res_t, res_th, distance)
+                    prediction = get_predicted_masks(image_test, mask, w, h, 0.25, res_t, res_th, distance)
                     Y_pred = np.append(Y_pred, prediction.flatten())
                     Y_true = np.append(Y_true, mask.flatten())
                 print(met.get_all_metric(Y_true, Y_pred))
@@ -92,7 +92,7 @@ class TestMetrics:
             w, h = 300, 300
             for name, mask in test_files:
                 image_test = cv2.imread(name)
-                prediction = get_predicted_masks(image_test, mask, w, h, 1, res_t, res_th, 300)
+                prediction = get_predicted_masks(image_test, mask, w, h, 0.25, res_t, res_th, 300)
                 Y_pred = np.append(Y_pred, prediction.flatten())
                 Y_true = np.append(Y_true, mask.flatten())
                 dic = met.get_all_metric(Y_true, Y_pred)
@@ -110,21 +110,21 @@ class TestMetrics:
         """
         Plot one face
         """
-        masks = get_training_masks()[:150]
+        # masks = get_training_masks()[:150]
 
         print("Training model")
-        res_t, res_th = load_histograms(masks=masks)
+        res_t, res_th = load_histograms()
 
         print("Testing model")
         test_files = get_test_masks()[:20]
 
-        distance = 25
-        w = 25
-        h = 25
+        distance = 100
+        w = 150
+        h = 150
 
         for name, mask in test_files:
             image_test = cv2.imread(name)
-            plot_faces(image_test, mask, w, h, 1, res_t, res_th, distance, "face_" + name.split("/")[-1])
+            plot_faces(image_test, mask, w, h, 0.25, res_t, res_th, distance, "face_" + name.split("/")[-1])
 
 if __name__ == "__main__":
     t = TestMetrics()

@@ -50,6 +50,7 @@ def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB
     g_masj (optionnal) : apply gaussian mask (boolean)
     """
     img_skin = convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color)
+    print(img_skin.shape)
     set_face = recognition_function(img_skin, w, h, B, g_mask=g_mask)
     set_face = non_maximum_suppression(set_face, R)
     draw_faces(img, set_face, name_img, (212, 85, 186))
