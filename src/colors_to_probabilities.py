@@ -194,7 +194,8 @@ def convert_colors_probalities(img, hist_h, hist_hT, Q=256,  mode_color='RGB'):
             elif (mode_color == 'rg'):
                 pix_h = hist_h[pix1, pix2]
                 pix_hT = hist_hT[pix1, pix2]
-    return hist_hT / hist_h
+            res.itemset((ind_r, ind_c), pix_h / pix_hT)
+    return res
 
 def get_prediction(img, hist_h, hist_hT, seuil, Q=256, mode_color='RGB'):
     """
