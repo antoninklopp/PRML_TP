@@ -5,11 +5,17 @@ from src.lab1 import get_predicted_masks
 import cv2
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+
+import matplotlib
+try:
+    import Tkinter
+except ImportError:
+    matplotlib.use('agg')
 import matplotlib.pyplot as plt
 
 class TestMetrics:
 
-    def plot(self, w, h, z, name):
+    def plot(self, w, h, z, name, distance):
         plt.close()
         print(w.shape, h.shape, z.shape)
         fig = plt.figure()
@@ -18,7 +24,7 @@ class TestMetrics:
         ax.set_xlabel("width ellipse")
         ax.set_ylabel("height ellipse")
         ax.set_zlabel(name)
-        plt.savefig("output/" + name + ".png")
+        plt.savefig("output/" + name + "distance" + str(distance) ".png")
 
     def metric(self):
         """
@@ -31,10 +37,12 @@ class TestMetrics:
         res_t, res_th = load_histograms(masks=masks)
 
         print("Testing model")
-        test_files = get_test_masks()[:1]
+        test_files = get_test_masks()[:20]
         recall = np.zeros((10, 10))
         precision = np.zeros((10, 10))
         accuracy = np.zeros((10, 10))
+
+        distance = 200
 
         for w in range(50, 501, 50):
             for h in range(50, 501, 50):
@@ -43,7 +51,7 @@ class TestMetrics:
                 Y_true = np.array([])
                 for name, mask in test_files:
                     image_test = cv2.imread(name)
-                    prediction = get_predicted_masks(image_test, mask, w, h, 1, res_t, res_th, 300)
+                    prediction = get_predicted_masks(image_test, mask, w, h, 1, res_t, res_th, distance)
                     Y_pred = np.append(Y_pred, prediction.flatten())
                     Y_true = np.append(Y_true, mask.flatten())
                 print(met.get_all_metric(Y_true, Y_pred))
@@ -55,9 +63,9 @@ class TestMetrics:
         w = np.arange(50, 550, 50)
         h = np.arange(50, 550, 50)
         w, h = np.meshgrid(w, h)
-        self.plot(w, h, recall, "recall")
-        self.plot(w, h, precision, "precision")
-        self.plot(w, h, accuracy, "accuracy")
+        self.plot(w, h, recall, "recall", distance)
+        self.plot(w, h, precision, "precision", distance)
+        self.plot(w, h, accuracy, "accuracy", distance)
 
 if __name__ == "__main__":
     t = TestMetrics()
