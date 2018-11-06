@@ -50,3 +50,21 @@ def non_maximum_suppression(set_faces, R, dist_mode='eucl'):
                 #print("r", r)
                 rejected_faces[X_min] = True
     return new_set_faces
+
+def draw_faces(img, set_faces, name_res, color):
+    """
+    Draws ellipses of faces in image
+
+    Parameters
+    ----------
+    img
+    """
+    clone = np.copy(img)
+    for face in set_faces.keys():
+        (ci, cj, w, h) = face
+        center = (ci, cj)
+        major_axis = (w-1) // 2
+        minor_axis = (h-1) // 2
+        axes = (major_axis, minor_axis)
+        cv2.ellipse(clone, center, axes, 0, 0, 360, color, 2)
+    cv2.imwrite("output/"+name_res, clone)
