@@ -8,7 +8,7 @@ class TestAccuracy:
     def test_accuracy(self):
         seuil = 0.7
         masks = get_all_masks(5)
-        res_t, res_th = load_histograms(number_files=10, recompute=True, masks=masks)
+        res_t, res_th = load_histograms(recompute=True, masks=masks)
         test_files = get_mask_from_file("Images/FDDB-folds/FDDB-fold-10-ellipseList.txt", 5)
         prediction_precision = []
         for name, image in test_files:

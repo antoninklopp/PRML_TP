@@ -28,6 +28,13 @@ def get_predicted_masks(img, mask, w, h, B, hist_h, hist_hT, R, mode_color="RGB"
 
     return get_prediction_masks(img, set_face)
 
+
+def get_proba_predic(img, hist_h, hist_hT, Q=256, mode_color='RGB'):
+    """
+    Renvoie la liste des proba de la fonction de décision
+    """
+    return convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color).flatten()
+
 def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB", Q=256, g_mask=False):
     """
     Calls the get_predicted_masks function and plot the detected faces on the input images.
@@ -45,4 +52,4 @@ def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB
     img_skin = convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color)
     set_face = recognition_function(img_skin, w, h, B, g_mask=g_mask)
     set_face = non_maximum_suppression(set_face, R)
-    draw_faces(img, set_face, name_img, (211, 85, 186))
+    draw_faces(img, set_face, name_img, (212, 85, 186))
