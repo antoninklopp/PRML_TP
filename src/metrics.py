@@ -12,7 +12,7 @@ def get_recall(Y_true, Y_pred):
     """
     Calcul le recall correspond à la prediction Y_pred
     """
-    return met.recall_score(Y_pred, Y_pred, average='macro')
+    return met.recall_score(Y_true, Y_pred, average='macro')
 
 def get_precision(Y_true, Y_pred):
     """
