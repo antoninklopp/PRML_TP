@@ -6,25 +6,26 @@ import cv2
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-import matplotlib
+MACHINE_ENSIMAG=False
 try:
-    import Tkinter
-except:
-    matplotlib.use('agg')
-import matplotlib.pyplot as plt
+	import matplotlib.pyplot as plt
+except ImportError:
+	print("Machine ENSIMAG")
+	MACHINE_ENSIMAG = True
 
 class TestMetrics:
 
     def plot(self, w, h, z, name, distance):
-        plt.close()
-        print(w.shape, h.shape, z.shape)
-        fig = plt.figure()
-        ax = fig.gca(projection='3d')
-        ax.plot_surface(w, h, z, label=name)
-        ax.set_xlabel("width ellipse")
-        ax.set_ylabel("height ellipse")
-        ax.set_zlabel(name)
-        plt.savefig("output/" + name + "_distance_" + str(distance) + ".png")
+        if MACHINE_ENSIMAG:
+            plt.close()
+            print(w.shape, h.shape, z.shape)
+            fig = plt.figure()
+            ax = fig.gca(projection='3d')
+            ax.plot_surface(w, h, z, label=name)
+            ax.set_xlabel("width ellipse")
+            ax.set_ylabel("height ellipse")
+            ax.set_zlabel(name)
+            plt.savefig("output/" + name + "_distance_" + str(distance) + ".png")
 
     def metric(self):
         """
