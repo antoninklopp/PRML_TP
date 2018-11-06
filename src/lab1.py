@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 from src.colors_to_probabilities import convert_colors_probalities, compute_histograms, load_histograms, get_prediction
 from src.info_image import get_training_masks
-from src.lab1_challenge2 import get_predicted_masks
+from src.lab1_challenge2 import get_prediction_masks, recognition_function
 from src.lab1_challenge3 import non_maximum_suppression
 
 def get_predicted_masks(img, mask, w, h, B, hist_h, hist_hT, R, mode_color="RGB", Q=256, g_mask=False):
