@@ -179,11 +179,11 @@ def convert_colors_probalities(img, hist_h, hist_hT, Q=256,  mode_color='RGB'):
     res = np.zeros(img.shape[0:2])
     if (mode_color=='RGB'):
         img_quantified = (img.astype(int) / (256 // Q)).astype(int)
-    if (mode_color=='rg'):
+    elif (mode_color=='rg'):
         img_quantified = ((Q - 1) * RGB_to_rg(img)).astype(int)
 
-    for ind_r in range(img.shape[0]):
-        for ind_c in range(img.shape[1]):
+    for ind_r in range(img_quantified.shape[0]):
+        for ind_c in range(img_quantified.shape[1]):
             pix0 = img_quantified.item(ind_r, ind_c, 0)
             pix1 = img_quantified.item(ind_r, ind_c, 1)
             pix2 = img_quantified.item(ind_r, ind_c, 2)
