@@ -66,7 +66,7 @@ def plot_roc(Y_true, Y_proba, save=False):
     else:
 		plt.show()
 
-    
+
 
 def plot_presion_recall_curve(Y_true, Y_proba, save=False):
     """
