@@ -36,21 +36,21 @@ def get_test_masks():
     """
     number = 0
     list_images = []
-    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"))[-1]:
-        with open(f) as file_info:
-            while True:
-                name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
-                if not name_file or name_file == path_to_image_folder + ".jpg":
-                    break
-                number_faces = int(file_info.readline())
-                list_info = []
-                for _ in range(number_faces):
-                    face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
-                    list_info.append(face)
-                mask = get_boolean_mask(name_file, list_info)
-                if mask is not None:
-                    list_images.append([name_file, mask])
-                number += 1
+    f = sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"))[-1]
+    with open(f) as file_info:
+        while True:
+            name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
+            if not name_file or name_file == path_to_image_folder + ".jpg":
+                break
+            number_faces = int(file_info.readline())
+            list_info = []
+            for _ in range(number_faces):
+                face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
+                list_info.append(face)
+            mask = get_boolean_mask(name_file, list_info)
+            if mask is not None:
+                list_images.append([name_file, mask])
+            number += 1
     print("Number of tests masks", number)
     return list_images
 
