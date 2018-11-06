@@ -5,7 +5,11 @@ from src.colors_to_probabilities import *
 from src.lab1_challenge2 import *
 from src.lab1_challenge3 import *
 
-hist_h, hist_hT = load_histograms()
+try:
+	hist_h, hist_hT = load_histograms()
+except:
+	all_masks = get_all_masks(50)
+	hist_h, hist_hT = load_histograms(masks)
 
 list_imgs = ["552", "230", "726", "408", "805", "501", "727"]
 

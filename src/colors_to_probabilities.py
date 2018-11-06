@@ -142,7 +142,10 @@ def load_histograms(mode_color='RGB', Q=256, number_files=50, recompute=False, m
         with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
             res_hT = pickle.load(hT)
     except:
-        compute_histograms(mode_color=mode_color, Q=Q, number_files=number_files)
+        if masks is None:
+            print("Not able to get the histograms, you need to provide a list of masks and files to compute them")
+            raise
+        compute_histograms(masks, mode_color=mode_color, Q=Q)
         with open("binary_histograms/LAB1_hist_h_Q_{}_{}.b".format(str(Q), mode_color), "rb") as h:
             res_h = pickle.load(h)
         with open("binary_histograms/LAB1_hist_hT_Q_{}_{}.b".format(str(Q), mode_color), "rb") as hT:
