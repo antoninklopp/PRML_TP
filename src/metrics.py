@@ -24,7 +24,7 @@ def get_accuracy(Y_true, Y_pred):
     """
     calcul l'exactitude d'un modèle grace à une prediction
     """
-    return met.accuracy_score(Y_true, Y_pred, average="macro")
+    return met.accuracy_score(Y_true, Y_pred)
 
 def get_all_metric(Y_true, Y_pred):
     """
@@ -43,16 +43,16 @@ def get_confusion_matrix(Y_true, Y_pred):
     """
     return met.confusion_matrix(Y_true, Y_pred)
 
+
 def plot_roc(Y_true, Y_proba, save=False):
     """
     trace la courbe roc d'une prediction
     :param Y_proba: vecteur contentant les scores de chaque pixel
 	:param (optionnal) save: Saves the curve. If set to false it shows the plot to the user
     """
-
-	if MACHINE_ENSIMAG:
-		print("Impossible to run this on Ensimag machines. Needs pyplot.")
-		exit()
+    if MACHINE_ENSIMAG:
+        print("Impossible to run this on Ensimag machines. Needs pyplot.")
+        exit()
 
     fpr, tpr, thresholds = met.roc_curve(Y_true, Y_proba)
     roc_auc = met.roc_auc_score(Y_true, Y_proba)
@@ -64,7 +64,7 @@ def plot_roc(Y_true, Y_proba, save=False):
     if save is True:
         plt.savefig("output/plot_roc.png")
     else:
-		plt.show()
+        plt.show()
 
 
 
@@ -77,13 +77,13 @@ def plot_presion_recall_curve(Y_true, Y_proba, save=False):
     :return: rien trace une courbe
     """
 
-	if MACHINE_ENSIMAG:
-		print("Impossible to run this on Ensimag machines. Needs pyplot.")
-		exit()
+    if MACHINE_ENSIMAG:
+        print("Impossible to run this on Ensimag machines. Needs pyplot.")
+        exit()
 
     precision, recall, a = met.precision_recall_curve(Y_true, Y_proba)
     auc = met.auc(recall, precision)
-	plt.close()
+    plt.close()
     plt.plot(recall, precision)
     plt.xlabel('recall')
     plt.ylabel('precision')
@@ -91,4 +91,4 @@ def plot_presion_recall_curve(Y_true, Y_proba, save=False):
     if save is True:
         plt.savefig("output/plot_pression_recall_curve.png")
     else:
-		plt.show()
+        plt.show()
