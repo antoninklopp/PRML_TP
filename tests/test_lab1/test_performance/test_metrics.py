@@ -38,7 +38,7 @@ class TestMetrics:
         res_t, res_th = load_histograms(masks=masks)
 
         print("Testing model")
-        test_files = get_test_masks()[:20]
+        test_files = get_test_masks()[:2]
         recall = np.zeros((10, 10))
         precision = np.zeros((10, 10))
         accuracy = np.zeros((10, 10))
@@ -50,12 +50,13 @@ class TestMetrics:
                 print("w", w, "h", h)
                 Y_pred = np.array([])
                 Y_true = np.array([])
+                proba = np.array([])
                 for name, mask in test_files:
                     image_test = cv2.imread(name)
-                    proba = get_proba_predic(image_test, res_t, res_th)
-                    prediction = get_predicted_masks(image_test, mask, w, h, 1, res_t, res_th, distance)
+                    prediction = get_predicted_masks(image_test, mask, w, h, 0.15, res_t, res_th, distance)
                     Y_pred = np.append(Y_pred, prediction.flatten())
                     Y_true = np.append(Y_true, mask.flatten())
+                    proba = np.append(proba, get_proba_predic(image_test, res_t, res_th).flatten())
                 print(met.get_all_metric(Y_true, Y_pred))
                 recall[w//50 - 1, h//50 - 1] = met.get_all_metric(Y_true, Y_pred)["recall"]
                 precision[w//50 - 1, h//50 - 1] = met.get_all_metric(Y_true, Y_pred)["precision"]
@@ -103,8 +104,38 @@ class TestMetrics:
                 self.plot(Q, precision, "precision")
                 self.plot(Q, accuracy, "accuracy")
 
-        pass
+    def verif_matrix(self):
+        """
+        ecrit dans le fichier matrice.txt le contenu de chaque matrice pour un biais de 0.2
+        """
+        masks = get_training_masks()[:200]
+        fichier = open("output/matrice.txt", "w")
+
+        print("Training model")
+        res_t, res_th = load_histograms(masks=masks)
+
+        print("Testing model")
+        test_files = get_test_masks()[:20]
+        recall = np.zeros((10, 10))
+        precision = np.zeros((10, 10))
+        accuracy = np.zeros((10, 10))
+
+        distance = 400
+
+        for w in range(50, 201, 50):
+            for h in range(50, 201, 50):
+                print("w", w, "h", h)
+                Y_pred = np.array([])
+                Y_true = np.array([])
+                proba = np.array([])
+                for name, mask in test_files:
+                    image_test = cv2.imread(name)
+                    prediction = get_predicted_masks(image_test, mask, w, h, 0.15, res_t, res_th, distance)
+                    Y_pred = np.append(Y_pred, prediction.flatten())
+                    Y_true = np.append(Y_true, mask.flatten())
+                fichier.write(str(w) + "   " + str(h) + "    " + str(met.get_confusion_matrix(Y_true, Y_pred))+"\n\n")
+
 
 if __name__ == "__main__":
     t = TestMetrics()
-    t.verif_taille_ellipse()
+    t.verif_matrix()
