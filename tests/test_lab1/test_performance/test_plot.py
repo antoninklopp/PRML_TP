@@ -1,6 +1,11 @@
 import src.metrics as met
 import numpy as np
-import matplotlib.pyplot as plt
+
+MACHINE_ENSIMAG = False
+try:
+    import matplotlib.pyplot as plt
+except:
+    MACHINE_ENSIMAG = True
 
 class TestPlot:
 

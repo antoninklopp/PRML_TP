@@ -1,7 +1,7 @@
 import src.metrics as met
 from src.colors_to_probabilities import load_histograms, get_prediction
 from src.info_image import get_mask_from_file, get_all_masks, get_training_masks, get_test_masks
-from src.lab1 import get_predicted_masks, get_proba_predic
+from src.lab1 import get_predicted_masks, plot_faces, get_proba_predic
 import cv2
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
@@ -54,6 +54,8 @@ class TestMetrics:
                 for name, mask in test_files:
                     image_test = cv2.imread(name)
                     prediction = get_predicted_masks(image_test, mask, w, h, 0.15, res_t, res_th, distance)
+                    proba = get_proba_predic(image_test, res_t, res_th)
+                    prediction = get_predicted_masks(image_test, mask, w, h, 0.25, res_t, res_th, distance)
                     Y_pred = np.append(Y_pred, prediction.flatten())
                     Y_true = np.append(Y_true, mask.flatten())
                     proba = np.append(proba, get_proba_predic(image_test, res_t, res_th).flatten())
@@ -93,7 +95,7 @@ class TestMetrics:
             w, h = 300, 300
             for name, mask in test_files:
                 image_test = cv2.imread(name)
-                prediction = get_predicted_masks(image_test, mask, w, h, 1, res_t, res_th, 300)
+                prediction = get_predicted_masks(image_test, mask, w, h, 0.25, res_t, res_th, 300)
                 Y_pred = np.append(Y_pred, prediction.flatten())
                 Y_true = np.append(Y_true, mask.flatten())
                 dic = met.get_all_metric(Y_true, Y_pred)
@@ -135,6 +137,27 @@ class TestMetrics:
                     Y_true = np.append(Y_true, mask.flatten())
                 fichier.write(str(w) + "   " + str(h) + "    " + str(met.get_confusion_matrix(Y_true, Y_pred))+"\n\n")
 
+
+
+    def plot_face_test(self):
+        """
+        Plot one face
+        """
+        # masks = get_training_masks()[:150]
+
+        print("Training model")
+        res_t, res_th = load_histograms()
+
+        print("Testing model")
+        test_files = get_test_masks()[:20]
+
+        distance = 100
+        w = 150
+        h = 150
+
+        for name, mask in test_files:
+            image_test = cv2.imread(name)
+            plot_faces(image_test, mask, w, h, 0.25, res_t, res_th, distance, "face_" + name.split("/")[-1])
 
 if __name__ == "__main__":
     t = TestMetrics()

@@ -177,27 +177,25 @@ def convert_colors_probalities(img, hist_h, hist_hT, Q=256,  mode_color='RGB'):
     ndarray     same dimension image containing for each pixel its prob to be a skin
     """
     res = np.zeros(img.shape[0:2])
-    if (mode_color=='rg'):
-        img=RGB_to_rg(img)
-    for ind_r in range(img.shape[0]):
-        for ind_c in range(img.shape[1]):
-            pix = img[ind_r, ind_c]
+    if (mode_color=='RGB'):
+        img_quantified = (img.astype(int) / (256 // Q)).astype(int)
+    elif (mode_color=='rg'):
+        img_quantified = ((Q - 1) * RGB_to_rg(img)).astype(int)
+
+    for ind_r in range(img_quantified.shape[0]):
+        for ind_c in range(img_quantified.shape[1]):
+            pix0 = img_quantified.item(ind_r, ind_c, 0)
+            pix1 = img_quantified.item(ind_r, ind_c, 1)
+            pix2 = img_quantified.item(ind_r, ind_c, 2)
             # Dealing with different colors spaces
             if (mode_color=='RGB'):
-                T = 256 // Q
-                pix_R = m.floor(pix[0] / T)
-                pix_G = m.floor(pix[1] / T)
-                pix_B = m.floor(pix[2] / T)
-                pix_h = hist_h[pix_R, pix_G, pix_B]
-                pix_hT = hist_hT[pix_R, pix_G, pix_B]
+                pix_h = hist_h[pix0, pix1, pix2]
+                pix_hT = hist_hT[pix0, pix1, pix2]
             elif (mode_color == 'rg'):
-                pix_r = m.floor((Q - 1) * pix[1])
-                pix_g = m.floor((Q - 1) * pix[2])
-                pix_h = hist_h[pix_r, pix_g]
-                pix_hT = hist_hT[pix_r, pix_g]
-            # Computing the prob pix_hT / pix_h
+                pix_h = hist_h[pix1, pix2]
+                pix_hT = hist_hT[pix1, pix2]
             if (pix_h != 0):
-                res[ind_r, ind_c] = pix_hT / pix_h
+                res.itemset((ind_r, ind_c), pix_hT / pix_h)
     return res
 
 def get_prediction(img, hist_h, hist_hT, seuil, Q=256, mode_color='RGB'):
