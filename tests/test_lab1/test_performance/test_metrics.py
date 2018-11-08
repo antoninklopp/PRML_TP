@@ -5,6 +5,7 @@ from src.lab1 import get_predicted_masks, plot_faces, get_proba_predic
 import cv2
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
+import math
 
 MACHINE_ENSIMAG=False
 try:
@@ -27,51 +28,70 @@ class TestMetrics:
             ax.set_zlabel(name)
             plt.savefig("output/new_recall_" + name + "_distance_" + str(distance)  + "_bias_" + str(bias) +  ".png")
 
-    def verif_taille_ellipse(self):
+    def verif_taille_ellipse(self, w_range, h_range, bias, distance, save_plots_roc=False):
         """
         test les différentes métrics
+        :param w_parameters: must be a tuple of 3 parameters (begin, end, step) of the width of each ellipse
+        :param h_parameters: must be a tuple of 3 parameters (begin, end, step) of the height of each ellipse
+        :param bias: the chosen bias
+        :param distance: the minimum distance between two ellipses
+        :param save_plot_roc: if set to true, it saves the roc plots 
         :return: un dictionnaire des metrics
         """
+
+        # Checkig parameters
+        if (len(w_range) != 3 or len(h_range) != 3):
+            print("w_range or h_range should have size 3. Check documentation for further information")
+            raise ValueError
+
+        if (w_range[1] < w_range[0]) or (h_range[1] < h_range[0]):
+            print("End width/height should be larger than beginning width/height")
+            raise ValueError
+
         masks = get_training_masks()[:1500]
 
         print("Training model")
         res_t, res_th = load_histograms(masks=masks)
 
-        for bias in (0.05, 0.2, 0.25, 0.3):
-            for distance in [200]:
+        print("Testing model")
+        test_files = get_test_masks()[:3]
 
-                print("Testing model")
-                test_files = get_test_masks()[:3]
-                recall = np.zeros((10, 10))
-                precision = np.zeros((10, 10))
-                accuracy = np.zeros((10, 10))
+        recall = np.zeros((math.ceil((w_range[1] - w_range[0])/float(w_range[2])), math.ceil((h_range[1] - h_range[0])/float(h_range[2]))))
+        precision = np.zeros((math.ceil((w_range[1] - w_range[0])/float(w_range[2])), math.ceil((h_range[1] - h_range[0])/float(h_range[2]))))
+        accuracy = np.zeros((math.ceil((w_range[1] - w_range[0])/float(w_range[2])), math.ceil((h_range[1] - h_range[0])/float(h_range[2]))))
 
-                for w in range(25, 251, 25):
-                    for h in range(25, 251, 25):
-                        print("w", w, "h", h)
-                        Y_pred = np.array([])
-                        Y_true = np.array([])
-                        proba = np.array([])
-                        for name, mask in test_files:
-                            image_test = cv2.imread(name)
-                            proba = np.append(proba, get_proba_predic(image_test, res_t, res_th))
-                            prediction = get_predicted_masks(image_test, mask, w, h, bias, res_t, res_th, distance)
-                            Y_pred = np.append(Y_pred, prediction.flatten())
-                            Y_true = np.append(Y_true, mask.flatten())
-                        print(met.get_all_metric(Y_true, Y_pred))
-                        recall[w//25 - 1, h//25 - 1] = met.get_all_metric(Y_true, Y_pred)["recall"]
-                        precision[w//25 - 1, h//25 - 1] = met.get_all_metric(Y_true, Y_pred)["precision"]
-                        accuracy[w//25 - 1, h//25 - 1] = met.get_all_metric(Y_true, Y_pred)["accuracy"]
-                        met.plot_presion_recall_curve(Y_true, proba, name="output/TestPrWh_w" + str(w)+"h"+str(h), save=True)
-                        met.plot_roc(Y_true, proba, name="output/TestRocWh_w" + str(w)+"h"+str(h), save=True)
+        w_index = 0
+        h_index = 0
 
-                # PLOTTING
-                w = np.arange(25, 275, 25)
-                h = np.arange(25, 275, 25)
-                w, h = np.meshgrid(w, h)
-                self.plot(w, h, recall, "recall", distance, bias)
-                self.plot(w, h, precision, "precision", distance, bias)
-                self.plot(w, h, accuracy, "accuracy", distance, bias)
+        for w in range(w_range[0], w_range[1], w_range[2]):
+            for h in range(h_range[0], h_range[1], h_range[2]):
+                print("w", w, "h", h)
+                Y_pred = np.array([])
+                Y_true = np.array([])
+                proba = np.array([])
+                for name, mask in test_files:
+                    image_test = cv2.imread(name)
+                    proba = np.append(proba, get_proba_predic(image_test, res_t, res_th))
+                    prediction = get_predicted_masks(image_test, mask, w, h, bias, res_t, res_th, distance)
+                    Y_pred = np.append(Y_pred, prediction.flatten())
+                    Y_true = np.append(Y_true, mask.flatten())
+                recall[w_index, h_index] = met.get_all_metric(Y_true, Y_pred)["recall"]
+                precision[w_index, h_index] = met.get_all_metric(Y_true, Y_pred)["precision"]
+                accuracy[w_index, h_index] = met.get_all_metric(Y_true, Y_pred)["accuracy"]
+                if save_plots_roc:
+                    met.plot_presion_recall_curve(Y_true, proba, name="output/TestPrWh_w" + str(w)+"h"+str(h), save=True)
+                    met.plot_roc(Y_true, proba, name="output/TestRocWh_w" + str(w)+"h"+str(h), save=True)
+                h_index += 1
+            w_index += 1
+            h_index = 0
+
+        # PLOTTING
+        w = np.arange(w_range[0], w_range[1], w_range[2])
+        h = np.arange(w_range[0], w_range[1], w_range[2])
+        w, h = np.meshgrid(w, h)
+        self.plot(w, h, recall, "recall", distance, bias)
+        self.plot(w, h, precision, "precision", distance, bias)
+        self.plot(w, h, accuracy, "accuracy", distance, bias)
 
     def verif_quantification(self):
         """
@@ -137,7 +157,6 @@ class TestMetrics:
                 fichier.write(str(w) + "   " + str(h) + "    " + str(met.get_confusion_matrix(Y_true, Y_pred))+"\n\n")
 
 
-
     def plot_face_test(self):
         """
         Plot one face
@@ -160,5 +179,5 @@ class TestMetrics:
 
 if __name__ == "__main__":
     t = TestMetrics()
-    t.verif_taille_ellipse()
+    t.verif_taille_ellipse((25, 250, 2), (25, 250, 2), 0.2, 200)
     # t.plot_face_test()
