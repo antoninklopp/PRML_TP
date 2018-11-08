@@ -12,13 +12,19 @@ def get_recall(Y_true, Y_pred):
     """
     Calcul le recall correspond à la prediction Y_pred
     """
-    return met.recall_score(Y_true, Y_pred, average='macro')
+    # return met.recall_score(Y_true, Y_pred, average='macro')
+    print("recall", np.sum(Y_true * Y_pred)/np.sum(Y_true))
+    if np.sum(Y_true) == 0:
+        return 0
+    return np.sum(Y_true * Y_pred)/np.sum(Y_true) 
 
 def get_precision(Y_true, Y_pred):
     """
     Calcul la precision d'un modèle grace à une prediction
     """
-    return met.precision_score(Y_true, Y_pred, average="macro")
+    if np.sum(Y_pred) == 0:
+        return 0
+    return np.sum(Y_true * Y_pred)/np.sum(Y_pred) 
 
 def get_accuracy(Y_true, Y_pred):
     """

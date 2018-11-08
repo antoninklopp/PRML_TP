@@ -15,8 +15,8 @@ except ImportError:
 
 class TestMetrics:
 
-    def plot(self, w, h, z, name, distance):
-        if MACHINE_ENSIMAG:
+    def plot(self, w, h, z, name, distance, bias):
+        if MACHINE_ENSIMAG is False:
             plt.close()
             print(w.shape, h.shape, z.shape)
             fig = plt.figure()
@@ -25,51 +25,53 @@ class TestMetrics:
             ax.set_xlabel("width ellipse")
             ax.set_ylabel("height ellipse")
             ax.set_zlabel(name)
-            plt.savefig("output/" + name + "_distance_" + str(distance) + ".png")
+            plt.savefig("output/new_recall_" + name + "_distance_" + str(distance)  + "_bias_" + str(bias) +  ".png")
 
     def verif_taille_ellipse(self):
         """
         test les différentes métrics
         :return: un dictionnaire des metrics
         """
-        masks = get_training_masks()[:150]
+        masks = get_training_masks()[:1500]
 
         print("Training model")
         res_t, res_th = load_histograms(masks=masks)
 
-        print("Testing model")
-        test_files = get_test_masks()[:20]
-        recall = np.zeros((10, 10))
-        precision = np.zeros((10, 10))
-        accuracy = np.zeros((10, 10))
+        for bias in (0.05, 0.2, 0.25, 0.3):
+            for distance in [200]:
 
-        distance = 400
+                print("Testing model")
+                test_files = get_test_masks()[:3]
+                recall = np.zeros((10, 10))
+                precision = np.zeros((10, 10))
+                accuracy = np.zeros((10, 10))
 
-        for w in range(50, 501, 50):
-            for h in range(50, 501, 50):
-                print("w", w, "h", h)
-                Y_pred = np.array([])
-                Y_true = np.array([])
-                for name, mask in test_files:
-                    image_test = cv2.imread(name)
-                    proba = get_proba_predic(image_test, res_t, res_th)
-                    prediction = get_predicted_masks(image_test, mask, w, h, 0.25, res_t, res_th, distance)
-                    Y_pred = np.append(Y_pred, prediction.flatten())
-                    Y_true = np.append(Y_true, mask.flatten())
-                print(met.get_all_metric(Y_true, Y_pred))
-                recall[w//50 - 1, h//50 - 1] = met.get_all_metric(Y_true, Y_pred)["recall"]
-                precision[w//50 - 1, h//50 - 1] = met.get_all_metric(Y_true, Y_pred)["precision"]
-                accuracy[w//50 - 1, h//50 - 1] = met.get_all_metric(Y_true, Y_pred)["accuracy"]
-                met.plot_presion_recall_curve(Y_true, proba, name="output/TestPrWh_w" + str(w)+"h"+str(h), save=True)
-                met.plot_roc(Y_true, proba, name="output/TestRocWh_w" + str(w)+"h"+str(h), save=True)
+                for w in range(25, 251, 25):
+                    for h in range(25, 251, 25):
+                        print("w", w, "h", h)
+                        Y_pred = np.array([])
+                        Y_true = np.array([])
+                        proba = np.array([])
+                        for name, mask in test_files:
+                            image_test = cv2.imread(name)
+                            proba = np.append(proba, get_proba_predic(image_test, res_t, res_th))
+                            prediction = get_predicted_masks(image_test, mask, w, h, bias, res_t, res_th, distance)
+                            Y_pred = np.append(Y_pred, prediction.flatten())
+                            Y_true = np.append(Y_true, mask.flatten())
+                        print(met.get_all_metric(Y_true, Y_pred))
+                        recall[w//25 - 1, h//25 - 1] = met.get_all_metric(Y_true, Y_pred)["recall"]
+                        precision[w//25 - 1, h//25 - 1] = met.get_all_metric(Y_true, Y_pred)["precision"]
+                        accuracy[w//25 - 1, h//25 - 1] = met.get_all_metric(Y_true, Y_pred)["accuracy"]
+                        met.plot_presion_recall_curve(Y_true, proba, name="output/TestPrWh_w" + str(w)+"h"+str(h), save=True)
+                        met.plot_roc(Y_true, proba, name="output/TestRocWh_w" + str(w)+"h"+str(h), save=True)
 
-        # PLOTTING
-        w = np.arange(50, 550, 50)
-        h = np.arange(50, 550, 50)
-        w, h = np.meshgrid(w, h)
-        self.plot(w, h, recall, "recall", distance)
-        self.plot(w, h, precision, "precision", distance)
-        self.plot(w, h, accuracy, "accuracy", distance)
+                # PLOTTING
+                w = np.arange(25, 275, 25)
+                h = np.arange(25, 275, 25)
+                w, h = np.meshgrid(w, h)
+                self.plot(w, h, recall, "recall", distance, bias)
+                self.plot(w, h, precision, "precision", distance, bias)
+                self.plot(w, h, accuracy, "accuracy", distance, bias)
 
     def verif_quantification(self):
         """
@@ -110,10 +112,10 @@ class TestMetrics:
         """
         Plot one face
         """
-        # masks = get_training_masks()[:150]
+        masks = get_training_masks()[:150]
 
         print("Training model")
-        res_t, res_th = load_histograms()
+        res_t, res_th = load_histograms(masks=masks, recompute=True)
 
         print("Testing model")
         test_files = get_test_masks()[:20]
@@ -128,5 +130,5 @@ class TestMetrics:
 
 if __name__ == "__main__":
     t = TestMetrics()
-    # t.metric()
-    t.plot_face_test()
+    t.verif_taille_ellipse()
+    # t.plot_face_test()
