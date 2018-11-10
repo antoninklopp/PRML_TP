@@ -2,7 +2,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/antoninklopp/prml_tp/badge)](https://www.codefactor.io/repository/github/antoninklopp/prml_tp)
 
 # PRML_TP
-TP de Pattern recognition and machine learning
+TP de Pattern recognition and machine learning.
 
 ## Instructions pour pouvoir travailler sur le projet.
 
