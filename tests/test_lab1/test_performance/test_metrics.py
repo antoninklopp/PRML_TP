@@ -16,9 +16,22 @@ except ImportError:
 
 class TestMetrics:
 
-    def plot(self, w, h, z, name, distance, bias):
+    def plot(self, w, h, z, name, distance, bias, close_previous=True, savefig=True):
+        """
+        Plot different metrics in 3D
+        :param w : width of the ellipse
+        :param h : height of the ellipse
+        :param z : result you want to plot
+        ;param name : the name of the measure you wan to plot
+        :param distance : distance between two ellipses (used for the name, not for the plot)
+        :param bias : bias that was used to find the z (used for the name, not for the plot)
+        :param close_previous (default True): closes the previous instance of pyplot. Useful if you want to plot one 
+        or multiple plots on same figure
+        :param savefig (default True): saves the figure after ploting
+        """
         if MACHINE_ENSIMAG is False:
-            plt.close()
+            if close_previous is True:
+                plt.close()
             print(w.shape, h.shape, z.shape)
             fig = plt.figure()
             ax = fig.gca(projection='3d')
@@ -26,7 +39,8 @@ class TestMetrics:
             ax.set_xlabel("width ellipse")
             ax.set_ylabel("height ellipse")
             ax.set_zlabel(name)
-            plt.savefig("output/new_recall_" + name + "_distance_" + str(distance)  + "_bias_" + str(bias) +  ".png")
+            if savefig is True:
+                plt.savefig("output/new_recall_" + name + "_distance_" + str(distance)  + "_bias_" + str(bias) +  ".png")
 
     def verif_taille_ellipse(self, w_range, h_range, bias, distance, save_plots_roc=False):
         """
@@ -179,5 +193,5 @@ class TestMetrics:
 
 if __name__ == "__main__":
     t = TestMetrics()
-    t.verif_taille_ellipse((25, 250, 2), (25, 250, 2), 0.2, 200)
+    # t.verif_taille_ellipse((25, 250, 2), (25, 250, 2), 0.2, 200)
     # t.plot_face_test()

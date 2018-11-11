@@ -81,7 +81,8 @@ def compute_histograms(masks, mode_color='RGB', Q=256):
         print("Image", i, "training")
         img = cv2.imread(img_path).astype(int)
         # img_quantified allowed to use the quantification factor Q
-        img_quantified = (img / (256 // Q)).astype(int)
+        if (mode_color == "RGB"):
+            img_quantified = (img / (256 // Q)).astype(int)
         if (mode_color == 'rg'):
             img_quantified = ((Q - 1) * RGB_to_rg(img)).astype(int)
         if (img is None):
