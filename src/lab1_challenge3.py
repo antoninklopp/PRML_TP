@@ -8,7 +8,29 @@ import numpy as np
 from scipy.spatial.distance import *
 import itertools
 
-def non_maximum_suppression(set_faces, R, dist_mode='eucl'):
+def covariance_faces(set_faces):
+    """
+    Computation of the covariance matrix of the set of faces.
+
+    Parameters
+    ----------
+    set_faces       dictionnary
+                    contains the faces, with keys defined as [ci, cj, w, h, angle]
+                    of the face ellipse
+
+    Returns
+    -------
+    numpy.ndarray of shape (5, 5)
+                    Covariance matrix of the faces
+    """
+    ci_values = np.array([X[0] for X in set_faces.keys()])
+    cj_values = np.array([X[1] for X in set_faces.keys()])
+    w_values = np.array([X[2] for X in set_faces.keys()])
+    h_values = np.array([X[3] for X in set_faces.keys()])
+    angle_values = np.array([X[4] for X in set_faces.keys()])
+    return np.cov(np.array([ci_values, cj_values, w_values, h_values, angle_values]))
+
+def non_maximum_suppression(set_faces, R, dist_mode='maha'):
     """
     Non-maximum suppression from a set of faces hypothesis. For each couple
     (Xi, Xj) in set_faces, if dist(Xi, Xj) < R, the argmin (g(Xi), g(Xj)) is removed
@@ -17,15 +39,21 @@ def non_maximum_suppression(set_faces, R, dist_mode='eucl'):
     Parameters
     ----------
     set_faces       dictionnary
-                    Set of faces hypothesis X=(ci, cj, w, h) and associated g value
+                    Set of faces hypothesis X=(ci, cj, w, h, angle) and associated g value
     R               positive float
                     maximal distance bet. two faces
-    dist_mode       optional, string in {'eucl'}
+    dist_mode       optional, string in {'eucl', 'maha'}
                     distance choice operator, default : euclidian distance
     """
     all_faces = set_faces.keys()
     new_set_faces = dict()
     rejected_faces = dict()
+    if (dist_mode=='maha'):
+        cov_mat = covariance_faces(set_faces)
+        if (np.linalg.det(cov_mat)):
+            cov_mat_inv = np.linalg.inv(covariance_faces(set_faces))
+        else:
+            cov_mat_inv = np.identity(5)
     for Xi, Xj in itertools.product(all_faces, all_faces):
         if (Xi in rejected_faces or Xj in rejected_faces):
             continue
@@ -35,9 +63,10 @@ def non_maximum_suppression(set_faces, R, dist_mode='eucl'):
             d_xi_xj = R
             # distance mode
             if (dist_mode=='eucl'):
-                d_xi_xj = euclidean(xi, xj)
-                #print(xi, xj, d_xi_xj)
+                d_xi_xj = euclidean(xi[:-1], xj[:-1])
             # other distances modes can be added
+            elif (dist_mode=='maha'):
+                d_xi_xj = mahalanobis(xi, xj, cov_mat_inv)
             if (set_faces[Xi] < set_faces[Xj]):
                 X_min, X_max = Xi, Xj
             else:
@@ -47,8 +76,8 @@ def non_maximum_suppression(set_faces, R, dist_mode='eucl'):
                 new_set_faces[X_min] = set_faces[X_min]
             else:
                 r = new_set_faces.pop(X_min, None)
-                #print("r", r)
                 rejected_faces[X_min] = True
+    print("# final faces : {}".format(len(new_set_faces.keys())))
     return new_set_faces
 
 def draw_faces(img, set_faces, name_res, color):
@@ -61,10 +90,10 @@ def draw_faces(img, set_faces, name_res, color):
     """
     clone = np.copy(img)
     for face in set_faces.keys():
-        (ci, cj, w, h) = face
+        (ci, cj, w, h, angle) = face
         center = (ci, cj)
         major_axis = (w-1) // 2
         minor_axis = (h-1) // 2
         axes = (major_axis, minor_axis)
-        cv2.ellipse(clone, center, axes, 0, 0, 360, color, 2)
+        cv2.ellipse(clone, center, axes, angle, 0, 360, color, 2)
     cv2.imwrite("output/"+name_res, clone)
