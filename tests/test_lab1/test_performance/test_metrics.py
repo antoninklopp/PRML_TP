@@ -168,13 +168,13 @@ class TestMetrics:
 
         print("Testing model")
         test_files = get_test_masks()[:20]
-        distance = 100
-        w = 150
-        h = 150
+        distance = 50
+        w = 25
+        h = 35
 
         for name, mask in test_files:
             image_test = cv2.imread(name)
-            plot_faces(image_test, mask, w, h, 0.25, res_t, res_th, distance, "face_" + name.split("/")[-1], nb_angles=2)
+            plot_faces(image_test, mask, w, h, 0.2, res_t, res_th, distance, "face_" + name.split("/")[-1], nb_angles=10, nb_scales=2)
 
 if __name__ == "__main__":
     t = TestMetrics()

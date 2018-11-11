@@ -36,7 +36,7 @@ def get_proba_predic(img, hist_h, hist_hT, Q=256, mode_color='RGB'):
     """
     return convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color).flatten()
 
-def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB", Q=256, g_mask=False, nb_angles=1):
+def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB", Q=256, g_mask=False, nb_angles=1, nb_scales=3):
     """
     Calls the get_predicted_masks function and plot the detected faces on the input images.
     The resulting image is stored in the folder/
@@ -52,6 +52,7 @@ def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB
     """
     img_skin = convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color)
     #print(img_skin.shape)
-    set_face = recognition_function(img_skin, w, h, B, g_mask=g_mask, nb_angles=nb_angles)
+    set_face = recognition_function(img_skin, w, h, B, g_mask=g_mask, nb_angles=nb_angles, nb_scales=nb_scales)
+    draw_faces(img, set_face, "raw_"+name_img, (212, 85, 186))
     set_face = non_maximum_suppression(set_face, R)
     draw_faces(img, set_face, name_img, (212, 85, 186))
