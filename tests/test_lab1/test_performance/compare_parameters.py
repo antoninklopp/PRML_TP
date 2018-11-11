@@ -25,7 +25,7 @@ class CompareParameters:
         Compare the quantification metric
         """
         Q = [8, 16, 32, 64, 128, 256]
-        masks = get_training_masks()[:50]
+        masks = get_training_masks()[:500]
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=8, w_pad=4, h_pad=4)
@@ -41,7 +41,7 @@ class CompareParameters:
                 res_t, res_th = load_histograms(Q=q, masks=masks)
 
                 print("testing model")
-                test_files = get_test_masks()[:10]
+                test_files = get_test_masks()[:50]
                 Y_pred = np.array([])
                 Y_true = np.array([])
                 for name, mask in test_files:
@@ -81,7 +81,7 @@ class CompareParameters:
         Compare the color type
         """
         color_type = ['RGB', 'rg']
-        masks = get_training_masks()[:50]
+        masks = get_training_masks()[:500]
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=8, w_pad=4, h_pad=4)
@@ -95,7 +95,7 @@ class CompareParameters:
                 res_t, res_th = load_histograms(masks=masks, mode_color=color)
 
                 print("testing model")
-                test_files = get_test_masks()[:10]
+                test_files = get_test_masks()[:20]
                 Y_pred = np.array([])
                 Y_true = np.array([])
                 for name, mask in test_files:
@@ -134,10 +134,10 @@ class CompareParameters:
         """ 
         Compare the bias
         """
-        masks = get_training_masks()[:50]
+        masks = get_training_masks()[:500]
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
-        fig.tight_layout(pad=8, w_pad=4, h_pad=4)
+        fig.tight_layout(pad=10, w_pad=4, h_pad=4)
         
         for i, bias in enumerate([i/10.0 for i in range(0, 10)]):
             global_recall = []
@@ -148,7 +148,7 @@ class CompareParameters:
                 res_t, res_th = load_histograms(masks=masks)
 
                 print("testing model")
-                test_files = get_test_masks()[:10]
+                test_files = get_test_masks()[:20]
                 Y_pred = np.array([])
                 Y_true = np.array([])
                 for name, mask in test_files:
@@ -179,14 +179,14 @@ class CompareParameters:
             axes[2].set_ylabel("Accuracy")
             axes[2].set_title("Accuracy")
 
-        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25),  shadow=True, ncol=2)
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.20),  shadow=True, ncol=2)
 
         plt.savefig("output/compare_bias_mode_distance_" + str(distance) + ".png")
 
 
 if __name__ == "__main__":
-    w_range = range(0, 350, 100)
+    w_range = range(10, 350, 1)
     c = CompareParameters()
-    # c.compare_quantification()
-    # c.compare_color_type()
-    c.compare_bias()
+    c.compare_quantification(w_range=w_range)
+    c.compare_color_type(w_range=w_range)
+    c.compare_bias(w_range=w_range)
