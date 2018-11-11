@@ -72,7 +72,7 @@ def compute_histograms(masks, mode_color='RGB', Q=256):
         hist_h = np.zeros((Q, Q))
         hist_hT = np.zeros((Q, Q))
     else:
-        print("Unimplemented color mode")
+        print("Unimplemented color mode", mode_color)
         raise
     print(hist_h.shape)
     i = 0

@@ -107,38 +107,6 @@ class TestMetrics:
         self.plot(w, h, precision, "precision", distance, bias)
         self.plot(w, h, accuracy, "accuracy", distance, bias)
 
-    def verif_quantification(self):
-        """
-        plot une courbe de la variation des metrics en fonction de la quantification
-        """
-        Q = [8, 26, 32, 64, 128, 256]
-        masks = get_training_masks()[:50]
-
-        for i, q in enumerate(Q):
-            print("training for Q = " + str(q))
-            res_t, res_th = load_histograms(Q=q, masks=masks)
-
-            print("testing model")
-            test_files = get_test_masks()[:1]
-            recall = np.zeros(6)
-            precision = np.zeros(6)
-            accuracy = np.zeros(6)
-            Y_pred = np.array([])
-            Y_true = np.array([])
-            w, h = 300, 300
-            for name, mask in test_files:
-                image_test = cv2.imread(name)
-                prediction = get_predicted_masks(image_test, mask, w, h, 0.25, res_t, res_th, 300)
-                Y_pred = np.append(Y_pred, prediction.flatten())
-                Y_true = np.append(Y_true, mask.flatten())
-                dic = met.get_all_metric(Y_true, Y_pred)
-                recall[i] = dic["recall"]
-                precision[i] = dic["precision"]
-                accuracy[i] = dic["accuracy"]
-                self.plot(Q, recall, "recall")
-                self.plot(Q, precision, "precision")
-                self.plot(Q, accuracy, "accuracy")
-
     def verif_matrix(self):
         """
         ecrit dans le fichier matrice.txt le contenu de chaque matrice pour un biais de 0.2
