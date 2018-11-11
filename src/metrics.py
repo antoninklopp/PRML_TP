@@ -22,6 +22,7 @@ def get_precision(Y_true, Y_pred):
     """
     Calcul la precision d'un modèle grace à une prediction
     """
+    print("precision", np.sum(Y_true * Y_pred)/np.sum(Y_pred))
     if np.sum(Y_pred) == 0:
         return 0
     return np.sum(Y_true * Y_pred)/np.sum(Y_pred) 
@@ -32,6 +33,7 @@ def get_accuracy(Y_true, Y_pred):
     """
     TP = np.sum(Y_true * Y_pred)
     TN = np.sum(np.subtract(np.ones(Y_true.shape), Y_true) * np.subtract(np.ones(Y_pred.shape), Y_pred))
+    print("accuracy", (TP + TN)/(Y_true.shape[0]))
     return (TP + TN)/(Y_true.shape[0])
 
 def get_all_metric(Y_true, Y_pred):
