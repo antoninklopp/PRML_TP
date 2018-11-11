@@ -6,7 +6,7 @@ src/__pycache__/*
 PRML.egg-info
 tests/__pychache__/*
 build/*
-docs/*
+docs/*.pdf
 dist/*
 .cache/*
 .eggs/*
