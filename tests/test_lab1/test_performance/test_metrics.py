@@ -160,5 +160,5 @@ class TestMetrics:
 
 if __name__ == "__main__":
     t = TestMetrics()
-    # t.verif_taille_ellipse((25, 250, 2), (25, 250, 2), 0.2, 200)
+    t.verif_taille_ellipse((25, 250, 20), (25, 250, 20), 0.2, 50)
     # t.plot_face_test()

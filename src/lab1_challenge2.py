@@ -51,6 +51,7 @@ def sliding_windows(img, w, h, s=None, nb_angles=1):
                 axes = (w//2, h//2)
                 c = (ci, cj)
                 mask[:,:] = 0
+                # print(mask, c, axes, angle)
                 cv2.ellipse(mask, c, axes, angle, 0, 360, 1, -1)
                 roi = img * mask
                 yield (roi, center, w, h, angle)
