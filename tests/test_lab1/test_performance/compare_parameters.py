@@ -158,7 +158,7 @@ class CompareParameters:
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=10, w_pad=4, h_pad=4)
         
-        for i, scale in enumerate(range(10, 400, 50)):
+        for i, distance in enumerate(range(10, 400, 50)):
             self.plot_with_parameters("distance = " + str(distance), axes, masks, distance=distance)
 
         plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.20),  shadow=True, ncol=2)
