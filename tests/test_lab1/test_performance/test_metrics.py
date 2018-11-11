@@ -30,12 +30,12 @@ class TestMetrics:
 
     def verif_taille_ellipse(self, w_range, h_range, bias, distance, save_plots_roc=False):
         """
-        test les différentes métrics
+        test les différentes metrics
         :param w_parameters: must be a tuple of 3 parameters (begin, end, step) of the width of each ellipse
         :param h_parameters: must be a tuple of 3 parameters (begin, end, step) of the height of each ellipse
         :param bias: the chosen bias
         :param distance: the minimum distance between two ellipses
-        :param save_plot_roc: if set to true, it saves the roc plots 
+        :param save_plot_roc: if set to true, it saves the roc plots
         :return: un dictionnaire des metrics
         """
 
@@ -164,20 +164,19 @@ class TestMetrics:
         masks = get_training_masks()[:150]
 
         print("Training model")
-        res_t, res_th = load_histograms(masks=masks, recompute=True)
+        res_t, res_th = load_histograms(masks=masks, recompute=False)
 
         print("Testing model")
         test_files = get_test_masks()[:20]
-
         distance = 100
         w = 150
         h = 150
 
         for name, mask in test_files:
             image_test = cv2.imread(name)
-            plot_faces(image_test, mask, w, h, 0.25, res_t, res_th, distance, "face_" + name.split("/")[-1])
+            plot_faces(image_test, mask, w, h, 0.25, res_t, res_th, distance, "face_" + name.split("/")[-1], nb_angles=2)
 
 if __name__ == "__main__":
     t = TestMetrics()
-    t.verif_taille_ellipse((25, 250, 2), (25, 250, 2), 0.2, 200)
-    # t.plot_face_test()
+    #t.verif_taille_ellipse((25, 250, 2), (25, 250, 2), 0.2, 200)
+    t.plot_face_test()

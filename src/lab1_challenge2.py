@@ -7,8 +7,45 @@ with Skin colors
 import cv2
 import numpy as np
 
+def rotate_rectangle(w, h, center, top, left, angle):
+    """
+    Computes the indexes of the rotated rectangle from an input rectangle with the
+    angle angle. A rotation matrix R(angle) is used on two vectors u and v defined as
+    u = P1 - center and v = P2 - center, where P1 and P2 respectivelly are the top left
+    and the top right corners of the original rectangle.
 
-def sliding_windows(img, w, h, s=(8, 8)):
+    Parameters
+    ----------
+    (w, h)      integer tuple
+                shape (width and height) of the original rectangle
+    center      numpy.ndarray
+                center of the original rectangle
+    top, left   integers
+                coordinates of the top-left corner of the original rectangle
+    angle       float
+                angle of rotation in degree
+
+    Returns
+    -------
+    numpy.ndarray
+                array containing the four corners of the rotated rectangle stored
+                as followed : [[Top-Left], [Top-right], [Bottom-right], [Bottom-left]]
+    """
+    # Computation of vectors u and v from the original rectangle
+    vect_u = (np.array([top, left]) - center).reshape((2,1))
+    vect_v = (np.array([top, left+w]) - center).reshape((2,1))
+    theta = np.radians(angle)
+    R_angle = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+    new_u = (R_angle @ vect_u).reshape((1, 2))
+    new_v = (R_angle @ vect_v).reshape((1, 2))
+    # Computation of new corners of the rotated rectangle
+    topLeft = center + new_u
+    topRight = center + new_v
+    botRight = center - new_u
+    botLeft = center - new_v
+    return (np.array([topLeft, topRight, botRight, botLeft]).astype(int)).reshape((-1, 1, 2))
+
+def sliding_windows(img, w, h, s=None, nb_angles=1):
     """
     Iterator on Region of Interest (ROIs) of shape (h, w) in the input image img
     with a step parameter s=(sx, sy) in rows and in columnsself.
@@ -23,31 +60,42 @@ def sliding_windows(img, w, h, s=(8, 8)):
                 sliding window height
     s           tuple, optional
                 step sizes in rows and colums, default = (8, 8)
+    nb_angles   integer, optional
+                number of orientations, angles between 0° and 180° with a step of 180 / (nb_angles-1)
 
     Returns
     -------
-    Iterator object on (ci, cj, ROI) where ci,cj are the center coordinates of the
-    ROI and ROI contains the values.
+    Iterator object on (ci, cj, ROI, angle) where ci,cj are the center coordinates of the
+    ROI and ROI contains the values, and angle the degree angle of the ROI.
     """
-    s = (w//2, h//2)
+    if (s is None):
+        s = (w//2, h//2)
     (sx, sy) = s
+    mask = np.zeros(img.shape[0:2])
     (nb_R, nb_C) = img.shape[0:2]
-    for t in range(0, nb_R, sx):
-        for l in range(0, nb_C, sy):
-            b = t + h-1
-            r = l + w-1
-            ci = (l+r) // 2
-            cj = (t+b) // 2
-            # copy is not used in order to easily modify the corresponding area
-            # in the input variable img
-            roi = img[t: t+h, l: l+w]
-            if (roi.shape[0] != h or roi.shape[1] != w):
-                continue
-            else:
-                yield (ci, cj, roi)
+    for top in range(0, nb_R, sx):
+        for left in range(0, nb_C, sy):
+            bottom = top + h-1
+            right = left + w-1
+            ci = (left+right) // 2
+            cj = (top+bottom) // 2
+            center = np.array([ci, cj])
+            for k in range(0, nb_angles):
+                if (nb_angles > 1):
+                    angle = k * 180 / (nb_angles - 1)
+                else:
+                    angle = 0
+                roi_corners = rotate_rectangle(w, h, center, top, left, angle)
+                mask[:,:] = 0
+                print(roi_corners)
+                cv2.fillPoly(mask, [roi_corners], 1)
+                roi = img * mask
+                yield (roi, center, w, h, angle)
 
 
-def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 20, 0)):
+
+
+def recognition_function(img_skins, w, h, B, s=None, g_mask=False, sigma=(10, 20, 0), nb_angles=1):
     """
     Builds the recognition image from an input tab containing skin color probabilites
     P(i,j) by computing the likehood g and the bias B. The Gaussian mask correction
@@ -64,6 +112,8 @@ def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 
                 (7 * sig_i, 7 * sig_j)
     sigma       standard deviations tuple for Gaussian filter (sig_i, sig_j, sig_ij)
                 sig_ij is generally set to 0
+    nb_angles   integer, optional
+                number of angles, default = 1
 
     Returns
     -------
@@ -78,8 +128,9 @@ def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 
     if (g_mask):
         chosen_w = 7 * sig_i
         chosen_h = 7 * sig_j
-    for (ci, cj, roi) in sliding_windows(img_skins, chosen_w, chosen_h, s=s):
+    for (roi, center, chosen_w, chosen_h, angle) in sliding_windows(img_skins, chosen_w, chosen_h, s=s):
         used_roi = np.copy(roi)
+        ci, cj = center
         t = cj - (chosen_h - 1) // 2
         l = ci - (chosen_w - 1) // 2
         if (g_mask):
@@ -94,14 +145,13 @@ def recognition_function(img_skins, w, h, B, s=(8, 8), g_mask=False, sigma=(10, 
             used_roi[:, :, 0] = used_roi[:, :, 0] * gauss_mask
             used_roi[:, :, 1] = used_roi[:, :, 1] * gauss_mask
             used_roi[:, :, 2] = used_roi[:, :, 2] * gauss_mask
-            # print(np.amax(used_roi))
         g_X = np.mean(used_roi)
         # Decision function R(g(X)+B)
         if (g_X + B > 0.5):
-            new_face = (ci, cj, chosen_w, chosen_h)
+            new_face = (ci, cj, chosen_w, chosen_h, angle)
             dict_res[new_face] = g_X
             nb_faces += 1
-    print("# detected faces : {}".format(str(nb_faces)))
+    print("# detected raw faces : {}".format(str(nb_faces)))
     return dict_res
 
 def get_prediction_masks(img, set_faces):
@@ -120,8 +170,8 @@ def get_prediction_masks(img, set_faces):
     """
     mask=np.zeros(img.shape[0:2])
     for X_ellipse in set_faces.keys():
-        (cx, cy, w, h) = X_ellipse
+        (cx, cy, w, h, angle) = X_ellipse
         center=(int(cx), int(cy))
         axes = (w//2, h//2)
-        cv2.ellipse(mask, center, axes, 0.0, 0.0, 360.0, 1, -1)
+        cv2.ellipse(mask, center, axes, angle, 0.0, 360.0, 1, -1)
     return mask

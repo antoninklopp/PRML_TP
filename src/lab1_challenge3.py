@@ -61,10 +61,10 @@ def draw_faces(img, set_faces, name_res, color):
     """
     clone = np.copy(img)
     for face in set_faces.keys():
-        (ci, cj, w, h) = face
+        (ci, cj, w, h, angle) = face
         center = (ci, cj)
         major_axis = (w-1) // 2
         minor_axis = (h-1) // 2
         axes = (major_axis, minor_axis)
-        cv2.ellipse(clone, center, axes, 0, 0, 360, color, 2)
+        cv2.ellipse(clone, center, axes, angle, 0, 360, color, 2)
     cv2.imwrite("output/"+name_res, clone)
