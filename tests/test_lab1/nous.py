@@ -13,8 +13,9 @@ def plot_face_test():
     masks = get_training_masks()[:150]
     hist_h, hist_hT = load_histograms(masks=masks)
     for i in images:
+        print(i)
         img = cv2.imread(i)
-        plot_faces(img, 50, 70, 0.2, hist_h, hist_hT, 200, i.split("/")[-1] + "test.png")
+        plot_faces(img, 50, 50, 0.2, hist_h, hist_hT, 200, i.split("/")[-1] + "test50.png")
 
 
 if __name__ == "__main__":
