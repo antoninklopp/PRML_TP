@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 from scipy.spatial.distance import *
 import itertools
+from sklearn.cluster import DBSCAN
 
 def covariance_faces(set_faces):
     """
@@ -80,6 +81,30 @@ def non_maximum_suppression(set_faces, R, dist_mode='maha'):
     print("# final faces : {}".format(len(new_set_faces.keys())))
     return new_set_faces
 
+def cluster_ellipse(set_faces, R):
+    """
+    renvoit les ellipses convexe d'un découpage de l'espace.
+    """
+    points = []
+    new_set_face = dict()
+    for face in set_faces.keys():
+        (ci, cj, w, h, angle) = face
+        center = [ci, cj]
+        points.append(center)
+    db = DBSCAN(eps=R, min_samples=15).fit(points)
+    labels = db.labels_
+    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    cluster = [[] for i in range(n_clusters_ + 1)]
+    for i, point in enumerate(points):
+        cluster[labels[i]].append(point)
+    for i in range(n_clusters_):
+        ellipse = cv2.fitEllipse(np.array(cluster[i]))
+        new_set_face[(int(ellipse[0][0]), int(ellipse[0][1]), int(ellipse[1][0]), int(ellipse[1][1]), int(ellipse[2]))] = 1
+    return new_set_face
+
+
+      #  cv2.ellipse(clone, ellipse, color, 2, cv2.LINE_AA)
+
 def draw_faces(img, set_faces, name_res, color):
     """
     Draws ellipses of faces in image
@@ -92,8 +117,9 @@ def draw_faces(img, set_faces, name_res, color):
     for face in set_faces.keys():
         (ci, cj, w, h, angle) = face
         center = (ci, cj)
-        major_axis = (w-1) // 2
-        minor_axis = (h-1) // 2
+        major_axis = w
+        minor_axis = h
         axes = (major_axis, minor_axis)
-        cv2.ellipse(clone, center, axes, angle, 0, 360, color, 2)
-    cv2.imwrite("output/"+name_res, clone)
+        cv2.ellipse(clone, (center, axes, angle), color, 2, 0)
+    cv2.imwrite("output/" + name_res, clone)
+
