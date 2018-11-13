@@ -36,7 +36,7 @@ def get_proba_predic(img, hist_h, hist_hT, Q=256, mode_color='RGB'):
     """
     return convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color).flatten()
 
-def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB", Q=256, g_mask=False, nb_angles=1, nb_scales=3):
+def plot_faces(img, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB", Q=256, g_mask=False, nb_angles=1, nb_scales=1):
     """
     Calls the get_predicted_masks function and plot the detected faces on the input images.
     The resulting image is stored in the folder/

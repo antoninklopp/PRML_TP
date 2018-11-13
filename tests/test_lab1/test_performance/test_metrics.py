@@ -9,10 +9,10 @@ import math
 
 MACHINE_ENSIMAG=False
 try:
-	import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
 except ImportError:
-	print("Machine ENSIMAG")
-	MACHINE_ENSIMAG = True
+    print("Machine ENSIMAG")
+    MACHINE_ENSIMAG = True
 
 class TestMetrics:
 
@@ -25,7 +25,7 @@ class TestMetrics:
         ;param name : the name of the measure you wan to plot
         :param distance : distance between two ellipses (used for the name, not for the plot)
         :param bias : bias that was used to find the z (used for the name, not for the plot)
-        :param close_previous (default True): closes the previous instance of pyplot. Useful if you want to plot one 
+        :param close_previous (default True): closes the previous instance of pyplot. Useful if you want to plot one
         or multiple plots on same figure
         :param savefig (default True): saves the figure after ploting
         """
@@ -138,6 +138,11 @@ class TestMetrics:
                     Y_true = np.append(Y_true, mask.flatten())
                 fichier.write(str(w) + "   " + str(h) + "    " + str(met.get_confusion_matrix(Y_true, Y_pred))+"\n\n")
 
+    def lot_faces(self):
+        """
+        Test for an image with a lot of faces
+        """
+        test_files = get_test_masks()
 
     def plot_face_test(self):
         """
@@ -156,9 +161,9 @@ class TestMetrics:
 
         for name, mask in test_files:
             image_test = cv2.imread(name)
-            plot_faces(image_test, mask, w, h, 0.2, res_t, res_th, distance, "face_" + name.split("/")[-1], nb_angles=10, nb_scales=2)
+            plot_faces(image_test, w, h, 0.2, res_t, res_th, distance, "face_" + name.split("/")[-1], nb_angles=10, nb_scales=2)
 
 if __name__ == "__main__":
     t = TestMetrics()
-    t.verif_taille_ellipse((25, 250, 20), (25, 250, 20), 0.2, 50)
-    # t.plot_face_test()
+    # t.verif_taille_ellipse((25, 250, 20), (25, 250, 20), 0.2, 50)
+    t.lot_faces()

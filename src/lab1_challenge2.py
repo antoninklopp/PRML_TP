@@ -59,7 +59,7 @@ def sliding_windows(img, w, h, s=None, nb_angles=1):
 
 
 
-def recognition_function(img_skins, w, h, B, s=None, g_mask=False, sigma=(10, 20, 0), nb_angles=1, nb_scales=3):
+def recognition_function(img_skins, w, h, B, s=None, g_mask=False, sigma=(10, 20, 0), nb_angles=1, nb_scales=1):
     """
     Builds the recognition image from an input tab containing skin color probabilites
     P(i,j) by computing the likehood g and the bias B. The Gaussian mask correction
