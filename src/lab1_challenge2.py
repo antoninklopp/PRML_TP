@@ -130,5 +130,8 @@ def get_prediction_masks(img, set_faces):
         (cx, cy, w, h, angle) = X_ellipse
         center=(int(cx), int(cy))
         axes = (w//2, h//2)
+        #try:
         cv2.ellipse(mask, center, axes, angle, 0.0, 360.0, 1, -1)
+        #except TypeError:
+        #   cv2.ellipse(mask, (center, axes, angle), 1, -1)
     return mask

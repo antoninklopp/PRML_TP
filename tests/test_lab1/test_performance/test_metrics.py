@@ -68,7 +68,7 @@ class TestMetrics:
         res_t, res_th = load_histograms(masks=masks)
 
         print("Testing model")
-        test_files = get_test_masks()[:3]
+        test_files = get_test_masks()[:10]
 
         recall = np.zeros((math.ceil((w_range[1] - w_range[0])/float(w_range[2])), math.ceil((h_range[1] - h_range[0])/float(h_range[2]))))
         precision = np.zeros((math.ceil((w_range[1] - w_range[0])/float(w_range[2])), math.ceil((h_range[1] - h_range[0])/float(h_range[2]))))
@@ -143,16 +143,16 @@ class TestMetrics:
         """
         Plot one face
         """
-        masks = get_training_masks()[:150]
+        masks = get_training_masks()[:10]
 
         print("Training model")
         res_t, res_th = load_histograms(masks=masks, recompute=False)
 
         print("Testing model")
-        test_files = get_test_masks()[:20]
-        distance = 50
-        w = 25
-        h = 35
+        test_files = get_test_masks()[:5]
+        distance = 25
+        w = 15
+        h = 15
 
         for name, mask in test_files:
             image_test = cv2.imread(name)
@@ -161,4 +161,4 @@ class TestMetrics:
 if __name__ == "__main__":
     t = TestMetrics()
     t.verif_taille_ellipse((25, 250, 20), (25, 250, 20), 0.2, 50)
-    # t.plot_face_test()
+    #t.plot_face_test()

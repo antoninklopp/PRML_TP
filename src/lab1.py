@@ -8,7 +8,7 @@ import numpy as np
 from src.colors_to_probabilities import convert_colors_probalities, compute_histograms, load_histograms, get_prediction
 from src.info_image import get_training_masks
 from src.lab1_challenge2 import get_prediction_masks, recognition_function
-from src.lab1_challenge3 import non_maximum_suppression, draw_faces
+from src.lab1_challenge3 import non_maximum_suppression, draw_faces, cluster_ellipse
 
 
 def get_predicted_masks(img, mask, w, h, B, hist_h, hist_hT, R, mode_color="RGB", Q=256, g_mask=False, nb_angles=1, nb_scales=3):
@@ -25,8 +25,13 @@ def get_predicted_masks(img, mask, w, h, B, hist_h, hist_hT, R, mode_color="RGB"
     """
     img_skin = convert_colors_probalities(img, hist_h, hist_hT, Q, mode_color)
     set_face = recognition_function(img_skin, w, h, B, g_mask=g_mask, nb_angles=nb_angles, nb_scales=nb_scales)
-    set_face = non_maximum_suppression(set_face, R)
-
+    if(len(set_face) ==0):
+        set_face = non_maximum_suppression(set_face, R)
+    elif cluster_ellipse(set_face, R) != {}:
+        print("mine")
+        set_face = cluster_ellipse(set_face, R)
+    else:
+        set_face = non_maximum_suppression(set_face, R)
     return get_prediction_masks(img, set_face)
 
 
@@ -54,5 +59,8 @@ def plot_faces(img, mask, w, h, B, hist_h, hist_hT, R, name_img, mode_color="RGB
     #print(img_skin.shape)
     set_face = recognition_function(img_skin, w, h, B, g_mask=g_mask, nb_angles=nb_angles, nb_scales=nb_scales)
     draw_faces(img, set_face, "raw_"+name_img, (212, 85, 186))
-    set_face = non_maximum_suppression(set_face, R)
+    if cluster_ellipse(set_face, R) != {}:
+        set_face = cluster_ellipse(set_face, R)
+    else:
+        set_face = non_maximum_suppression(set_face, R)
     draw_faces(img, set_face, name_img, (212, 85, 186))
