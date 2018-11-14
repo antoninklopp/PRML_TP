@@ -388,10 +388,40 @@ Nous avons fait le choix de ne pas ré-implémenter cet algorithme car il est di
    \label{fig:faces}
  \end{figure}
 
+\subsection{Impact sur les performances}
+D'un point de vue performance, cette méthode permet de gagner en précision tout en maintenant les autres paramètres. Pour tracer des courbes, on a appliquer la méthodes précédante sur les petites valeurs de h et w (w, h < 75). et on obtiens les courbes suivantes:
 
+\begin{figure}[H]
+  \includegraphics[width=\textwidth]{images/recall_ellipse}\hfill
+  %\caption{Ellipses détectées (gauche) Ellipse finale (droite)}
+  \label{fig:rec_ellipse}
+\end{figure}
 
+On observe bien que le recall ne varie presque pas pour des ellipses petites.
 
+\begin{figure}[H]
+  \includegraphics[width=\textwidth]{images/precision_ellipse}\hfill
+  %\caption{Ellipses détectées (gauche) Ellipse finale (droite)}
+  \label{fig:prec_ellipse}
+\end{figure}
 
+Cependant on observe que la precision en est presque doublée(ici mesurée sur des paramètres arbitraire d'ou la valeur faible...)
+
+On a donc bien une méthode améliorant la performance de notre algorithme.
+
+\section{Conclusions}
+
+A la fin de ce premier algorithme de détection d'image, nous avons réussir à créer un algorithme qui détecte les images avec de bonnes performance. De plus nous avons mis en place une amélioration grace a des contours convexes et des algorithmes de partition de l'espace. Cependant, notre algorithme n'arrive pas à faire la différence entre les différentes parties de peau pouvant ètre présent sur une photo.
+
+Voici le résultat de notre algorithme sur nos propres portraits.
+
+\begin{figure}[H]
+  \includegraphics[width=0.3\textwidth]{images/florent20}\hfill
+  \includegraphics[width=0.3\textwidth]{images/antonin20}\hfill
+  \includegraphics[width=0.3\textwidth]{images/yoan20}\hfill
+  \caption{(de gauche à droite) Résultat de l'algorithme sur Florent, Antonin et Yoan}
+  \label{fig:nous}
+\end{figure}
 
 %
 % \appendix
