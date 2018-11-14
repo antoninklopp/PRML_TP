@@ -26,9 +26,31 @@
 
 ## II. Mesurer les performances
 
-\# TODO : petite partie sur les métriques utilisées, et comment les calculer.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nous avons ensuite mis en place plusieurs méthodes de mesure de performance. En effet pour rendre notre modèle le meilleur possible nous pouvons faire varier plus paramètres et nous devons pouvoir décider leurs valeurs optimales.
+Pour se faire nous avons calculé/ tracé plusieurs indicateurs:
+* la précision (precision)
+* l'exactitude (accuracy)
+* le rappel (recall)
+* la courbe ROC
+
+Pour calculer ces différents indicateurs, nous avons utilisé la bibliothèque slearn.
+
+###### La précision
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; La précision permet de vérifier que lorsque que l'on indique qu'un pixel appartient à un visage on ne se trompe pas trop.
+
+###### L'exactitude
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; L
+
+###### Le rappel
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Le rappel permet de vérifier qu'on oublie pas de visage quite à en détecter trop.
+###### La courbe ROC
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; La courbe Reciver Operating Characteristic permet d'observé l'evolution des vrais positifs en fonction des faux positifs. Il est est donc intéressant d'obtenir une courbe ROC qui crois très vite pour des taux de faux positifs faible.
+
+###### Notre choix:
+Pour valider notre modèle, nous avons choisi de plus observer le recall pour ètre sur de détecter tous les visages même si on détecte un visage un peu trop large.
 
 ## III. Analyse des résultats
+
 
 ### 1. Paramètres du _challenge 1_
 
@@ -51,6 +73,7 @@ Pour tracer cette envoloppe nous avons utilisé deux algorithmes:
 #### Density-Based Spatial clustering of Application with noise.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La première problème a ressoudre pour tracer l'envoloppe elliptique est de définir les groupes d'ellipses correspondant à un même visage. Pour cela nous avons utilisé un algorithme de clustering permettant de partitionner l'espace: Le DNSCAN. En effet cette algorithme permet de regrouper des points dans l'espace en plusieurs sous ensemble(cluster) de point dont le distance euclidienne ne dépasse pas une certain valeur. Ainsi nous avons appliqué cet algorithme en centre des différentes ellipses détectés par notre algorithmede reconnaissance de forme.  
+De plus grâce à cet algorithme, nous avons pu effacé les detections non significatives(Contre par exemple une seule ellipse...)
 Nous avons fait le choix de ne pas ré-implémenter cet algorithme car il est disponible en opensource dans la library python sklearn.cluster.
 
 #### ellipse convexe:  
