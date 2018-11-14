@@ -47,23 +47,45 @@ Pour calculer ces différents indicateurs, nous avons utilisé la bibliothèque 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; La courbe Reciver Operating Characteristic permet d'observé l'evolution des vrais positifs en fonction des faux positifs. Il est est donc intéressant d'obtenir une courbe ROC qui crois très vite pour des taux de faux positifs faible.
 
 ###### Notre choix:
-Pour valider notre modèle, nous avons choisi de plus observer le recall pour ètre sur de détecter tous les visages même si on détecte un visage un peu trop large.
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbspPour valider notre modèle, nous avons choisi de plus observer le recall pour ètre sur de détecter tous les visages même si on détecte un visage un peu trop large. De plus on va s'intéresser aussi à l'accuracy pour une indication plus globale.
 
 ## III. Analyse des résultats
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Pour chacun des paramètres testés, nous avons tracé plusieurs courbes des différentes métriques en fonction de la valeurs du paramètres et de la taille de l'ellipse.
+Dans un premier temps on constate que la précision est faible sur presque toutes les courbes. Cependant dans une ultime parti nous avons mis en place un algorithme permettant de ressoudre ce problème sans impacter les autre paramètres.
+
+#### 1. Paramètres du _challenge 1_
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dans un premier temps, nous allons comparer les différentes valeur de la quantification, du biais, et du mode de couleur.
+
+![graphique comparaison quantification](./compare_quantification.png "quantification")  
+On constate que la quantification Q n'impacte que peu les performances pour les ellipses de taille inférieure à 150. De plus la quantification permettant un couple (recall, accuracy) le plus élevé, se situe pour des ellipses de taille d'environ 30 de hauteur et largueur.
+
+![graphique comparaison color mode](compare_color_mode.png "mode de couleur")
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbspOn constate que le mode de couleur à une influence que limité sur des petites ellipseson c'est encore avec des peties ellipses que le couple(recall, accuracy) semble le meilleur.
+
+![graphique comparaison biais](compare_bias.png "biais")Biais
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Finalement le dernière paramètre de cette étape et le biais. Or on constate qu'il a beaucoup d'impact pour les ellipses non petite. De plus on constant qu'avec des biais élevé, le recall est presque tjs a 1 car il n'y a pas de faux négatif... De plus un bon couple RA semble aussi obtenu avec des ellises petites et un biais de 0.2.
+#### 2. Paramètres du _challenge 2_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nous allons ensuite faire varier le nombre d'angle:
+![graphique comparaison angle](compare_angle.png " angle")Angle
 
 
-### 1. Paramètres du _challenge 1_
+#### 3. Paramètres du _challenge 3_
 
-\# TODO : graphes des métriques avec la quantification $Q$ et le mode de couleurs => en déduire la meilleure quantification et le meilleur mode
+![graphique comparaison distance](compare_distance.png "distance") Distance
 
-### 2. Paramètres du _challenge 2_
+#### Conclusion sur les paramètres
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;On constate que pour tous les paramètres, notre algorithme fonctionne mieux avec soit avec des ellipses petites(entre 0 et 50 de hauteur et largeur), ou avec des ellipses grande. Cependant Nous avons fait le choix de prendre des ellipses plus petites car cela permet d'avoir un bon recall et une bonne accuracy. De plus, nous avons mis en place une méthode permettant d'augmenter la précision et de maintenir c'est paramètres(cf dernière parti).  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Il est à présent temps de choisir les paramètres liés à l'étape 1: Pour se faire nous avons fixer:
+* $Q = 256$
+* le mode de couleur en RGB
+* le biais: $B = 0.2$
 
-\# TODO : même chose avec nombre d'angles et tailles initiales
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pour le challenge 2 et 3:
 
-### 3. Paramètres du _challenge 3_
-\# TODO : même chose avec distance $R$ et comparer entre supprimer les ellipses et les regrouper en enveloppes convexes.
+# placer la ROC wallah
 
-### 4. Enveloppe convexe elliptique
+### 4. Initiative : Enveloppe convexe elliptique
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D'après les analyses précédantes, nous avons remarqué qu'en utilisant de petites ellipses, on obtenait de meilleurs résultats d'un point de vu métriques. Cependant, avec ces paramètres un visage et caractérisé par plusieurs ellipses... Pour réssoudre ce problème, nous avons mis en place une enveloppe convexe qui englobe toutes les ellipses détectées dans les deux premiers challenges.  
 Pour tracer cette envoloppe nous avons utilisé deux algorithmes:
@@ -92,3 +114,12 @@ On observe bien que le recall ne varie presque pas pour des ellipses petites.
 Cependant on observe que la precision en est presque doublée(ici mesurée sur des paramètres arbitraire d'ou la valeur faible...)
 
 On a donc bien une méthode améliorant la performance de notre algorithme.
+
+###Conclusion
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; A la fin de ce premier algorithme de détection d'image, nous avons réussir à créer un algorithme qui détecte les images avec de bonnes performance. De plus nous avons mis en place une amélioration grace a des contours convexes et des algorithmes de partition de l'espace. Cependant, notre algorithme n'arrive pas à faire la différence entre les différentes parties de peau pouvant ètre présent sur une photo.
+
+Voici le résultat de notre algorithme sur des photos de nous.
+![SOUty](../output/yoan20.png)
+
+![Klopp](../output/antonin20.png)![Klopp](../output/florent20.png)
