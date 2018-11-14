@@ -153,7 +153,7 @@ urlcolor=black}
 \newtheorem{theoreme}{Théorème}[chapter]
 
 %\theoremstyle{remark}
-\newtheorem{remarque}{Remarque}[chapter]
+\newtheorem{remarque}{Remarque}[section]
 
 %\theoremstyle{plain}
 \newtheorem{propriete}{Propriété}[chapter]
@@ -199,7 +199,7 @@ urlcolor=black}
   \begin{flushright} \large
     \emph{Encadrants :} \\
     M. James L. \textsc{Crowley}\\
-    M\up{me} Nachwa Aboubakr \\
+    M\up{me} Nachwa \textsc{Aboubakr} \\
 
     % Dr.~Prénom \textsc{Nom}
   \end{flushright}
@@ -267,6 +267,21 @@ L'ensemble de visages détectés obtenu par le challenge 2 doit ensuite être tr
   \item $R$ : distance maximale pour que deux ellipses soient considérées comme "voisines"
 \end{itemize}
 
+\subsection{Optimisation des algorithmes}
+
+Afin de pouvoir essayer notre modèle le plus grand nombre de fois possible et sur le plus d'images possibles. Nous avons essayé donc essayé d'optimiser les algorithmes très tôt. \\
+Nous avons essayé le plus de fonctions issues d'openCV et de numpy qui sont compilées en C et aussi d'utiliser le plus possible de fonction déjà implémentées pour gagner du temps de développement. Par exemple, le dessin d'ellipse ou de rectangles sur une matrice est déjà implémenté par openCV. Il faut également essayer d'éviter un maximum l'accès élément par élément à une matrice car numpy permet de bien meilleure performance pour diverses opérations (multiplication, addition...).
+
+\subsection{Choix du nombre d'images}
+
+Le choix du nombre d'images est très important pour des résultats optimaux. Il est important d'avoir un panel très étendu pour de bonnes performances (différentes couleurs de peau dans notre cas). Nous avons donc décidé de sauvegarder les histogrammes après chaque entraînement pour éviter de devoir ré-entraîner notre modèle à chaque appel de notre algorithme.
+Nous avons choisi au moins 500 images pour tous les tests.
+
+\begin{remarque}
+  Même si un grand nombre d'images est important afin de maximiser la reconnaissance sur un grand nombre de cas différents, cet entraînement va détériorer la reconnaissance sur les cas spécifiques car beaucoup plus de couleurs seront reconnues par le programme.
+  Il pourrait être important de catégoriser les images selon certains critères (teinte de peau, taille des images, nombre de personnes sur les images...).
+\end{remarque}
+
 \section{Mesurer les performances}
 Nous avons ensuite mis en place plusieurs méthodes de mesure de performance. En effet pour rendre notre modèle le meilleur possible nous pouvons faire varier plus paramètres et nous devons pouvoir décider leurs valeurs optimales.
 Pour se faire nous avons calculé/ tracé plusieurs indicateurs:
@@ -311,16 +326,28 @@ Dans un premier temps, nous allons comparer les différentes valeur de la quanti
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.3\textwidth]{images/quantified_test2.png}\hfill
-\includegraphics[width=0.3\textwidth]{images/quantified_test2.png}\hfill
-\includegraphics[width=0.3\textwidth]{images/quantified_test2.png}\hfill
-\includegraphics[width=0.3\textwidth]{images/quantified_test2.png}\hfill
-\includegraphics[width=0.3\textwidth]{images/quantified_test2.png}\vfill
+\includegraphics[width=0.3\textwidth]{images/quantified_original.png}
+\caption{Image originale}
+\end{figure}
 
-\caption{Images quantifiées}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.3\textwidth]{images/quantified_test2.png}\hfill
+\includegraphics[width=0.3\textwidth]{images/quantified_test4.png}\hfill
+\includegraphics[width=0.3\textwidth]{images/quantified_test8.png}\hfill
+\includegraphics[width=0.3\textwidth]{images/quantified_test16.png}\hfill
+\includegraphics[width=0.3\textwidth]{images/quantified_test32.png}\hfill
+\includegraphics[width=0.3\textwidth]{images/quantified_test64.png}\hfill
+\includegraphics[width=0.3\textwidth]{images/quantified_test128.png}
+\includegraphics[width=0.3\textwidth]{images/quantified_test256.png}
+
+\caption{Images quantifiées. De gauche à droite, de haut en bas, chaque couleur est stockée sur 1, 2, 3... jusqu'à 8 bits}
+\label{fig:quantif}
 \end{figure}
 
 On constate que la quantification Q n'impacte que peu les performances pour les ellipses de taille inférieure à 150. De plus la quantification permettant un couple (recall, accuracy) le plus élevé, se situe pour des ellipses de taille d'environ 30 de hauteur et largueur.
+On retrouve ce résultat grâce à la quantification des images ci-dessus, on remarque qu'à partir de Q=3, il est quasiement impossible de distinguer l'image quantifiée de l'image originale. Il y a donc assez d'information pour notre détecteur de visage.
+
 
 \begin{figure}[H]
   \includegraphics[width=\textwidth]{images/compare_color_mode}
