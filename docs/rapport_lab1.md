@@ -39,7 +39,7 @@ Pour calculer ces différents indicateurs, nous avons utilisé la bibliothèque 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; La précision permet de vérifier que lorsque que l'on indique qu'un pixel appartient à un visage on ne se trompe pas trop.
 
 ###### L'exactitude
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; L
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; L'excatitude permet de mesurer   la proposition de prédictions correctes effectuées par notre modèle.
 
 ###### Le rappel
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Le rappel permet de vérifier qu'on oublie pas de visage quite à en détecter trop.
