@@ -12,3 +12,5 @@
 \contentsline {subsection}{\numberline {III.3}Param\IeC {\`e}tres du challenge 3}{7}{subsection.0.3.3}
 \contentsline {subsection}{\numberline {III.4}Conclusion sur le choix des param\IeC {\`e}tres}{7}{subsection.0.3.4}
 \contentsline {section}{\numberline {IV}Initiative : utiliser une enveloppe convexe}{8}{section.0.4}
+\contentsline {subsection}{\numberline {IV.1}Density-Based Spatial clustering of Application with noise}{8}{subsection.0.4.1}
+\contentsline {subsection}{\numberline {IV.2}Ellipse convexe}{8}{subsection.0.4.2}

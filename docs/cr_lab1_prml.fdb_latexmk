@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1542213783 "cr_lab1_prml.tex" "cr_lab1_prml.pdf" "cr_lab1_prml" 1542213786
+["pdflatex"] 1542214289 "cr_lab1_prml.tex" "cr_lab1_prml.pdf" "cr_lab1_prml" 1542214292
   "/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/map/fontname/texfonts.map" 1272929888 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2016/texmf-dist/fonts/tfm/jknappen/ec/ecbx1200.tfm" 1136768653 3584 402da0b29eafbad07963b1224b222f18 ""
@@ -246,17 +246,19 @@
   "/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1466606377 1888048 f2c5faed5981a516f406b2ccc20bff71 ""
   "/usr/local/texlive/2016/texmf-var/web2c/pdftex/pdflatex.fmt" 1466606413 3873524 706f880741833fcf64b327d15db30f1f ""
   "/usr/local/texlive/2016/texmf.cnf" 1466606371 455 5b996dcaa0eb4ef14a83b026bc0a008c ""
-  "cr_lab1_prml.aux" 1542213786 3203 69d597e7ac8b17670b7d304e675b06e5 ""
-  "cr_lab1_prml.lof" 1542213786 509 1bb6f2b8fa334d9c5429ca701ada666a ""
-  "cr_lab1_prml.out" 1542213786 601 35cda91d100b7e7b9688d7005870f7d7 ""
-  "cr_lab1_prml.tex" 1542213783 14481 943c8132c0050e97edb0d7ba5fbcc324 ""
-  "cr_lab1_prml.toc" 1542213786 1088 2afc69c5e8c6a889b243f026f89b29ab ""
+  "cr_lab1_prml.aux" 1542214291 3730 6a1e798e6195808a1a9f2901299cbeb3 ""
+  "cr_lab1_prml.lof" 1542214291 662 72879134880fcb430800de0a7fe3f528 ""
+  "cr_lab1_prml.out" 1542214291 781 a9e4e8de4675fee295ed6c1bb11b3a8e ""
+  "cr_lab1_prml.tex" 1542214286 16114 4caa8785da11ebf8a106e0d6dc1a74e8 ""
+  "cr_lab1_prml.toc" 1542214291 1297 32a61bccbce8074cac8d7d4f8abf0a80 ""
   "images/compare_angle.png" 1542211538 110988 c1dfe2e2d6089fda1bcc2e37846e74e1 ""
   "images/compare_bias.png" 1542211538 112840 be783b9d7f1379fca45245d671ddfbef ""
   "images/compare_color_mode.png" 1542211538 77183 b6a8c99bace333395500e09bd9576638 ""
   "images/compare_distance.png" 1542211538 123769 b96adee65e96b12d9850801b73ecbbee ""
   "images/compare_quantification.png" 1542211538 96357 72739f0ef115402fbd7330ff6182195b ""
   "images/ensimag_logo.png" 1542211696 57663 d5c74fac51696a7e7ff1043294cc66d7 ""
+  "images/face_img_971.jpg" 1542118621 47377 ea9f5d80dfbf69087da30e7f99244410 ""
+  "images/raw_face_img_971.jpg" 1542118621 67222 ef71d301fa82228e975741e1278549f9 ""
   (generated)
   "cr_lab1_prml.out"
   "cr_lab1_prml.lof"

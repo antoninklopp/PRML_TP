@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.6.22)  14 NOV 2018 17:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.6.22)  14 NOV 2018 17:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1313,7 +1313,7 @@ LaTeX Info: Redefining \nameref on input line 167.
 \openout5 = `cr_lab1_prml.out'.
 
 
-<images/ensimag_logo.png, id=39, 1204.5pt x 768.8725pt>
+<images/ensimag_logo.png, id=47, 1204.5pt x 768.8725pt>
 File: images/ensimag_logo.png Graphic file (type png)
 
 <use images/ensimag_logo.png>
@@ -1362,7 +1362,7 @@ LaTeX Font Info:    Try loading font information for T1+cmtt on input line 282.
  (/usr/local/texlive/2016/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-<images/compare_quantification.png, id=93, 1084.05pt x 722.7pt>
+<images/compare_quantification.png, id=105, 1084.05pt x 722.7pt>
 File: images/compare_quantification.png Graphic file (type png)
 
 <use images/compare_quantification.png>
@@ -1375,7 +1375,7 @@ been already used, duplicate ignored
                    \relax 
 l.310 \end{figure}
                    [2]
-<images/compare_color_mode.png, id=98, 1084.05pt x 722.7pt>
+<images/compare_color_mode.png, id=110, 1084.05pt x 722.7pt>
 File: images/compare_color_mode.png Graphic file (type png)
 
 <use images/compare_color_mode.png>
@@ -1385,7 +1385,7 @@ Package pdftex.def Info: images/compare_color_mode.png used on input line 315.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3 <./images/compare_quantification.png>]
-<images/compare_bias.png, id=107, 1084.05pt x 722.7pt>
+<images/compare_bias.png, id=119, 1084.05pt x 722.7pt>
 File: images/compare_bias.png Graphic file (type png)
 
 <use images/compare_bias.png>
@@ -1395,7 +1395,7 @@ Package pdftex.def Info: images/compare_bias.png used on input line 323.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [4 <./images/compare_color_mode.png>]
-<images/compare_angle.png, id=113, 1084.05pt x 722.7pt>
+<images/compare_angle.png, id=125, 1084.05pt x 722.7pt>
 File: images/compare_angle.png Graphic file (type png)
 
 <use images/compare_angle.png>
@@ -1405,7 +1405,7 @@ Package pdftex.def Info: images/compare_angle.png used on input line 334.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [5 <./images/compare_bias.png>]
-<images/compare_distance.png, id=119, 1084.05pt x 722.7pt>
+<images/compare_distance.png, id=131, 1084.05pt x 722.7pt>
 File: images/compare_distance.png Graphic file (type png)
 
 <use images/compare_distance.png>
@@ -1414,22 +1414,40 @@ Package pdftex.def Info: images/compare_distance.png used on input line 343.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [6 <./images/compare_angle.png>] [7 <./images/compare_distance.png>] [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 405.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 405.
+ [6 <./images/compare_angle.png>] [7 <./images/compare_distance.png>]
+<images/raw_face_img_971.jpg, id=142, 298.11375pt x 451.6875pt>
+File: images/raw_face_img_971.jpg Graphic file (type jpg)
+
+<use images/raw_face_img_971.jpg>
+Package pdftex.def Info: images/raw_face_img_971.jpg used on input line 385.
+(pdftex.def)             Requested size: 230.36061pt x 349.03413pt.
+
+<images/face_img_971.jpg, id=143, 298.11375pt x 451.6875pt>
+File: images/face_img_971.jpg Graphic file (type jpg)
+
+<use images/face_img_971.jpg>
+Package pdftex.def Info: images/face_img_971.jpg used on input line 386.
+(pdftex.def)             Requested size: 230.36061pt x 349.03413pt.
+
+Underfull \vbox (badness 7832) has occurred while \output is active []
+
+ [8]
+[9 <./images/raw_face_img_971.jpg> <./images/face_img_971.jpg>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 423.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 423.
 
 (./cr_lab1_prml.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 405.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 405.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 423.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 423.
 Package rerunfilecheck Info: File `cr_lab1_prml.out' has not changed.
-(rerunfilecheck)             Checksum: 35CDA91D100B7E7B9688D7005870F7D7;601.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 405.
+(rerunfilecheck)             Checksum: A9E4E8DE4675FEE295ED6C1BB11B3A8E;781.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 423.
  ) 
 Here is how much of TeX's memory you used:
- 31532 strings out of 493014
- 737441 string characters out of 6133336
- 920411 words of memory out of 5000000
- 34465 multiletter control sequences out of 15000+600000
+ 31552 strings out of 493014
+ 737845 string characters out of 6133336
+ 920495 words of memory out of 5000000
+ 34477 multiletter control sequences out of 15000+600000
  20344 words of font info for 54 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,11n,84p,735b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1448,10 +1466,10 @@ ve/2016/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive
 016/texmf-dist/fonts/type1/public/cm-super/sfrm1440.pfb></usr/local/texlive/201
 6/texmf-dist/fonts/type1/public/cm-super/sfti1440.pfb></usr/local/texlive/2016/
 texmf-dist/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on cr_lab1_prml.pdf (12 pages, 718172 bytes).
+Output written on cr_lab1_prml.pdf (13 pages, 839435 bytes).
 PDF statistics:
- 189 PDF objects out of 1000 (max. 8388607)
- 147 compressed objects within 2 object streams
- 26 named destinations out of 1000 (max. 500000)
- 107 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 208 PDF objects out of 1000 (max. 8388607)
+ 163 compressed objects within 2 object streams
+ 30 named destinations out of 1000 (max. 500000)
+ 133 words of extra memory for PDF output out of 10000 (max. 10000000)
 

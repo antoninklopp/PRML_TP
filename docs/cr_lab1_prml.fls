@@ -391,6 +391,12 @@ INPUT ./images/compare_angle.png
 INPUT images/compare_distance.png
 INPUT ./images/compare_distance.png
 INPUT ./images/compare_distance.png
+INPUT images/raw_face_img_971.jpg
+INPUT ./images/raw_face_img_971.jpg
+INPUT ./images/raw_face_img_971.jpg
+INPUT images/face_img_971.jpg
+INPUT ./images/face_img_971.jpg
+INPUT ./images/face_img_971.jpg
 INPUT cr_lab1_prml.aux
 INPUT ./cr_lab1_prml.out
 INPUT ./cr_lab1_prml.out

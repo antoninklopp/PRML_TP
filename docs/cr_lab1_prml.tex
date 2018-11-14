@@ -373,6 +373,24 @@ Pour tracer cette envoloppe nous avons utilisé deux algorithmes:
   \item Un algorithme d'envoloppe convexe elliptique
 \end{itemize}
 
+\subsection{Density-Based Spatial clustering of Application with noise}
+La première problème a ressoudre pour tracer l'envoloppe elliptique est de définir les groupes d'ellipses correspondant à un même visage. Pour cela nous avons utilisé un algorithme de clustering permettant de partitionner l'espace: Le DNSCAN. En effet cette algorithme permet de regrouper des points dans l'espace en plusieurs sous ensemble(cluster) de point dont le distance euclidienne ne dépasse pas une certain valeur. Ainsi nous avons appliqué cet algorithme en centre des différentes ellipses détectés par notre algorithmede reconnaissance de forme.
+De plus grâce à cet algorithme, nous avons pu effacé les detections non significatives(Contre par exemple une seule ellipse...)
+Nous avons fait le choix de ne pas ré-implémenter cet algorithme car il est disponible en opensource dans la library python \texttt{sklearn.cluster}.
+
+\subsection{Ellipse convexe}
+ Une fois les groupes d'ellipses correspondant à un visage isolé, nous avons fait le choix de tracer une ellipse enveloppant toutes les ellipses detectés. Pour ce faire on a utilisé la fonction fitEllipse de openCV. En effet cet fonction permet de tracer sur une image une ellipse comprennant plusieurs points. Ainsi nous avons appliqué cette fonction aux groupes de points détectés par l'algorithme DBSCAN.
+
+ \begin{figure}[H]
+   \includegraphics[width=0.5\textwidth]{images/raw_face_img_971}\hfill
+   \includegraphics[width=0.5\textwidth]{images/face_img_971}\hfill
+   \caption{Ellipses détectées (gauche) Ellipse finale (droite)}
+   \label{fig:faces}
+ \end{figure}
+
+
+
+
 
 
 %
