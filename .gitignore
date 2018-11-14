@@ -13,3 +13,11 @@ dist/*
 .vscode/
 output/*.png
 output/*.jpg
+
+*.aux
+*.log
+*.lof
+*.out
+*.toc
+*.gz
+*.fdb*
