@@ -33,7 +33,7 @@ Pour se faire nous avons calculé/ tracé plusieurs indicateurs:
 * le rappel (recall)
 * la courbe ROC
 
-Pour calculer ces différents indicateurs, nous avons utilisé la bibliothèque slearn.
+Pour calculer ces différents indicateurs, nous avons utilisé la bibliothèque sklearn.
 
 ###### La précision
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; La précision permet de vérifier que lorsque que l'on indique qu'un pixel appartient à un visage on ne se trompe pas trop.
