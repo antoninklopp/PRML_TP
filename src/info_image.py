@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+"""
+Helpful functions to read differents images dataset for all labs.
+"""
 
 import cv2
 import os
