@@ -36,6 +36,6 @@ def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
                     cascade classifier object obtained from training phase.
     """
     name_vec = "faces_"+str(numP)+"_"str(numN)+"_"+str(numStages)+"_"featType+"_"bt+".vec"
-    name_xml = "faces_"+str(numP)+"_"str(numN)+"_"+str(numStages)+"_"featType+"_"bt+".xml"
-    subprocess.call(".././train_viola_jones.sh")
-    return cv2.CascadeClassifier("../output/"+name_xml)
+    options = str(numP)+" "+str(numN)+" "+str(numStages)+" "+featType+" "+bt+" "+name_vec
+    subprocess.call("./train_viola_jones.sh "+options)
+    return cv2.CascadeClassifier("../output/cascade.xml")

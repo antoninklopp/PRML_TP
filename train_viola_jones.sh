@@ -24,13 +24,11 @@ numStages=$3 # Input number of cascade scales
 featType=$4 # Input feature type (default: HAAR)
 bt=$5 # Input type of boost (default=GAB)
 name_vec=$6 # Input name of .vec file
-name_xml=$7 # Input name of .xml file
 
 
 # Samples creation using opencv_createsamples command
 name_vec="faces.vec"
-opencv_createsamples -vec $OUTPUT_DIR/$name_vec -info $INFO_FILE -num $numP -w 24 -h 24
+opencv_createsamples -vec $OUTPUT_DIR/$name_vec -info $IMG_DIR/$INFO_FILE -num $numP -w 24 -h 24
 
 # Cascade training from .vec file
-name_xml="cascades.xml"
-opencv_traincascade -data $OUTPUT_DIR/$name_xml -vec $OUTPUT_DIR/$name_vec -bg $IMG_DIR/$BG_FILE -numPos $numP -numNeg $numN -numStages $numStages -featureType $featType -bt $bt
+opencv_traincascade -data $OUTPUT_DIR/ -vec $OUTPUT_DIR/$name_vec -bg $IMG_DIR/$BG_FILE -numPos $numP -numNeg $numN -numStages $numStages -featureType $featType -bt $bt
