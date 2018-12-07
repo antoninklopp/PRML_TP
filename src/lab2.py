@@ -4,18 +4,14 @@ Implementation of Viola Jones faces detector.
 """
 import cv2
 import numpy as np
-import sys, os
+import sys, os, subprocess
 
-def build_classifier(numP, numN, numStages, w=24, h=24):
+
+def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
     """
     Build of cv2.CascadeClassifier object for Viola Jones training phase.
-    The build uses the positive and negative images from folder Images/WIDER.
-    The positive images contain faces whereas negative images do not contain faces.
-
-    1) creation of a .vec file with the command 'opencv_createsamples' (with options)
-       The name format is 'faces_<w>_<h>_<#P>_<#N>_<#stages>.vec'
-    2) creation of a .xml file from the .vec file with 'opencv_traincascade' (takes time)
-    3) creation of a CascadeClassifier object from the .xml file
+    The needed .xml file is built with the bash script 'train_viola_jones.sh' at
+    the root of the project.
 
     Parameters
     ----------
@@ -25,23 +21,21 @@ def build_classifier(numP, numN, numStages, w=24, h=24):
                     number of negative images to train the CascadeClassifier
     numStages       integer
                     number of stages (i.e scales of the lecture) of the CascadeClassifier
-    w               integer, optional
-                    width size (pix.) of ROI, default = 24
-    h               integer, optional
-                    height size (pix.) of ROI, default = 24
+    featType        string, optional
+                    type of feature, can be :   - HAAR : Haar feature (default)
+                                                - LBP : Local Binary Patterns
+    bt              string, optional
+                    type of Ada boost, can be : - GAB : Gentle Ada Boost (default)
+                                                - DAB : Discrete Ada Boost
+                                                - RAB : Real Ada Boost
+                                                - LB : LogitBoost
 
     Returns
     -------
     cv2.CascadeClassifier
                     cascade classifier object obtained from training phase.
     """
-    # TODO : creation of .vec file with opencv_createsamples command
-    command = "opencv_createsamples "
-    name_vec = "faces_"+str(w)+"_"+str(h)+"_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+".vec"
-    command += "-vec "+name_vec
-    command += " -info "+"train_info.dat "
-    command += "-num "+str(numP)
-    os.system(command)
-    # TODO : creation of .xml file from .vec file and opencv_traincascade
-    name_xml = "cascade"
-    return cv2.CascadeClassifier(name_xml)
+    name_vec = "faces_"+str(numP)+"_"str(numN)+"_"+str(numStages)+"_"featType+"_"bt+".vec"
+    name_xml = "faces_"+str(numP)+"_"str(numN)+"_"+str(numStages)+"_"featType+"_"bt+".xml"
+    subprocess.call(".././train_viola_jones.sh")
+    return cv2.CascadeClassifier("../output/"+name_xml)
