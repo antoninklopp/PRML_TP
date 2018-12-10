@@ -1,4 +1,4 @@
-import src.matrics.metrics as met
+import src.metrics.metrics as met
 from src.lab1.colors_to_probabilities import load_histograms, get_prediction
 from src.lab1.info_image import get_mask_from_file, get_all_masks, get_training_masks, get_test_masks
 from src.lab1.lab1 import get_predicted_masks, plot_faces, get_proba_predic

@@ -1,4 +1,4 @@
-import src.matrics.metrics as met
+import src.metrics.metrics as met
 import numpy as np
 
 MACHINE_ENSIMAG = False
