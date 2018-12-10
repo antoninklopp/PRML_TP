@@ -238,19 +238,19 @@ urlcolor=black}
 
 
 \section*{Introduction}
-Le rapport présente tout d'abord l'implémentation faite pour les trois challenges, puis présente une analyse des performances afin de déterminer les paramètres optimaux correspondant aux trois challenges et comparer l'efficacité de nouvelles options.
+Le rapport présente tout d'abord l'implémentation faite pour les trois challenges, puis une analyse des performances afin de déterminer les paramètres optimaux correspondant aux trois challenges et enfin une comparaison d'efficacité de nouvelles options.
 
 \section{Choix d'implémentation}
 L'algorithme de détection de visages par inférence Bayésienne se décompose en trois étapes i.e challenges.
 
-Le premier challenge attribue à chaque pixel d'une image en couleur $I$ une probabilité $P(i,j)$ qu'il soit de la peau. Pour calculer cette probabilité, on utilise deux histogrammes : $H, H_T$ où $H$ compte l'ensemble des pixels dans le set d'images utilisés pour l'entraînement et $H_T$ compte les pixels de peau dans ce data set. Les performances du challenge 1 dépendent des paramètres suivants :
+Le premier challenge attribue à chaque pixel d'une image en couleur $I$ une probabilité $P(i,j)$ qu'il soit de la peau. Pour la calculer, on utilise deux histogrammes : $H, H_T$ où $H$ compte l'ensemble des pixels dans le set d'images utilisés pour l'entraînement et $H_T$ compte les pixels de peau dans ce data set. Les performances du challenge 1 dépendent des paramètres suivants :
 
 \begin{itemize}
   \item $Q$ : facteur de quantification des histogrammes
   \item représentation des couleurs : espace couleur RGB et espace chrominance rg
 \end{itemize}
 
-Le challenge 2 désigne le passage d'une fenêtre coulissante afin de repérer dans l'image des probabilités $P(i,j)$ les Régions d'Intérêt (ROI) pouvant contenir un visage. Nous avons choisi d'utiliser directement une fenêtre elliptique afin de ne pas se soucier des valeurs situées aux bords de la fenêtre carrée. Nous avons paramétré plusieurs parcours de la fenêtre coulissante avec un nombre de tailles d'ellipses et un nombre d'orientation pour chaque taille. Les performances du challenge 2 dépendent des paramètres suivants :
+Le challenge 2 désigne le passage d'une fenêtre coulissante afin de repérer dans l'image des probabilités $P(i,j)$ les Régions d'Intérêt (ROI) pouvant contenir un visage. Nous avons choisi d'utiliser directement une fenêtre elliptique afin de ne pas se soucier des valeurs situées aux bords de la fenêtre carrée. Nous avons paramétré plusieurs parcours de la fenêtre coulissante avec un nombre de tailles d'ellipses et un nombre d'orientations pour chaque taille. Les performances du challenge 2 dépendent des paramètres suivants :
 
 \begin{itemize}
   \item $(w, h)$ : largeur et hauteur de l'ellipse d'origine
@@ -426,10 +426,40 @@ Nous avons fait le choix de ne pas ré-implémenter cet algorithme car il est di
    \label{fig:faces}
  \end{figure}
 
+\subsection{Impact sur les performances}
+D'un point de vue performance, cette méthode permet de gagner en précision tout en maintenant les autres paramètres. Pour tracer des courbes, on a appliquer la méthodes précédante sur les petites valeurs de h et w (w, h < 75). et on obtiens les courbes suivantes:
 
+\begin{figure}[H]
+  \includegraphics[width=\textwidth]{images/recall_ellipse}\hfill
+  %\caption{Ellipses détectées (gauche) Ellipse finale (droite)}
+  \label{fig:rec_ellipse}
+\end{figure}
 
+On observe bien que le recall ne varie presque pas pour des ellipses petites.
 
+\begin{figure}[H]
+  \includegraphics[width=\textwidth]{images/precision_ellipse}\hfill
+  %\caption{Ellipses détectées (gauche) Ellipse finale (droite)}
+  \label{fig:prec_ellipse}
+\end{figure}
 
+Cependant on observe que la precision en est presque doublée(ici mesurée sur des paramètres arbitraire d'ou la valeur faible...)
+
+On a donc bien une méthode améliorant la performance de notre algorithme.
+
+\section{Conclusions}
+
+A la fin de ce premier algorithme de détection d'image, nous avons réussir à créer un algorithme qui détecte les images avec de bonnes performance. De plus nous avons mis en place une amélioration grace a des contours convexes et des algorithmes de partition de l'espace. Cependant, notre algorithme n'arrive pas à faire la différence entre les différentes parties de peau pouvant ètre présent sur une photo.
+
+Voici le résultat de notre algorithme sur nos propres portraits.
+
+\begin{figure}[H]
+  \includegraphics[width=0.3\textwidth]{images/florent20}\hfill
+  \includegraphics[width=0.3\textwidth]{images/antonin20}\hfill
+  \includegraphics[width=0.3\textwidth]{images/yoan20}\hfill
+  \caption{(de gauche à droite) Résultat de l'algorithme sur Florent, Antonin et Yoan}
+  \label{fig:nous}
+\end{figure}
 
 %
 % \appendix
