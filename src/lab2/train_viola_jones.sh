@@ -12,6 +12,7 @@
 #
 # The script is run from a Python script so the input argument are handled in lab2.py
 
+PATH=$PATH:/./../..
 OUTPUT_DIR="output"
 IMG_DIR="Images/WIDER"
 INFO_FILE="train_info.dat"
