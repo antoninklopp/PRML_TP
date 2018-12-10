@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import cv2
 import numpy as np
-from src.lab1_challenge2 import sliding_windows
+from src.lab1.lab1_challenge2 import sliding_windows
 
 class TestLab1Challenge2:
 

@@ -7,7 +7,7 @@ Functions to convert an input color image to probabilities of skin pixels
 
 import numpy as np
 import cv2
-from src.info_image import get_all_masks
+from src.lab1.info_image import get_all_masks
 import pickle
 import math as m
 

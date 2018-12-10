@@ -1,5 +1,5 @@
-from src.colors_to_probabilities import load_histograms, get_prediction
-from src.info_image import get_mask_from_file, get_all_masks
+from src.lab1.colors_to_probabilities import load_histograms, get_prediction
+from src.lab1.info_image import get_mask_from_file, get_all_masks
 import cv2
 import numpy as np
 

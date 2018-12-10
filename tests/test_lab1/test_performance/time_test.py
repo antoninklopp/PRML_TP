@@ -5,8 +5,8 @@ Implementation of Face Detection using Skin color.
 
 import cv2
 import numpy as np
-from src.info_image import get_training_masks
-from src.colors_to_probabilities import convert_colors_probalities, compute_histograms, load_histograms, get_prediction
+from src.lab1.info_image import get_training_masks
+from src.lab1.colors_to_probabilities import convert_colors_probalities, compute_histograms, load_histograms, get_prediction
 
 if __name__ == "__main__":
     # compute_histograms(" ")

@@ -1,7 +1,7 @@
-import src.metrics as met
-from src.colors_to_probabilities import load_histograms, get_prediction
-from src.info_image import get_mask_from_file, get_all_masks, get_training_masks, get_test_masks
-from src.lab1 import get_predicted_masks, plot_faces, get_proba_predic
+import src.matrics.metrics as met
+from src.lab1.colors_to_probabilities import load_histograms, get_prediction
+from src.lab1.info_image import get_mask_from_file, get_all_masks, get_training_masks, get_test_masks
+from src.lab1.lab1 import get_predicted_masks, plot_faces, get_proba_predic
 import cv2
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
@@ -62,7 +62,7 @@ class CompareParameters:
         axes[2].set_title("Accuracy")
 
     def compare_quantification(self, distance=50, w_range=range(20, 300, 50)):
-        """ 
+        """
         Compare the quantification metric
         """
         plt.close()
@@ -80,7 +80,7 @@ class CompareParameters:
         plt.savefig("output/compare_quantification.png")
 
     def compare_color_type(self, distance=50, w_range=range(20, 300, 50)):
-        """ 
+        """
         Compare the color type
         """
         plt.close()
@@ -89,7 +89,7 @@ class CompareParameters:
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=8, w_pad=4, h_pad=4)
-        
+
         for i, color in enumerate(color_type):
             self.plot_with_parameters("color mode = " + color, axes, masks, color_mode=color)
 
@@ -98,7 +98,7 @@ class CompareParameters:
         plt.savefig("output/compare_color_mode.png")
 
     def compare_bias(self, distance=50, w_range=range(20, 300, 50)):
-        """ 
+        """
         Compare the bias
         """
         plt.close()
@@ -106,7 +106,7 @@ class CompareParameters:
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=10, w_pad=4, h_pad=4)
-        
+
         for i, bias in enumerate([i/10.0 for i in range(0, 10)]):
             self.plot_with_parameters("bias = " + str(bias), axes, masks, bias=bias)
 
@@ -115,7 +115,7 @@ class CompareParameters:
         plt.savefig("output/compare_bias.png")
 
     def compare_angle(self, distance=50, w_range=range(20, 300, 50)):
-        """ 
+        """
         Compare the angles
         """
         plt.close()
@@ -123,7 +123,7 @@ class CompareParameters:
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=10, w_pad=4, h_pad=4)
-        
+
         for i, angle in enumerate(range(1, 6)):
             self.plot_with_parameters("number angles = " + str(angle), axes, masks, nb_angles=angle)
 
@@ -132,7 +132,7 @@ class CompareParameters:
         plt.savefig("output/compare_angle.png")
 
     def compare_scale(self, distance=50, w_range=range(20, 300, 50)):
-        """ 
+        """
         Compare the angles
         """
         plt.close()
@@ -140,7 +140,7 @@ class CompareParameters:
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=10, w_pad=4, h_pad=4)
-        
+
         for i, scale in enumerate(range(1, 10, 2)):
             self.plot_with_parameters("number scale = " + str(scale), axes, masks, nb_scales=scale)
 
@@ -149,7 +149,7 @@ class CompareParameters:
         plt.savefig("output/compare_scale.png")
 
     def compare_distance(self, w_range=range(20, 300, 50)):
-        """ 
+        """
         Compare the distances
         """
         plt.close()
@@ -157,7 +157,7 @@ class CompareParameters:
 
         fig, axes = plt.subplots(3, 1, figsize=(15, 10))
         fig.tight_layout(pad=10, w_pad=4, h_pad=4)
-        
+
         for i, distance in enumerate(range(10, 400, 50)):
             self.plot_with_parameters("distance = " + str(distance), axes, masks, distance=distance)
 

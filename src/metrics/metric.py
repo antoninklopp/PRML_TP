@@ -1,7 +1,7 @@
 import numpy
 import sklearn.metrics as sk_met
 from src.info_image import *
-from src.colors_to_probabilities import get_prediction
+from src.lab1.colors_to_probabilities import get_prediction
 
 
 def get_recall(mask, prediction):
@@ -18,6 +18,3 @@ def ROC(mask, prediction):
 
 def confusion(mask, prediction):
     return 0
-
-
-

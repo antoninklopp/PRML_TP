@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import cv2
-from src.colors_to_probabilities import *
-from src.lab1_challenge2 import *
-from src.lab1_challenge3 import *
+from src.lab1.colors_to_probabilities import *
+from src.lab1.lab1_challenge2 import *
+from src.lab1.lab1_challenge3 import *
 
 try:
 	hist_h, hist_hT = load_histograms()
