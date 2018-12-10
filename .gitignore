@@ -21,3 +21,4 @@ output/*.jpg
 *.toc
 *.gz
 *.fdb*
+*.fls
