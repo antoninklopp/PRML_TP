@@ -6,6 +6,13 @@ import cv2
 import numpy as np
 import sys, os, subprocess
 
+# Building root path
+ROOT_PATH=""
+for s in os.path.abspath(__file__).split('/'):
+    ROOT_PATH+=s+'/'
+    if s=='PRML_TP':
+        break
+
 
 def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
     """
@@ -35,7 +42,21 @@ def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
     cv2.CascadeClassifier
                     cascade classifier object obtained from training phase.
     """
-    name_vec = "faces_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+"_"+featType+"_"+bt+".vec"
-    options = str(numP)+" "+str(numN)+" "+str(numStages)+" "+featType+" "+bt+" "+name_vec
-    subprocess.call("./train_viola_jones.sh "+options)
-    return cv2.CascadeClassifier("../output/cascade.xml")
+    name_output = "faces_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+"_"+featType+"_"+bt
+    subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
+    return cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
+
+
+# EXAMPLE OF USE OF XML FILE FOR FACE DETECTION
+print("XML file building ")
+face_cascades = build_classifier(sys.argv[1], sys.argv[2], sys.argv[3])
+img_souty = cv2.imread(ROOT_PATH+"Images/Nous/florent.jpg") # an input example image
+img_output = np.copy(img_souty)
+print("Faces detection ")
+faces = face_cascades.detectMultiScale(cv2.cvtColor(img_souty, cv2.COLOR_BGR2GRAY), 3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
+print("Drawing faces ")
+for (x, y, w, h) in faces:
+    print(x, y, w, h)
+    cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image
+cv2.imwrite(ROOT_PATH+"output/img_output.jpg", img_output) # saving result image in output folder
+print("Detection completed ")
