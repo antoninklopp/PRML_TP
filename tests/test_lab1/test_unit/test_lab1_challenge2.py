@@ -13,4 +13,4 @@ class TestLab1Challenge2:
         nb_angles = 6
         for ind, (roi, _, _, _, _) in enumerate(sliding_windows(img, w, h, nb_angles=nb_angles)):
             f_name = "roi_"+str(ind)+"_.jpg"
-            cv2.imwrite("output/"+f_name, roi)
+            # cv2.imwrite("output/"+f_name, roi)
