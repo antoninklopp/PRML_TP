@@ -23,3 +23,8 @@ output/*.jpg
 *.fdb*
 *.fls
 output/*
+Images/2002 
+Images/2003 
+Images/FDDB-folds 
+Images/Nous 
+Images/WIDER/*
