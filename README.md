@@ -58,7 +58,9 @@ Then, you must run this command from Images/WIDER in order to update bg.txt anno
 ```console
 me@machine:~$ cd Images/WIDER
 me@machine:~$ mkdir Nimg/
+me@machine:~$ cd Nimg/
 me@machine:~$ tar -C <subfolder_name> -xvf <tar filename>
+me@machine:~$ cd ../
 me@machine:~$ find . -name \*.jpg -print | grep "Nimg/" > bg.txt
 ```
 

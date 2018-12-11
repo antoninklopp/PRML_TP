@@ -1,6 +1,6 @@
 *.pyc
 src/__pycache__/*
-*.png
+
 *.b
 
 PRML.egg-info
@@ -11,20 +11,15 @@ dist/*
 .cache/*
 .eggs/*
 .vscode/
-output/*.png
-output/*.jpg
 
-*.aux
-*.log
-*.lof
-*.out
-*.toc
-*.gz
-*.fdb*
-*.fls
+**/*.aux
+**/*.log
+**/*.lof
+**/*.out
+**/*.toc
+**/*.gz
+**/*.fdb*
+**/*.fls
 output/*
-Images/2002 
-Images/2003 
-Images/FDDB-folds 
-Images/Nous 
-Images/WIDER/*
+Images/**/*.png
+Images/**/*.jpg
