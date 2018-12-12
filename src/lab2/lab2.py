@@ -91,10 +91,10 @@ def get_predicted_faces(img, scale, minNeigh, minSize, maxSize, default=True, nu
     """
     cascade_faces = build_classifier(default, numP=numP, numN=numN, numStages=numStages, featType=featType, bt=bt)
     faces = cascade_faces.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), scale, minNeigh, minSize, maxSize)
-    img_res = np.zeros(img.shape[:2])
+    mask = np.zeros(img.shape[:2])
     for (x, y, w, h) in faces:
-        cv2.rectangle(img_res, (x, y), (x+w, y+h), 1, -1)
-    return img_res
+        cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
+    return mask
 
 
 
