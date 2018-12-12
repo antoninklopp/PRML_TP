@@ -13,7 +13,6 @@
 # The script is run from a Python script so the input argument are handled in lab2.py
 PATH=$PATH:/./../../
 ROOT_DIR=$PWD/../..
-echo $ROOT_DIR
 OUTPUT_DIR=$ROOT_DIR/output
 IMG_DIR=$ROOT_DIR/Images/WIDER
 INFO_FILE=train_info.dat
@@ -29,13 +28,13 @@ name_vec=$6.vec # Input name of .vec file
 name_xml=$6.xml
 
 # image window shape
-w=24
-h=24
+w=50
+h=50
 
-buff_size=256 # buffer size for computation time issues
+buff_size=4096 # buffer size for computation time issues
 
 # Samples creation using opencv_createsamples command
-opencv_createsamples -vec $OUTPUT_DIR/$name_vec -info $IMG_DIR/$INFO_FILE -num $numP -w $w -h $h
+opencv_createsamples -vec $OUTPUT_DIR/$name_vec -info $IMG_DIR/$INFO_FILE -bg $IMG_DIR/$BG_FILE -num $numP -w $w -h $h
 
 # Deleting ancient stages
 rm $OUTPUT_DIR/stage*.xml $OUTPUT_DIR/params.xml > /dev/null 2>&1

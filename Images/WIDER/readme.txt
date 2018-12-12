@@ -3,10 +3,7 @@ WIDER Database for Viola Jones faces detector
 The WIDER/ folder contains :
 	- train_info.dat
 		file containing informations about training images such as :
-			<path_to_image>
-			<number_of_faces>
-			for each face :
-				<left> <top> <width> <height>
+			<path_to_image> <number_of_faces> (for each face) <left> <top> <width> <height>
 
 	- val_info.dat
 		file containing informations about validation images, same structured as train_info.dat

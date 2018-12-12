@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import sys, os, subprocess
 
+
 # Building root path
 ROOT_PATH=""
 for s in os.path.abspath(__file__).split('/'):
@@ -14,7 +15,7 @@ for s in os.path.abspath(__file__).split('/'):
         break
 
 
-def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
+def build_classifier(default, numP, numN, numStages, featType='HAAR', bt='GAB'):
     """
     Build of cv2.CascadeClassifier object for Viola Jones training phase.
     The needed .xml file is built with the bash script 'train_viola_jones.sh' at
@@ -22,6 +23,9 @@ def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
 
     Parameters
     ----------
+    default         boolean
+                    true : using default trained cascades 'haarcascade_frontalface_default.xml'
+                    false : using new trained cascades
     numP            integer
                     number of positive images to train the CascadeClassifier
     numN            integer
@@ -42,6 +46,8 @@ def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
     cv2.CascadeClassifier
                     cascade classifier object obtained from training phase.
     """
+    if (default):
+        return cv2.CascadeClassifier(ROOT_PATH+"output/"+"haarcascade_frontalface_default.xml")
     name_output = "faces_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+"_"+featType+"_"+bt
     subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
     return cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
@@ -60,11 +66,11 @@ def detect_face(matrix, build_classifier):
 
 # EXAMPLE OF USE OF XML FILE FOR FACE DETECTION
 print("XML file building ")
-face_cascades = build_classifier(sys.argv[1], sys.argv[2], sys.argv[3])
-img_souty = cv2.imread(ROOT_PATH+"Images/Nous/yoan.jpg") # an input example image
+face_cascades = build_classifier(sys.argv[1], sys.argv[2], sys.argv[3], bt="RAB")
+img_souty = cv2.imread(ROOT_PATH+"Images/Nous/yoan_short.png") # an input example image
 img_output = np.copy(img_souty)
 print("Faces detection ")
-faces = face_cascades.detectMultiScale(cv2.cvtColor(img_souty, cv2.COLOR_BGR2GRAY), 3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
+faces = face_cascades.detectMultiScale(cv2.cvtColor(img_souty, cv2.COLOR_BGR2GRAY), 1.3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
 print("Drawing faces ")
 for (x, y, w, h) in faces:
     print(x, y, w, h)

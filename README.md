@@ -61,7 +61,7 @@ me@machine:~$ mkdir Nimg/
 me@machine:~$ cd Nimg/
 me@machine:~$ tar -C <subfolder_name> -xvf <tar filename>
 me@machine:~$ cd ../
-me@machine:~$ find . -name \*.jpg -print | grep "Nimg/" > bg.txt
+me@machine:~$ find . -name \*.jpg -print | grep "Nimg/" | shuf -n 9438 > bg.txt
 ```
 
 ### Instructions
