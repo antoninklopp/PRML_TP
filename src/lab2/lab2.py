@@ -15,7 +15,7 @@ for s in os.path.abspath(__file__).split('/'):
         break
 
 
-def build_classifier(default, numP, numN, numStages, featType='HAAR', bt='GAB'):
+def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
     """
     Build of cv2.CascadeClassifier object for Viola Jones training phase.
     The needed .xml file is built with the bash script 'train_viola_jones.sh' at
@@ -52,11 +52,71 @@ def build_classifier(default, numP, numN, numStages, featType='HAAR', bt='GAB'):
     subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
     return cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
 
-def detect_face(matrix):
+def get_true_faces(img, info_line):
+    """
+    Returns the mask of True faces from input image img.
+
+    Parameters
+    ----------
+    img         np.ndarray
+                input image
+    info_line   string
+                info line such as "<path to image> <nb of face> (for each face):<x> <y> <w> <h>"
+
+    Returns
+    -------
+    np.ndarray
+                mask of faces
+    """
+    infos = info.split(" ")
+    nb_faces = infos[1]
+    infos_faces = infos[2:]
+    mask = np.zeros(img.shape[:2])
+    for ind, x in enumerate(range(0, nb_faces, 4)):
+        y = infos_faces[ind+1]
+        w = infos_faces[ind+2]
+        h = infos_faces[ind+3]
+        cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
+    return mask
+
+def get_predicted_faces(img, scale, minNeigh, minSize, maxSize, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
+    """
+    Returns the mask of the prediction. The mask is a {0, 1} matrix of same shape
+    as img, s.t for each pixel : 1 p is in a face, 0 otherwise
+
+    img : Input image
+    mask : mask of the input image
+    [scale, ..., maxSize] : parameters of CascadeClassifier.detectMultiScale function
+    default : (optional, default=True) using of default classifier or new one
+    """
+    cascade_faces = build_classifier(default, numP=numP, numN=numN, numStages=numStages, featType=featType, bt=bt)
+    faces = cascade_faces.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), scale, minNeigh, minSize, maxSize)
+    img_res = np.zeros(img.shape[:2])
+    for (x, y, w, h) in faces:
+        cv2.rectangle(img_res, (x, y), (x+w, y+h), 1, -1)
+    return img_res
+
+
+
+def draw_faces(matrix, cascade_faces, scale=1.3, minNeigh=5):
+    """
+    Drawing faces on input image.
+
+    Parameters
+    ----------
+    matrix          np.ndarray
+                    matrix of pixels values of input image
+    cascade_faces   cv2.CascadeClassifier
+                    classifier used to detect faces
+
+    Return
+    ------
+    np.ndarray
+                    Image copied from matrix with red rectangles at detected faces .
+    """
     img_output = np.copy(matrix)
     print("Faces detection ")
-    cascade_faces = build_classifier(True, 0, 0, 0)
-    faces = cascade_faces.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), 1.3, 5)
+    faces = cascade_faces.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), scale, minNeigh)
     print("Drawing faces ")
     for (x, y, w, h) in faces:
         cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image

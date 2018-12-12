@@ -20,7 +20,8 @@ while(True):
     print(frame.shape)
 
     #Calculate the frame
-    detected = detect_face(frame)
+    cascade_faces = build_classifier(default)
+    detected = draw_faces(frame, 1.3, 5)
 
     # Display the resulting frame
     cv2.imshow('frame', detected)
