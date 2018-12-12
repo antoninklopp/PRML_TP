@@ -3,7 +3,7 @@ import cv2
 from lab2 import build_classifier, detect_face
 
 # First we train.
-build = build_classifier(200, 2, 4)
+# build = build_classifier(200, 2, 4)
 
 print("built")
 
@@ -20,7 +20,7 @@ while(True):
     print(frame.shape)
 
     #Calculate the frame
-    detected = detect_face(frame, build)
+    detected = detect_face(frame, 1)
 
     # Display the resulting frame
     cv2.imshow('frame', detected)

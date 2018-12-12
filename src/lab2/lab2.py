@@ -49,7 +49,7 @@ def build_classifier(numP, numN, numStages, featType='HAAR', bt='GAB'):
 def detect_face(matrix, build_classifier):
     img_output = np.copy(matrix)
     print("Faces detection ")
-    faces = build_classifier.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), 3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
+    faces = cv2.CascadeClassifier('haarcascade_frontalface_default.xml').detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), 1.3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
     print("Drawing faces ")
     for (x, y, w, h) in faces:
         print(x, y, w, h)
