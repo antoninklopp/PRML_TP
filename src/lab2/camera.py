@@ -20,7 +20,7 @@ while(True):
     print(frame.shape)
 
     #Calculate the frame
-    detected = detect_face(frame, 1)
+    detected = detect_face(frame)
 
     # Display the resulting frame
     cv2.imshow('frame', detected)
