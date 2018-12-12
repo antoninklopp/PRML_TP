@@ -68,9 +68,13 @@ def get_true_faces(img, info_line):
     np.ndarray
                 mask of faces
     """
-    infos = info.split(" ")
-    nb_faces = infos[1]
-    infos_faces = infos[2:]
+    print("La LIGNE TA MERE ", info_line)
+
+    infos = info_line.replace('\n', '').split(" ")
+    print("LES INFOS FDP ", infos)
+    nb_faces = int(infos[1])
+    infos_faces = list(map(int, infos[2:-1]))
+    print("INFOS FACES", infos_faces)
     mask = np.zeros(img.shape[:2])
     for ind, x in enumerate(range(0, nb_faces, 4)):
         y = infos_faces[ind+1]
@@ -79,22 +83,73 @@ def get_true_faces(img, info_line):
         cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
     return mask
 
-def get_predicted_faces(img, scale, minNeigh, minSize, maxSize, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
+def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize=200):
     """
     Returns the mask of the prediction. The mask is a {0, 1} matrix of same shape
     as img, s.t for each pixel : 1 p is in a face, 0 otherwise
 
-    img : Input image
-    mask : mask of the input image
-    [scale, ..., maxSize] : parameters of CascadeClassifier.detectMultiScale function
-    default : (optional, default=True) using of default classifier or new one
+    Parameters
+    ----------
+    img                     Input image
+    cascade_faces           cv2.CascadeClassifier
+                            input cascade classifier
+    [scale,...,maxSize]     parameters for detectMultiScale
+
+    Returns
+    -------
+    np.ndarray
+                    mask of faces
     """
-    cascade_faces = build_classifier(default, numP=numP, numN=numN, numStages=numStages, featType=featType, bt=bt)
-    faces = cascade_faces.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), scale, minNeigh, minSize, maxSize)
+    faces = cascade_faces.detectMultiScale(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh)
     mask = np.zeros(img.shape[:2])
     for (x, y, w, h) in faces:
         cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
     return mask
+
+def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=30, maxSize=200, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
+    """
+    Get the true and the predicted faces masks from numImg images from infos_file .txt.
+
+    Parameters
+    ----------
+    infos_file              path to .txt file containing faces annotations
+                            Informations file containing for each image <path to image> <nb of face> (for each face):<x> <y> <w> <h>
+                            # TODO : build information file for FDDB base
+    numImg                  integer
+                            Number of selected images for training phase
+    [scale,...,maxSize]     parameters for detectMultiScale function
+    [default,...,bt]        parameters for cv2.CascadeClassifier function
+
+    Returns
+    -------
+    tuple of 1D array (true_masks, predicted_masks)
+                            true_masks : 1D array containing all true masks
+                            predicted_masks : 1D array containing all predicted masks
+    """
+    with open(infos_file_path, 'r') as infos_file:
+        lines = infos_file.readlines()
+        nb_lines = len(lines)
+        nb_failed = 0
+        nb_succeeded = 0
+        true_masks = np.zeros(0)
+        predicted_masks = np.zeros(0)
+        print("===== Getting true and predicted masks for", numImg, "images =====")
+        print("===== Cascade classifier builder =====")
+        cascade_faces = build_classifier(default, numP=numP, numN=numN, numStages=numStages, featType=featType, bt=bt)
+        for info_line in lines[:min(numImg, nb_lines)]:
+            img_name = info_line.split(" ")[0]
+            img = cv2.imread(ROOT_PATH+"Images/WIDER/"+img_name)
+            if img is None: # if we want to load the FDDB images
+                img = cv2.imread(ROOT_PATH+"Images/"+img_name)
+            if img is None: # if image loading has failed, go to next one
+                nb_failed += 1
+                continue
+            true_mask = get_true_faces(img, info_line).flatten()
+            predicted_mask = get_predicted_faces(img, cascade_faces, scale, minNeigh).flatten()
+            true_masks = np.concatenate(true_masks, true_mask)
+            predicted_masks = np.concatenate(predicted_masks, predicted_mask)
+            nb_succeeded += 1
+        print("===== End : {} ".format(100*(nb_succeeded/nb_lines))+chr(37)+" passed, {} "+chr(37)+"failed =====".format(100*(nb_failed/nb_lines)))
 
 
 
@@ -123,17 +178,11 @@ def draw_faces(matrix, cascade_faces, scale=1.3, minNeigh=5):
     return img_output
 
 
+infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
+numImg = 500
+scale = 2
+minNeigh = 5
+minSize = 30
+maxSize = 200
 
-# EXAMPLE OF USE OF XML FILE FOR FACE DETECTION
-# print("==== XML file building ====")
-# face_cascades = build_classifier(True, sys.argv[1], sys.argv[2], sys.argv[3])
-# img_souty = cv2.imread(ROOT_PATH+"Images/Nous/florent.jpg") # an input example image
-# img_output = np.copy(img_souty)
-# print("==== Faces detection ")
-# faces = face_cascades.detectMultiScale(cv2.cvtColor(img_souty, cv2.COLOR_BGR2GRAY), 1.3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
-# print("==== Drawing faces ")
-# for (x, y, w, h) in faces:
-#     print(x, y, w, h)
-#     cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image
-# cv2.imwrite(ROOT_PATH+"output/img_output.jpg", img_output) # saving result image in output folder
-# print("==== Detection completed ")
+get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
