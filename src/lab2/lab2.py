@@ -59,15 +59,15 @@ def detect_face(matrix, build_classifier):
 
 
 # EXAMPLE OF USE OF XML FILE FOR FACE DETECTION
-print("XML file building ")
-face_cascades = build_classifier(sys.argv[1], sys.argv[2], sys.argv[3])
-img_souty = cv2.imread(ROOT_PATH+"Images/Nous/yoan.jpg") # an input example image
-img_output = np.copy(img_souty)
-print("Faces detection ")
-faces = face_cascades.detectMultiScale(cv2.cvtColor(img_souty, cv2.COLOR_BGR2GRAY), 3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
-print("Drawing faces ")
-for (x, y, w, h) in faces:
-    print(x, y, w, h)
-    cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image
-cv2.imwrite(ROOT_PATH+"output/img_output.jpg", img_output) # saving result image in output folder
-print("Detection completed ")
+# print("XML file building ")
+# face_cascades = build_classifier(sys.argv[1], sys.argv[2], sys.argv[3])
+# img_souty = cv2.imread(ROOT_PATH+"Images/Nous/florent.jpg") # an input example image
+# img_output = np.copy(img_souty)
+# print("Faces detection ")
+# faces = face_cascades.detectMultiScale(cv2.cvtColor(img_souty, cv2.COLOR_BGR2GRAY), 3, 5) # 1st : gray scale img, 2nd argument : scaling factor (j'sais pas trop pk 3 mdr), 3rd : number of neighboords to keep (mdr je sais pas)
+# print("Drawing faces ")
+# for (x, y, w, h) in faces:
+#     print(x, y, w, h)
+#     cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image
+# cv2.imwrite(ROOT_PATH+"output/img_output.jpg", img_output) # saving result image in output folder
+# print("Detection completed ")

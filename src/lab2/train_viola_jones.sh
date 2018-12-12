@@ -32,7 +32,7 @@ name_xml=$6.xml
 w=24
 h=24
 
-buff_size=256 # buffer size for computation time issues
+buff_size=4096 # buffer size for computation time issues
 
 # Samples creation using opencv_createsamples command
 opencv_createsamples -vec $OUTPUT_DIR/$name_vec -info $IMG_DIR/$INFO_FILE -num $numP -w $w -h $h
