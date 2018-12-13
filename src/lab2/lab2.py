@@ -14,6 +14,7 @@ for s in os.path.abspath(__file__).split('/'):
     if s=='PRML_TP':
         break
 
+DEBUG_PRINT=False
 
 def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
     """
@@ -47,7 +48,7 @@ def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', 
                     cascade classifier object obtained from training phase.
     """
     if (default):
-        return cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+        return cv2.CascadeClassifier(ROOT_PATH+"src/lab2/haarcascade_frontalface_default.xml")
     name_output = "faces_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+"_"+featType+"_"+bt
     subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
     return cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
@@ -68,19 +69,25 @@ def get_true_faces(img, info_line):
     np.ndarray
                 mask of faces
     """
-    print("La LIGNE TA MERE ", info_line)
-
+    if (DEBUG_PRINT):
+        print("\t-----Line reading-----", info_line, end='')
     infos = info_line.replace('\n', '').split(" ")
-    print("LES INFOS FDP ", infos)
+    if (DEBUG_PRINT):
+        print("\t----- Line list informations-----", infos)
     nb_faces = int(infos[1])
     infos_faces = list(map(int, infos[2:-1]))
-    print("INFOS FACES", infos_faces)
+    if (DEBUG_PRINT):
+        print("\t----- Informations of faces-----", infos_faces)
     mask = np.zeros(img.shape[:2])
+    if (DEBUG_PRINT):
+        print("\t----- Ground truth mask-----", end='')
     for ind, x in enumerate(range(0, nb_faces, 4)):
         y = infos_faces[ind+1]
         w = infos_faces[ind+2]
         h = infos_faces[ind+3]
         cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
+    if (DEBUG_PRINT):
+        print("DONE")
     return mask
 
 def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize=200):
@@ -100,10 +107,14 @@ def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize
     np.ndarray
                     mask of faces
     """
+    if (DEBUG_PRINT):
+        print("\t----- Predicted mask-----", end='')
     faces = cascade_faces.detectMultiScale(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh)
     mask = np.zeros(img.shape[:2])
     for (x, y, w, h) in faces:
         cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
+    if (DEBUG_PRINT):
+        print("DONE")
     return mask
 
 def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=30, maxSize=200, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
@@ -123,19 +134,25 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
     Returns
     -------
     tuple of 1D array (true_masks, predicted_masks)
-                            true_masks : 1D array containing all true masks
-                            predicted_masks : 1D array containing all predicted masks
+                            true_masks : list of 2D arrays ground truth masks
+                            predicted_masks : list of 2D arrays prediction masks
     """
     with open(infos_file_path, 'r') as infos_file:
         lines = infos_file.readlines()
         nb_lines = len(lines)
         nb_failed = 0
         nb_succeeded = 0
-        true_masks = np.zeros(0)
-        predicted_masks = np.zeros(0)
-        print("===== Getting true and predicted masks for", numImg, "images =====")
-        print("===== Cascade classifier builder =====")
+        true_masks = []
+        predicted_masks = []
+        print("===== Ground truth and prediction masks computation =====")
+        print("\tNumber of used images : ", numImg)
+        print("===== BEGIN : Cascade classifier loading =====")
         cascade_faces = build_classifier(default, numP=numP, numN=numN, numStages=numStages, featType=featType, bt=bt)
+        if (cascade_faces.empty()):
+            print("===== ERROR : Cascade classifier loading =====")
+            return
+        print("===== END : Cascade classifier loading =====")
+        print("===== BEGIN : Ground truth and prediction masks computation =====")
         for info_line in lines[:min(numImg, nb_lines)]:
             img_name = info_line.split(" ")[0]
             img = cv2.imread(ROOT_PATH+"Images/WIDER/"+img_name)
@@ -144,12 +161,18 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
             if img is None: # if image loading has failed, go to next one
                 nb_failed += 1
                 continue
-            true_mask = get_true_faces(img, info_line).flatten()
-            predicted_mask = get_predicted_faces(img, cascade_faces, scale, minNeigh).flatten()
-            true_masks = np.concatenate(true_masks, true_mask)
-            predicted_masks = np.concatenate(predicted_masks, predicted_mask)
+            true_mask = get_true_faces(img, info_line)
+            try:
+                predicted_mask = get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=minSize, maxSize=maxSize)
+            except:
+                if (DEBUG_PRINT):
+                    print("FAILED")
+                predicted_mask = np.zeros(img.shape[:2])
+                nb_failed += 1
+            true_masks.insert(0, true_mask)
+            predicted_masks.insert(0, predicted_mask)
             nb_succeeded += 1
-        print("===== End : {} ".format(100*(nb_succeeded/nb_lines))+chr(37)+" passed, {} "+chr(37)+"failed =====".format(100*(nb_failed/nb_lines)))
+        print("===== END Ground truth and prediction masks computation : {} ".format(100*(nb_succeeded/min(numImg, nb_lines)))+chr(37)+" passed, {} ".format(100*(nb_failed/nb_lines))+chr(37)+" failed =====")
 
 
 
@@ -185,4 +208,4 @@ minNeigh = 5
 minSize = 30
 maxSize = 200
 
-get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
+get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh)
