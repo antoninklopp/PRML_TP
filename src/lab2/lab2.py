@@ -109,13 +109,15 @@ def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize
     """
     if (DEBUG_PRINT):
         print("\t----- Predicted mask-----", end='')
-    faces = cascade_faces.detectMultiScale(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh)
+    faces, _, score = cascade_faces.detectMultiScale3(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh, outputRejectLevels=True)
     mask = np.zeros(img.shape[:2])
     for (x, y, w, h) in faces:
         cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
     if (DEBUG_PRINT):
         print("DONE")
-    return mask
+    if (type(score) is tuple):
+        return mask, 0.0
+    return mask, np.mean(score)
 
 def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=30, maxSize=200, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
     """
@@ -133,7 +135,7 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
 
     Returns
     -------
-    tuple of 1D array (true_masks, predicted_masks)
+    tuple of 1D array (true_masks, predicted_masks, scores)
                             true_masks : list of 2D arrays ground truth masks
                             predicted_masks : list of 2D arrays prediction masks
     """
@@ -142,8 +144,10 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
         nb_lines = len(lines)
         nb_failed = 0
         nb_succeeded = 0
+        nb_no_faces = 0
         true_masks = []
         predicted_masks = []
+        scores = []
         print("===== Ground truth and prediction masks computation =====")
         print("\tNumber of used images : ", numImg)
         print("===== BEGIN : Cascade classifier loading =====")
@@ -162,17 +166,21 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
                 nb_failed += 1
                 continue
             true_mask = get_true_faces(img, info_line)
-            try:
-                predicted_mask = get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=minSize, maxSize=maxSize)
-            except:
-                if (DEBUG_PRINT):
-                    print("FAILED")
-                predicted_mask = np.zeros(img.shape[:2])
-                nb_failed += 1
+            predicted_mask, score = get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=minSize, maxSize=maxSize)
+            if (score==0.0):
+                nb_no_faces += 1
+            # try:
+            #     predicted_mask, score = get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=minSize, maxSize=maxSize)
+            # except:
+            #     if (DEBUG_PRINT):
+            #         print("FAILED")
+                # predicted_mask = np.zeros(img.shape[:2])
+                # nb_failed += 1
             true_masks.insert(0, true_mask)
             predicted_masks.insert(0, predicted_mask)
+            scores.insert(0, score)
             nb_succeeded += 1
-        print("===== END Ground truth and prediction masks computation : {} ".format(100*(nb_succeeded/min(numImg, nb_lines)))+chr(37)+" passed, {} ".format(100*(nb_failed/nb_lines))+chr(37)+" failed =====")
+        print("===== END Ground truth and prediction masks computation : {} ".format(100*(nb_succeeded/min(numImg, nb_lines)))+chr(37)+" passed, {} ".format(100*((nb_succeeded - nb_no_faces)/nb_succeeded))+chr(37)+" with detected faces =====")
 
 
 
