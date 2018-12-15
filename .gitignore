@@ -25,4 +25,5 @@ output/*.jpg
 output/*
 Images/**/*.jpg
 Images/**/*.png
+Images/
 

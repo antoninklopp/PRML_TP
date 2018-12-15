@@ -102,3 +102,36 @@ def plot_presion_recall_curve(Y_true, Y_proba, name="output/plot_pression_recall
         plt.savefig(name)
     else:
         plt.show()
+
+
+def plot_metrics(range_parameter, parameter_name, recall, precision, accuracy, file_output="recall_accuracy_precision.png"):
+    """
+    Print the 2 differents metrics in one single pyplot
+
+    :param range_parameter: a list with the range of the parameter we want to plot the metrics for
+    :param paramater_name: name of the parameter to put its name on the curve
+    :param recall, precision, accuracy: recall, precision, accuracy we want to plot for the parameter
+    :param file_output: the path to the file we want to output to
+    """
+
+    fig, axes = plt.subplots(3, 1, figsize=(15, 10))
+    fig.tight_layout(pad=10, w_pad=4, h_pad=4)
+
+    axes[0].plot(range_parameter, recall, label=parameter_name)
+    axes[0].set_xlabel(parameter_name)
+    axes[0].set_ylabel("Recall")
+    axes[0].set_title("Recall")
+
+    axes[1].plot(range_parameter, precision, label=parameter_name)
+    axes[2].set_xlabel(parameter_name)
+    axes[1].set_ylabel("Precision")
+    axes[1].set_title("Precision")
+
+    axes[2].plot(range_parameter, accuracy, label=parameter_name)
+    axes[2].set_xlabel(parameter_name)
+    axes[2].set_ylabel("Accuracy")
+    axes[2].set_title("Accuracy")
+
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.20),  shadow=True, ncol=2)
+
+    plt.savefig("output/" + file_output)

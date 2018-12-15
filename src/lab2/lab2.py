@@ -6,15 +6,8 @@ import cv2
 import numpy as np
 import sys, os, subprocess
 
-
-# Building root path
-ROOT_PATH=""
-for s in os.path.abspath(__file__).split('/'):
-    ROOT_PATH+=s+'/'
-    if s=='PRML_TP':
-        break
-
 DEBUG_PRINT=False
+ROOT_PATH=""
 
 def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
     """
@@ -180,8 +173,9 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
             predicted_masks.insert(0, predicted_mask)
             scores.insert(0, score)
             nb_succeeded += 1
-        print("===== END Ground truth and prediction masks computation : {} ".format(100*(nb_succeeded/min(numImg, nb_lines)))+chr(37)+" passed, {} ".format(100*((nb_succeeded - nb_no_faces)/nb_succeeded))+chr(37)+" with detected faces =====")
-
+        print("===== END Ground truth and prediction masks computation : {} ".format(100*(nb_succeeded/min(numImg, \
+            nb_lines)))+chr(37)+" passed, {} ".format(100*((nb_succeeded - nb_no_faces)/nb_succeeded))+chr(37)+" with detected faces =====")
+    return (true_masks, predicted_masks, scores)
 
 
 def draw_faces(matrix, cascade_faces, scale=1.3, minNeigh=5):
@@ -208,12 +202,18 @@ def draw_faces(matrix, cascade_faces, scale=1.3, minNeigh=5):
         cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image
     return img_output
 
+if __name__ == "__main__":
+        # Building root path
+    for s in os.path.abspath(__file__).split('/'):
+        ROOT_PATH+=s+'/'
+        if s=='PRML_TP':
+            break
 
-infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
-numImg = 500
-scale = 2
-minNeigh = 5
-minSize = 30
-maxSize = 200
+    infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
+    numImg = 500
+    scale = 2
+    minNeigh = 5
+    minSize = 30
+    maxSize = 200
 
-get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh)
+    get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh)
