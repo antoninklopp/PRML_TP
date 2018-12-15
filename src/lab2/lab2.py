@@ -131,6 +131,7 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
     tuple of 1D array (true_masks, predicted_masks, scores)
                             true_masks : list of 2D arrays ground truth masks
                             predicted_masks : list of 2D arrays prediction masks
+                            number_success : number of faces found 
     """
     with open(infos_file_path, 'r') as infos_file:
         lines = infos_file.readlines()
@@ -175,7 +176,7 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
             nb_succeeded += 1
         print("===== END Ground truth and prediction masks computation : {} ".format(100*(nb_succeeded/min(numImg, \
             nb_lines)))+chr(37)+" passed, {} ".format(100*((nb_succeeded - nb_no_faces)/nb_succeeded))+chr(37)+" with detected faces =====")
-    return (true_masks, predicted_masks, scores)
+    return (true_masks, predicted_masks, scores, (nb_succeeded - nb_no_faces)/nb_succeeded)
 
 
 def draw_faces(matrix, cascade_faces, scale=1.3, minNeigh=5):
