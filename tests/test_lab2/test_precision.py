@@ -13,7 +13,7 @@ def get_metrics(numImg=50, scale=2, minNeigh=5, minSize=30, maxSize=200):
     """
     infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
 
-    true_masks, predicted_masks, scores, success = get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh)
+    true_masks, predicted_masks, scores, success = get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
     true_masks_flatten = np.concatenate([i.flatten() for i in true_masks])
     predicted_masks_flatten = np.concatenate([i.flatten() for i in predicted_masks])
 
