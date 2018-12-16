@@ -107,6 +107,6 @@ def test_max_size():
 
 if __name__ == "__main__":
     test_scale()
-    test_min_size()
-    test_min_neigh()
-    test_max_size()
+    # test_min_size()
+    # test_min_neigh()
+    # test_max_size()

@@ -3,7 +3,7 @@ from src.metrics.metrics import get_recall_rectangle, get_precision_rectangle, p
 import matplotlib.pyplot as plt
 import cv2
 
-def get_metrics(numImg=50, scale=2, minNeigh=5, minSize=30, maxSize=200):
+def get_metrics(numImg=100, scale=2, minNeigh=5, minSize=30, maxSize=200):
     """
     Testing the metrics by changing parameters
 
@@ -11,14 +11,16 @@ def get_metrics(numImg=50, scale=2, minNeigh=5, minSize=30, maxSize=200):
 
     :return: recall, precision, accuracy
     """
-    infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
+    infos_file_path = ROOT_PATH+"Images/rectangle.txt"
 
     true_rectangles, predicted_rectangles, scores, success = get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
 
     recall = []
     precision = []
 
-    for i in range(numImg):
+    print(len(true_rectangles), len(predicted_rectangles))
+
+    for i in range(len(true_rectangles)):
         recall.append(get_recall_rectangle(true_rectangles[i], predicted_rectangles[i]))
         precision.append(get_precision_rectangle(true_rectangles[i], predicted_rectangles[i]))
 
@@ -32,7 +34,7 @@ def test_scale():
     precision = []
     range_parameter = []
     success = []
-    for i in range(110, 500, 5):
+    for i in range(101, 301, 2):
         print("current scale ", i/100.0)
         r, p, s = get_metrics(scale=i/100.0)
         recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)

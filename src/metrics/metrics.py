@@ -26,12 +26,12 @@ def get_recall_rectangle(rectangles_true, rectangles_predicted):
     comme dans la fonction get_recall. 
     """
     Y_true = 0
-    for r in rectangles_predicted:
-        o = overlapping_predicted(r, rectangles_true, 0.2)
+    for r in rectangles_true:
+        o = overlapping_predicted(r, rectangles_predicted, 0.5)
         if o is True:
             Y_true += 1
 
-    print(Y_true, len(rectangles_true), len(rectangles_predicted))
+    # print(Y_true, len(rectangles_predicted), len(rectangles_true))
 
     return min(1, Y_true/len(rectangles_true))
 
@@ -56,8 +56,8 @@ def get_precision_rectangle(rectangles_true, rectangles_predicted):
     if len(rectangles_predicted) == 0:
         return 0
 
-    for r in rectangles_predicted:
-        o = overlapping_predicted(r, rectangles_true, 0.5)
+    for r in rectangles_true:
+        o = overlapping_predicted(r, rectangles_predicted, 0.5)
         if o is True:
             Y_true += 1
 
