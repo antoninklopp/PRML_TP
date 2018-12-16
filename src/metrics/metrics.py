@@ -68,7 +68,10 @@ def get_ground_truth(true_rectangles, predicted_rectangles, threshold=0.5):
     y_true = []
     for image in range(len(true_rectangles)):
         if type(predicted_rectangles[image]) is tuple:
-            y_true.append(False)
+            if len(true_rectangles[image]) == 0:
+                y_true.append(True)
+            else:
+                y_true.append(False)
         else:
             allRectsFound = True
             for r in predicted_rectangles[image]:
