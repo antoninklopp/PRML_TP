@@ -5,6 +5,8 @@ Implementation of Viola Jones faces detector.
 import cv2
 import numpy as np
 import sys, os, subprocess
+from src.metrics.metrics import get_ground_truth, plot_roc
+
 
 DEBUG_PRINT=False
 ROOT_PATH=""
@@ -338,6 +340,8 @@ def showImageClassified(path_to_image):
     cv2.destroyAllWindows()
 
 
+
+
 if __name__ == "__main__":
         # Building root path
     for s in os.path.abspath(__file__).split('/'):
@@ -352,4 +356,6 @@ if __name__ == "__main__":
     minSize = 30
     maxSize = 200
 
-    get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh)
+    (true_rectangles, predicted_rectangles, scores, _) = get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh)
+    y_true = get_ground_truth(true_rectangles, predicted_rectangles)
+    plot_roc(y_true, scores)
