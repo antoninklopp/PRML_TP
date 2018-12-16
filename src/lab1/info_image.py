@@ -129,3 +129,27 @@ def get_face(image, info):
 
 def get_face_from_mask(image, mask):
     return mask * cv2.imread(image)
+
+def ellipse_to_rectangles():
+    """
+    Transfer the ellipses information from the FDDB database to rectangles
+    """
+    with open(path_to_image_folder + "rectangle.txt", "w") as rectangles:
+        for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")):
+            with open(f) as file_info:
+                while True:
+                    f_name = file_info.readline().replace("\n", "") + ".jpg"
+                    name_file = path_to_image_folder + f_name
+                    rectangles.write(f_name +  " ")
+                    if not name_file or name_file == path_to_image_folder + ".jpg":
+                        break
+                    number_faces = int(file_info.readline())
+                    rectangles.write(str(number_faces) + " ")
+                    for _ in range(number_faces):
+                        face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
+                        minor_axis_radius, major_axis_radius, angle, center_x, center_y, one = face
+                        max_radius = max(minor_axis_radius, major_axis_radius) * 2
+                        corner_x = int(center_x - max_radius/2.0)
+                        corner_y = int(center_y - max_radius/2.0)
+                        rectangles.write(str(corner_x) + " " + str(corner_y) + " " + str(int(max_radius)) + " " + str(int(max_radius)) + " ")
+                    rectangles.write("\n")
