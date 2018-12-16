@@ -352,7 +352,7 @@ if __name__ == "__main__":
             break
 
     infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
-    numImg = 500
+    numImg = 50
     scale = 2
     minNeigh = 5
     minSize = 30

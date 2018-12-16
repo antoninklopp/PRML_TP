@@ -34,7 +34,7 @@ def test_scale():
     precision = []
     range_parameter = []
     success = []
-    for i in range(101, 301, 2):
+    for i in range(130 , 301, 2):
         print("current scale ", i/100.0)
         r, p, s = get_metrics(scale=i/100.0)
         recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
