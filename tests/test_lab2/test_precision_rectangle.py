@@ -73,9 +73,9 @@ def test_min_size():
     precision = []
     range_parameter = []
     success = []
-    for i in range(20, 300, 10):
+    for i in range(30, 200, 10):
         r, p, s = get_metrics(minSize=i)
-        recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
+        recall.append(r); precision.append(p); range_parameter.append(i); success.append(s)
     
     plot_metrics(range_parameter, "min size", recall, precision, None, "min_size_comparison.png")
 
@@ -94,7 +94,7 @@ def test_max_size():
     success = []
     for i in range(30, 300, 10):
         r, p, s = get_metrics(maxSize=i)
-        recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
+        recall.append(r); precision.append(p); range_parameter.append(i); success.append(s)
     
     plot_metrics(range_parameter, "max size", recall, precision, None, "max_size_comparison.png")
 
