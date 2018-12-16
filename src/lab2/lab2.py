@@ -197,11 +197,30 @@ def draw_faces(matrix, cascade_faces, scale=1.3, minNeigh=5):
     """
     img_output = np.copy(matrix)
     print("Faces detection ")
-    faces = cascade_faces.detectMultiScale(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), scale, minNeigh)
+    faces, _, scores = cascade_faces.detectMultiScale3(cv2.cvtColor(matrix, cv2.COLOR_BGR2GRAY), scale, minNeigh, outputRejectLevels=True)
     print("Drawing faces ")
-    for (x, y, w, h) in faces:
+    for ((x, y, w, h), score) in zip(faces, scores):
         cv2.rectangle(img_output, (x, y), (x+w, y+h), (0, 0, 255), 2) # drawing a red square on copied image
+        cv2.putText(img_output, str(score[0]), (x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.25,(0,0,0),2,cv2.LINE_AA)
+        cv2.putText(img_output, str(score[0]), (x,y), cv2.FONT_HERSHEY_SIMPLEX, 0.25,(255,255,255),1,cv2.LINE_AA)
     return img_output
+
+def showImageClassified(path_to_image):
+    """
+    Classifies and displays an image with the Viola-Jones detector
+
+    Parameters
+    ----------
+    path_to_image   string
+                    path to the image to be classified and displayed
+
+    """
+    img = cv2.imread(path_to_image)
+    cass = build_classifier(True)
+    cv2.imshow("image", draw_faces(img, cass))
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
         # Building root path
