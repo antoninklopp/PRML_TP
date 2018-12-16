@@ -39,7 +39,7 @@ def test_scale():
         r, p, s = get_metrics(scale=i/100.0)
         recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
     
-    plot_metrics(range_parameter, "scale", recall, precision, recall, "scale_comparison.png")
+    plot_metrics(range_parameter, "scale", recall, precision, None, "scale_comparison.png")
 
     plt.close()
     plt.plot(range_parameter, success)
@@ -52,14 +52,13 @@ def test_min_neigh():
     """
     recall = []
     precision = []
-    accuracy = []
     range_parameter = []
     success = []
     for i in range(1, 20):
-        r, p, a, s = get_metrics(minNeigh=i)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+        r, p, s = get_metrics(minNeigh=i)
+        recall.append(r); precision.append(p); range_parameter.append(i); success.append(s)
     
-    plot_metrics(range_parameter, "min neighbours", recall, precision, accuracy, "min_neigh_comparison.png")
+    plot_metrics(range_parameter, "min neighbours", recall, precision, None, "min_neigh_comparison.png")
 
     plt.close()
     plt.plot(range_parameter, success)
@@ -72,14 +71,13 @@ def test_min_size():
     """
     recall = []
     precision = []
-    accuracy = []
     range_parameter = []
     success = []
     for i in range(20, 300, 10):
-        r, p, a, s = get_metrics(minSize=i)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+        r, p, s = get_metrics(minSize=i)
+        recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
     
-    plot_metrics(range_parameter, "min size", recall, precision, accuracy, "min_size_comparison.png")
+    plot_metrics(range_parameter, "min size", recall, precision, None, "min_size_comparison.png")
 
     plt.close()
     plt.plot(range_parameter, success)
@@ -92,14 +90,13 @@ def test_max_size():
     """
     recall = []
     precision = []
-    accuracy = []
     range_parameter = []
     success = []
     for i in range(30, 300, 10):
-        r, p, a, s = get_metrics(maxSize=i)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+        r, p, s = get_metrics(maxSize=i)
+        recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
     
-    plot_metrics(range_parameter, "max size", recall, precision, accuracy, "max_size_comparison.png")
+    plot_metrics(range_parameter, "max size", recall, precision, None, "max_size_comparison.png")
 
     plt.close()
     plt.plot(range_parameter, success)
@@ -109,3 +106,6 @@ def test_max_size():
 
 if __name__ == "__main__":
     test_scale()
+    test_min_size()
+    test_min_neigh()
+    test_max_size()
