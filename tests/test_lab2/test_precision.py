@@ -33,7 +33,7 @@ def test_scale():
     accuracy = []
     range_parameter = []
     success = []
-    for i in range(110, 250, 20):
+    for i in range(101, 501, 5):
         r, p, a, s = get_metrics(scale=i/100.0)
         recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
     

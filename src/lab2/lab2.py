@@ -142,7 +142,8 @@ def get_predicted_rectangles(img, cascade_faces, scale, minNeigh, minSize=30, ma
     """
     if (DEBUG_PRINT):
         print("\t----- Predicted mask-----", end='')
-    faces, _, score = cascade_faces.detectMultiScale3(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh, outputRejectLevels=True)
+    faces, _, score = cascade_faces.detectMultiScale3(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh, outputRejectLevels=True, \
+        minSize=(minSize, minSize), maxSize=(maxSize, maxSize))
     if (type(score) is tuple):
         return faces, 0.0
     return faces, np.mean(score)
@@ -166,7 +167,8 @@ def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize
     """
     if (DEBUG_PRINT):
         print("\t----- Predicted mask-----", end='')
-    faces, _, score = cascade_faces.detectMultiScale3(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh, outputRejectLevels=True)
+    faces, _, score = cascade_faces.detectMultiScale3(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY), scale, minNeigh, outputRejectLevels=True, \
+        minSize=(minSize, minSize), maxSize=(maxSize, maxSize))
     mask = np.zeros(img.shape[:2])
     for (x, y, w, h) in faces:
         cv2.rectangle(mask, (x, y), (x+w, y+h), 1, -1)
