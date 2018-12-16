@@ -1,4 +1,4 @@
-from src.info_image import ellipse_to_rectangles, get_all_masks
+from src.lab1.info_image import ellipse_to_rectangles, get_all_masks
 import cv2
 
 if __name__ == "__main__":

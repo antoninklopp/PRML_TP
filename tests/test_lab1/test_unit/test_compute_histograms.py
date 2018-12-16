@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-from src.colors_to_probabilities import compute_histograms
-from src.info_image import get_boolean_mask, get_all_masks
+from src.lab1.colors_to_probabilities import compute_histograms
+from src.lab1.info_image import get_boolean_mask, get_all_masks
 import glob
 
 path_to_image_folder = "Images/"

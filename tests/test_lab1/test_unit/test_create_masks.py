@@ -5,7 +5,7 @@ import sys
 import inspect
 import cv2
 
-from src.info_image import get_all_masks, get_face
+from src.lab1.info_image import get_all_masks, get_face
 
 import glob
 import math

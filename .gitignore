@@ -22,3 +22,7 @@ output/*.jpg
 *.gz
 *.fdb*
 *.fls
+output/*
+Images/**/*.jpg
+Images/**/*.png
+Images/
