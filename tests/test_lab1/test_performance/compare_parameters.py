@@ -29,7 +29,7 @@ class CompareParameters:
             res_t, res_th = load_histograms(Q=Q, mode_color=color_mode, masks=masks)
 
             print("testing model")
-            test_files = get_test_masks()[:3]
+            test_files = get_test_masks()[:8]
             Y_pred = np.array([])
             Y_true = np.array([])
             for name, mask in test_files:
@@ -167,7 +167,7 @@ class CompareParameters:
 
 
 if __name__ == "__main__":
-    w_range = range(10, 350, 50)
+    w_range = range(10, 350, 10)
     c = CompareParameters()
     c.compare_quantification(w_range=w_range)
     c.compare_color_type(w_range=w_range)
