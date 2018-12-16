@@ -1,5 +1,6 @@
 import numpy as np
 import sklearn.metrics as met
+from src.metrics.overlapping import overlapping_predicted
 
 MACHINE_ENSIMAG=False
 try:
@@ -18,6 +19,23 @@ def get_recall(Y_true, Y_pred):
         return 0
     return np.sum(Y_true * Y_pred)/np.sum(Y_true) 
 
+def get_recall_rectangle(rectangles_true, rectangles_predicted):
+    """
+    Calcule le recall correspondant a la prediction. 
+    Utilise les rectangles de tetes plutot que des masques 
+    comme dans la fonction get_recall. 
+    """
+    Y_true = 0
+    for r in rectangles_predicted:
+        o = overlapping_predicted(r, rectangles_true, 0.2)
+        if o is True:
+            Y_true += 1
+
+    print(Y_true, len(rectangles_true), len(rectangles_predicted))
+
+    return min(1, Y_true/len(rectangles_true))
+
+
 def get_precision(Y_true, Y_pred):
     """
     Calcul la precision d'un modèle grace à une prediction
@@ -26,6 +44,24 @@ def get_precision(Y_true, Y_pred):
     if np.sum(Y_pred) == 0:
         return 0
     return np.sum(Y_true * Y_pred)/np.sum(Y_pred) 
+
+def get_precision_rectangle(rectangles_true, rectangles_predicted):
+    """
+    Calcule la precision correspondant a la prediction. 
+    Utilise les rectangles de tetes plutot que des masques 
+    comme dans la fonction get_recall. 
+    """
+    Y_true = 0
+
+    if len(rectangles_predicted) == 0:
+        return 0
+
+    for r in rectangles_predicted:
+        o = overlapping_predicted(r, rectangles_true, 0.5)
+        if o is True:
+            Y_true += 1
+
+    return min(1, Y_true/len(rectangles_predicted))
 
 def get_accuracy(Y_true, Y_pred):
     """
@@ -45,7 +81,7 @@ def get_all_metric(Y_true, Y_pred):
         "recall": get_recall(Y_true, Y_pred),
         "precision": get_precision(Y_true, Y_pred),
         "accuracy": get_accuracy(Y_true, Y_pred)
-           }
+        }
 
 def get_confusion_matrix(Y_true, Y_pred):
     """

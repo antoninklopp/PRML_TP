@@ -1,5 +1,5 @@
 from src.lab2.lab2 import *
-from src.metrics.metrics import get_all_metric, plot_metrics
+from src.metrics.metrics import get_recall_rectangle, get_precision_rectangle, plot_metrics
 import matplotlib.pyplot as plt
 import cv2
 
@@ -13,16 +13,16 @@ def get_metrics(numImg=50, scale=2, minNeigh=5, minSize=30, maxSize=200):
     """
     infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
 
-    true_masks, predicted_masks, scores, success = get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
-    true_masks_flatten = np.concatenate([i.flatten() for i in true_masks])
-    predicted_masks_flatten = np.concatenate([i.flatten() for i in predicted_masks])
+    true_rectangles, predicted_rectangles, scores, success = get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
 
-    print(true_masks_flatten.shape)
-    print(predicted_masks_flatten.shape)
+    recall = []
+    precision = []
 
-    metrics = get_all_metric(true_masks_flatten, predicted_masks_flatten)
+    for i in range(numImg):
+        recall.append(get_recall_rectangle(true_rectangles[i], predicted_rectangles[i]))
+        precision.append(get_precision_rectangle(true_rectangles[i], predicted_rectangles[i]))
 
-    return metrics["recall"], metrics["precision"], metrics["accuracy"], success
+    return np.mean(np.array(recall)), np.mean(np.array(precision)), success
 
 def test_scale():
     """
@@ -30,14 +30,14 @@ def test_scale():
     """
     recall = []
     precision = []
-    accuracy = []
     range_parameter = []
     success = []
-    for i in range(110, 250, 20):
-        r, p, a, s = get_metrics(scale=i/100.0)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+    for i in range(110, 500, 5):
+        print("current scale ", i/100.0)
+        r, p, s = get_metrics(scale=i/100.0)
+        recall.append(r); precision.append(p); range_parameter.append(i/100.0); success.append(s)
     
-    plot_metrics(range_parameter, "scale", recall, precision, accuracy, "scale_comparison.png")
+    plot_metrics(range_parameter, "scale", recall, precision, recall, "scale_comparison.png")
 
     plt.close()
     plt.plot(range_parameter, success)
@@ -107,6 +107,3 @@ def test_max_size():
 
 if __name__ == "__main__":
     test_scale()
-    test_min_size()
-    test_min_neigh()
-    test_max_size()
