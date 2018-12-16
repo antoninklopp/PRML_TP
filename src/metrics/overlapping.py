@@ -41,13 +41,13 @@ def overlapping(true_rectangle, predicted_rectangle):
     return overlapping/surface_true
 
 
-def overlapping_predicted(predicted_rectangle, list_true, threshold):
+def overlapping_predicted(true_rectangle, list_predicted, threshold):
     """
     Return if a predicted rectangle is overlapping enough a true one
     """
     overlap = -1
-    for t in list_true:
-        new_o = overlapping(t, predicted_rectangle)
+    for t in list_predicted:
+        new_o = overlapping(true_rectangle, t)
         if new_o > overlap:
             overlap = new_o
 

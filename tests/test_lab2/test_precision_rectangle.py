@@ -11,7 +11,7 @@ def get_metrics(numImg=100, scale=2, minNeigh=5, minSize=30, maxSize=200):
 
     :return: recall, precision, accuracy
     """
-    infos_file_path = ROOT_PATH+"Images/rectangle.txt"
+    infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
 
     true_rectangles, predicted_rectangles, scores, success = get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh, minSize, maxSize)
 
@@ -106,6 +106,6 @@ def test_max_size():
 
 if __name__ == "__main__":
     test_scale()
-    test_min_size()
-    test_min_neigh()
-    test_max_size()
+    # test_min_size()
+    # test_min_neigh()
+    # test_max_size()
