@@ -193,6 +193,7 @@ urlcolor=black}
     M. Florent \textsc{Geslin} \\
     M. Antonin \textsc{Klopp-Tosser} \\
     M. Yoan \textsc{Souty} \\
+    M. Louis \textsc{Segretin} \\
   \end{flushleft}
 \end{minipage}%
 \begin{minipage}{0.4\textwidth}
@@ -235,5 +236,44 @@ urlcolor=black}
 
 \mainmatter
 \pagestyle{fancy}
+
+\section{Introduction}
+
+Ce rapport présente notre implémentation ainsi que nos résultats pour le lab2 du cours de \textit{Pattern recognition
+and machine learning}, portant sur l'algorithme de Viola Jones.
+
+\section{Implementation}
+\subsection{Utilisation de l'algorithme pré-entraîné}
+
+Afin d'obtenir les meilleurs résultats, nous avons surout utilisé le classifier pré-entraîné fourni par openCV.
+En effet, ce classifier a été entraîné sur un très grand nombre d'images et est celui qui a les meilleures performances. \\
+
+TODO : Comparaison avec d'autres classifiers qu'on a créé? Et peut être des classifiers spécifiques?
+
+\subsection{Base de données utilisée}
+
+Nous avons utilisé deux bases de données :
+\begin{enumerate}
+  \item La base de données fournie pour le premier lab
+  \item La nouvelle base de données, qui comprend une classification selon des situations (révolte, parade ... )
+\end{enumerate}
+
+Après avoir testé nos algorithmes sur ces deux bases de données, ils nous a paru beaucoup pertinent de faire nos mesures sur la première
+car de nombreux visages n'étaient pas détectés sur la seconde et le changement de paramètres (scales, nombre de voisins...) n'avait que peu
+d'impact sur les résultats à cause du peu de visage trouvés.
+
+\subsection{Création d'une deuxième méthode de comparaison}
+
+TODO : partie sur l'overlapping
+
+\section{Résultats}
+
+\subsection{Comparaison de l'impact des différents paramètres}
+
+\subsection{Mesures génériques}
+
+TODO : ROC, precision/recall
+
+\section{Conclusion}
 
 \end{document}
