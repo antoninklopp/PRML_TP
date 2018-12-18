@@ -146,7 +146,7 @@ def get_predicted_rectangles(img, cascade_faces, scale, minNeigh, minSize=30, ma
         minSize=(minSize, minSize), maxSize=(maxSize, maxSize))
     if (type(score) is tuple):
         return faces, 0.0
-    return faces, np.mean(score)
+    return faces, score
 
 def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize=200):
     """
@@ -176,7 +176,7 @@ def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize
         print("DONE")
     if (type(score) is tuple):
         return mask, 0.0
-    return mask, np.mean(score)
+    return mask, score
 
 def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=30, maxSize=200, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
     """
@@ -257,7 +257,7 @@ def get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh, minS
     tuple of 1D array (true_rectangles, predicted_rectangles, number_success)
                             true_masks : list of true rectangles
                             predicted_masks : list of rectangles predicted
-                            number_success : number of faces found 
+                            number_success : number of faces found
     """
     with open(infos_file_path, 'r') as infos_file:
         lines = infos_file.readlines()
@@ -362,12 +362,12 @@ if __name__ == "__main__":
             break
 
     infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
-    numImg = 500
+    numImg = 50
     # scale = 1.1
     minNeigh = 5
     minSize = 30
     maxSize = 200
-    for scale in np.linspace(1.1, 3, 5):
+    for scale in np.linspace(1.05, 1.2, 10):
         (true_rectangles, predicted_rectangles,
          scores, _) = get_true_predicted_rectangles(infos_file_path,
                                                     numImg, scale, minNeigh)
