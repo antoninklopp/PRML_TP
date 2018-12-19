@@ -11,7 +11,7 @@ from src.metrics.metrics import get_ground_truth, plot_roc
 DEBUG_PRINT=False
 ROOT_PATH=""
 
-def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
+def build_classifier(default, numP=100, numN=200, numStages=14, featType='HAAR', bt='GAB'):
     """
     Build of cv2.CascadeClassifier object for Viola Jones training phase.
     The needed .xml file is built with the bash script 'train_viola_jones.sh' at
@@ -43,9 +43,14 @@ def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', 
                     cascade classifier object obtained from training phase.
     """
     if (default):
+        print('\t-----Default classifier loading-----')
         return cv2.CascadeClassifier(ROOT_PATH+"src/lab2/haarcascade_frontalface_default.xml")
     name_output = "faces_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+"_"+featType+"_"+bt
-    subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
+    print('\t-----Built classifier loading-----')
+    cascade = cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
+    if cascade.empty():
+        print('\t-----Creating a new classifier model-----')
+        subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
     return cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
 
 def get_true_faces(img, info_line):
@@ -367,6 +372,11 @@ if __name__ == "__main__":
     minNeigh = 5
     minSize = 30
     maxSize = 200
+    # option to take a created classifier
+    default = False
+    numP = 100
+    numN = 200
+    numStages = 14
     for scale in np.linspace(1.05, 1.2, 10):
         (true_rectangles, predicted_rectangles,
          scores, _) = get_true_predicted_rectangles(infos_file_path,
