@@ -57,7 +57,7 @@ def test_min_neigh():
     success = []
     for i in range(1, 20):
         r, p, a, s = get_metrics(minNeigh=i)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i); success.append(s)
 
     plot_metrics(range_parameter, "min neighbours", recall, precision, accuracy, "min_neigh_comparison.png")
 
@@ -77,7 +77,7 @@ def test_min_size():
     success = []
     for i in range(20, 300, 10):
         r, p, a, s = get_metrics(minSize=i)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i); success.append(s)
 
     plot_metrics(range_parameter, "min size", recall, precision, accuracy, "min_size_comparison.png")
 
@@ -97,7 +97,7 @@ def test_max_size():
     success = []
     for i in range(30, 300, 10):
         r, p, a, s = get_metrics(maxSize=i)
-        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i/100.0); success.append(s)
+        recall.append(r); precision.append(p); accuracy.append(a); range_parameter.append(i); success.append(s)
 
     plot_metrics(range_parameter, "max size", recall, precision, accuracy, "max_size_comparison.png")
 
