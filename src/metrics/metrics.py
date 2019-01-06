@@ -67,22 +67,14 @@ def get_precision_rectangle(rectangles_true, rectangles_predicted):
 def get_ground_truth(true_rectangles, predicted_rectangles, threshold=0.5):
     y_true = []
     for image in range(len(true_rectangles)):
-        if type(predicted_rectangles[image]) is tuple:
-            if len(true_rectangles[image]) == 0:
-                y_true.append(True)
-            else:
-                y_true.append(False)
-        else:
-            allRectsFound = True
+        if type(predicted_rectangles[image]) is not tuple:
             for r in predicted_rectangles[image]:
-                if r.shape[0] == 0:
-                    allRectsFound = False
+                if r.shape[0] == 0 and true_rectangles[image].shape[0] != 0:
+                    y_true.append(False)
                 else:
                     o = overlapping_predicted(r, true_rectangles[image],
                                               threshold)
-                    allRectsFound = o and allRectsFound
-            y_true.append(allRectsFound)
-
+                    y_true.append(o)
     return y_true
 
 

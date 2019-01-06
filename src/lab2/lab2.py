@@ -11,7 +11,7 @@ from src.metrics.metrics import get_ground_truth, plot_roc
 DEBUG_PRINT=False
 ROOT_PATH=""
 
-def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
+def build_classifier(default, numP=100, numN=200, numStages=14, featType='HAAR', bt='GAB'):
     """
     Build of cv2.CascadeClassifier object for Viola Jones training phase.
     The needed .xml file is built with the bash script 'train_viola_jones.sh' at
@@ -43,9 +43,14 @@ def build_classifier(default, numP=200, numN=100, numStages=1, featType='HAAR', 
                     cascade classifier object obtained from training phase.
     """
     if (default):
+        print('\t-----Default classifier loading-----')
         return cv2.CascadeClassifier(ROOT_PATH+"src/lab2/haarcascade_frontalface_default.xml")
     name_output = "faces_"+str(numP)+"_"+str(numN)+"_"+str(numStages)+"_"+featType+"_"+bt
-    subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
+    print('\t-----Built classifier loading-----')
+    cascade = cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
+    if cascade.empty():
+        print('\t-----Creating a new classifier model-----')
+        subprocess.call(["./train_viola_jones.sh", str(numP), str(numN), str(numStages), featType, bt, name_output])
     return cv2.CascadeClassifier(ROOT_PATH+"output/"+name_output+".xml")
 
 def get_true_faces(img, info_line):
@@ -146,7 +151,7 @@ def get_predicted_rectangles(img, cascade_faces, scale, minNeigh, minSize=30, ma
         minSize=(minSize, minSize), maxSize=(maxSize, maxSize))
     if (type(score) is tuple):
         return faces, 0.0
-    return faces, np.mean(score)
+    return faces, score
 
 def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize=200):
     """
@@ -176,7 +181,7 @@ def get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=30, maxSize
         print("DONE")
     if (type(score) is tuple):
         return mask, 0.0
-    return mask, np.mean(score)
+    return mask, score
 
 def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=30, maxSize=200, default=True, numP=200, numN=100, numStages=1, featType='HAAR', bt='GAB'):
     """
@@ -197,7 +202,7 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
     tuple of 1D array (true_masks, predicted_masks, scores)
                             true_masks : list of 2D arrays ground truth masks
                             predicted_masks : list of 2D arrays prediction masks
-                            number_success : number of faces found 
+                            number_success : number of faces found
     """
     with open(infos_file_path, 'r') as infos_file:
         lines = infos_file.readlines()
@@ -227,7 +232,7 @@ def get_true_predicted_faces(infos_file_path, numImg, scale, minNeigh, minSize=3
                 continue
             true_mask = get_true_faces(img, info_line)
             predicted_mask, score = get_predicted_faces(img, cascade_faces, scale, minNeigh, minSize=minSize, maxSize=maxSize)
-            if (score==0.0):
+            if (type(score) is float and score == 0.0):
                 nb_no_faces += 1
 
             true_masks.insert(0, true_mask)
@@ -257,7 +262,7 @@ def get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh, minS
     tuple of 1D array (true_rectangles, predicted_rectangles, number_success)
                             true_masks : list of true rectangles
                             predicted_masks : list of rectangles predicted
-                            number_success : number of faces found 
+                            number_success : number of faces found
     """
     with open(infos_file_path, 'r') as infos_file:
         lines = infos_file.readlines()
@@ -287,9 +292,9 @@ def get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh, minS
                 continue
             true_mask = get_true_rectangles(img, info_line)
             predicted_mask, score = get_predicted_rectangles(img, cascade_faces, scale, minNeigh, minSize=minSize, maxSize=maxSize)
-            if (score==0.0):
+            if (type(score) is float and score == 0.0):
                 nb_no_faces += 1
-                
+
             true_masks.insert(0, true_mask)
             predicted_masks.insert(0, predicted_mask)
             scores.insert(0, score)
@@ -342,6 +347,16 @@ def showImageClassified(path_to_image):
     cv2.destroyAllWindows()
 
 
+def transform_scores(scores):
+    transform = []
+    for score in scores:
+        if type(score) is not float:
+            for rectangle_score in score:
+                transform.append(rectangle_score)
+
+    return transform
+
+
 
 
 if __name__ == "__main__":
@@ -353,11 +368,21 @@ if __name__ == "__main__":
 
     infos_file_path = ROOT_PATH+"Images/WIDER/WIDER_train_faces.txt"
     numImg = 50
-    scale = 2
+    # scale = 1.1
     minNeigh = 5
     minSize = 30
     maxSize = 200
+    # option to take a created classifier
+    default = False
+    numP = 100
+    numN = 200
+    numStages = 14
+    for scale in np.linspace(1.05, 1.2, 10):
+        (true_rectangles, predicted_rectangles,
+         scores, _) = get_true_predicted_rectangles(infos_file_path,
+                                                    numImg, scale, minNeigh)
 
-    (true_rectangles, predicted_rectangles, scores, _) = get_true_predicted_rectangles(infos_file_path, numImg, scale, minNeigh)
-    y_true = get_ground_truth(true_rectangles, predicted_rectangles)
-    plot_roc(y_true, scores)
+        y_true = get_ground_truth(true_rectangles, predicted_rectangles)
+        scores = transform_scores(scores)
+
+        plot_roc(y_true, scores, "roc_scale=" + str(scale) + ".png", True)
