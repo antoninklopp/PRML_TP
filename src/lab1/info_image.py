@@ -54,7 +54,6 @@ def get_test_masks():
             if mask is not None:
                 list_images.append([name_file, mask])
             number += 1
-    print("Number of tests masks", number)
     return list_images
 
 def get_training_masks():
