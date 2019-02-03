@@ -175,14 +175,14 @@ if __name__ == "__main__":
     print("x train shape", X_train.shape)
 
     history = model.fit(X_train,
-                        y_train, epochs = 5)
+                        y_train, epochs = 2)
 
     number_test = 0
 
     # Test on train data:
-    prediction = model.predict(np.array(X_train))
-    for p, y in zip(prediction, y_train):
-        print(p, y)
+    # prediction = model.predict(np.array(X_train))
+    # for p, y in zip(prediction, y_train):
+    #     print(p, y)
 
 
     ## Test the model

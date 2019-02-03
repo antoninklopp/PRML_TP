@@ -29,7 +29,7 @@ def get_all_faces(image_max=10000, _all=False):
                 for _ in range(number_faces):
                     face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
                     minor_axis_radius, major_axis_radius, angle, center_x, center_y, one = face
-                    max_radius = int(min(minor_axis_radius, major_axis_radius) * 2)
+                    max_radius = int(max(minor_axis_radius, major_axis_radius) * 2)
                     corner_y = max(int(center_x - max_radius/2.0), 0)
                     corner_x = max(int(center_y - max_radius/2.0), 0)
                     if image is not None:
