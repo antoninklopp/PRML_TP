@@ -15,44 +15,7 @@ from src.lab1.info_image import *
 import numpy as np
 from random import shuffle
 import scipy
-
-def extract_mask(matrix, center, w, h):
-    batch = [[0 for u in range(w)] for i in range(h)]
-    w2 = w//2
-    h2 = h//2
-
-    if center[0] + w2 + 1 > matrix.shape[0] or center[1] + h2 + 1 > matrix.shape[1]:
-        return None
-
-    for i in range(w2):
-        for j in range(h2):
-            batch[i][j] = matrix[center[0] - w2 +i][center[1] - h2 +j]
-            batch[w2+i][h2+j] = matrix[center[0] + i][center[1] + j]
-            batch[i][h2+j] = matrix[center[0] -w2 + i+1][center[1] + j+1]
-            batch[w2+i][j] = matrix[center[0] + i+1][center[1] -h2+ j+1]
-
-    if np.sum(np.array(batch)) > 250:
-        return 1
-    else:
-        return 0
-
-
-def extract_batch(matrix, center, w, h):
-    batch = [[[0 for i in range(w)] for j in range(h)] for u in range(3)]
-    batch = np.ndarray(shape=(w,h,3))
-    w2 = w//2
-    h2 = h//2
-
-    if center[0] + w2 + 1 > matrix.shape[0] or center[1] + h2 + 1 > matrix.shape[1]:
-        return None
-
-    for i in range(w2):
-        for j in range(h2):
-            batch[i][j] = matrix[center[0] - w2 + i+1][center[1] - h2 + j+1]/255.0
-            batch[w2+i][h2+j] = matrix[center[0] + i+1][center[1] + j+1]/255.0
-            batch[i][h2+j] = matrix[center[0] -w2 + i+1][center[1] + j+1]/255.0
-            batch[w2+i][j] = matrix[center[0] + i+1][center[1] -h2+ j+1]/255.0
-    return batch
+from src.metrics.overlapping import overlapping
 
 ## https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3?fbclid=IwAR0RPbWXqKaZJGbeqS_keLAh6gb8nz92GQzxavn4flP22xRCxIznX77es_Q
 def VGG_16(input_size):
@@ -77,15 +40,8 @@ def VGG_16(input_size):
     model.add(Conv2D(256, (3, 3), activation='relu'))
     model.add(MaxPooling2D((2,2), strides=(2,2), dim_ordering="th"))
 
-
     # model.add(ZeroPadding2D((1,1)))
     # model.add(Conv2D(512, (3, 3), activation='relu'))
-    # model.add(ZeroPadding2D((1,1)))
-    # model.add(Conv2D(512, (3, 3), activation='relu'))
-    # model.add(ZeroPadding2D((1,1)))
-    # model.add(Conv2D(512, (3, 3), activation='relu'))
-    # model.add(MaxPooling2D((2,2), strides=(2,2), dim_ordering="th"))
-
     # model.add(ZeroPadding2D((1,1)))
     # model.add(Conv2D(512, (3, 3), activation='relu'))
     # model.add(ZeroPadding2D((1,1)))
@@ -143,10 +99,12 @@ if __name__ == "__main__":
 
     SIZE = 32
 
+    # On crée les jeux d'entrainements....
     data = get_faces_resized(SIZE)
     X_train = []; y_train = []
     test_data = 0
-    # On crée les jeux d'entrainements....
+
+    # We shuffle the data
     shuffle(data)
     for face, label in data:
         X_train.append(face)
@@ -160,10 +118,6 @@ if __name__ == "__main__":
 
     print("created model")
 
-    # from keras.optimizers import SGD
-    # opt = SGD(lr=0.01)
-    # model.compile(loss = "sparse_categorical_crossentropy", optimizer = opt)
-
     model.compile(optimizer='adam',
                   loss='sparse_categorical_crossentropy',
                   metrics=['accuracy'])
@@ -175,18 +129,11 @@ if __name__ == "__main__":
     print("x train shape", X_train.shape)
 
     history = model.fit(X_train,
-                        y_train, epochs = 2)
+                        y_train, epochs = 3)
 
     number_test = 0
-
-    # Test on train data:
-    # prediction = model.predict(np.array(X_train))
-    # for p, y in zip(prediction, y_train):
-    #     print(p, y)
-
-
     ## Test the model
-    test_data = get_test_masks()[:2]
+    test_data = get_test_masks()[:10]
     index_i = 0
     for img_name, mask in test_data:
         list_good = []
@@ -198,10 +145,10 @@ if __name__ == "__main__":
         current_scale = 1
         scale_factor = 1.2
         while current_shape > SIZE:
-            for w in range(0, img.shape[0] - size, 2):
-                for h in range(0, img.shape[1] - size, 2):
+            for w in range(0, img.shape[0] - size, 5):
+                for h in range(0, img.shape[1] - size, 5):
                     d = img[w:w+SIZE, h:h+SIZE, :]
-                    cv2.imwrite("output_test/" + str(number_test) + ".png", d)
+                    # cv2.imwrite("output_test/" + str(number_test) + ".png", d)
                     d = np.array([d[:, :, 0], d[:, :, 1], d[:, :, 2]])
                     d = d/255.0
                     if d is not None:
@@ -220,12 +167,36 @@ if __name__ == "__main__":
 
         img_reconstruct = cv2.imread(img_name)
 
+        best_rectangles = []
+
         for i in range(prediction.shape[0]):
             if (prediction[i][1]>0.99):
                 print(prediction[i])
                 w, h, s = list_bounds[i]
                 h, w, s = int(w), int(h), int(s)
+                best_rectangles.append([(h, w, s, s), prediction[i][1]])
+
+        # Non max suppression
+        # for r1 in range(len(best_rectangles)):
+        #     for r2 in range(r1):
+        #         if best_rectangles[r1][1] != 0 and best_rectangles[r2][1] != 0:
+        #             rectangle_1 = best_rectangles[r1][0]
+        #             rectangle_2 = best_rectangles[r2][0]
+        #             if rectangle_1[2] **2 > rectangle_2[2] ** 2:
+        #                 rectangle_1, rectangle_2 = rectangle_2, rectangle_1
+        #             # small rectangle is r1
+        #             if overlapping(best_rectangles[r1][0], best_rectangles[r2][0]) > 0.3:
+        #                 if best_rectangles[r1][1] > best_rectangles[r2][1]:
+        #                     best_rectangles[r2][1] = 0
+        #                 else:
+        #                     best_rectangles[r1][1] = 0
+                
+                
+        for r, p in best_rectangles:
+            if p != 0:
+                w, h, s, _ = r
                 cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
+
 
         print("saved image", img_name[0] + "test_model.png")
         cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
