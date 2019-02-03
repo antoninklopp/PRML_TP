@@ -28,16 +28,16 @@ def extract_mask(matrix, center, w, h):
             batch[w2+i][h2+j] = matrix[center[0] + i][center[1] + j]
             batch[i][h2+j] = matrix[center[0] -w2 + i+1][center[1] + j+1]
             batch[w2+i][j] = matrix[center[0] + i+1][center[1] -h2+ j+1]
-
-    if np.sum(np.array(batch)) > 250:
-        return 1
-    else:
-        return 0
+    return batch
+    # if np.sum(np.array(batch)) > 5:
+    #     return 1
+    # else:
+    #     return 0
 
 
 def extract_batch(matrix, center, w, h):
     batch = [[[0 for i in range(w)] for j in range(h)] for u in range(3)]
-    batch = np.ndarray(shape=(w,h,3))
+    batch = np.ndarray(shape=(w,h))
     w2 = w//2
     h2 = h//2
 
@@ -46,10 +46,10 @@ def extract_batch(matrix, center, w, h):
 
     for i in range(w2):
         for j in range(h2):
-            batch[i][j] = matrix[center[0] - w2 + i+1][center[1] - h2 + j+1]/255.0
-            batch[w2+i][h2+j] = matrix[center[0] + i+1][center[1] + j+1]/255.0
-            batch[i][h2+j] = matrix[center[0] -w2 + i+1][center[1] + j+1]/255.0
-            batch[w2+i][j] = matrix[center[0] + i+1][center[1] -h2+ j+1]/255.0
+            batch[i][j] = matrix[center[0] - w2 + i+1][center[1] - h2 + j+1]
+            batch[w2+i][h2+j] = matrix[center[0] + i+1][center[1] + j+1]
+            batch[i][h2+j] = matrix[center[0] -w2 + i+1][center[1] + j+1]
+            batch[w2+i][j] = matrix[center[0] + i+1][center[1] -h2+ j+1]
     return batch
 
 ## https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3?fbclid=IwAR0RPbWXqKaZJGbeqS_keLAh6gb8nz92GQzxavn4flP22xRCxIznX77es_Q
