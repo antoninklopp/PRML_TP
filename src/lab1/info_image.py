@@ -12,12 +12,12 @@ from src.lab2.lab2 import get_true_rectangles
 
 path_to_image_folder = "Images/"
 
-def get_all_faces(image_max=10000, _all=False):
+def get_all_faces(image_max=10000, _all=False, gray=False):
     """
     image_max :  Nombre maximal d'images a traiter pour ne pas etre oblige de traiter tous les masques
     """
     list_images = []
-    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")):
+    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"))[:-1]:
         with open(f) as file_info:
             while (image_max >= 0) or (_all is True):
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
@@ -25,11 +25,14 @@ def get_all_faces(image_max=10000, _all=False):
                     break
                 number_faces = int(file_info.readline())
                 all_rectangles = []
-                image = cv2.imread(name_file)
+                if gray is True:
+                    image = cv2.imread(name_file, 0)
+                else:
+                    image = cv2.imread(name_file)
                 for _ in range(number_faces):
                     face = [float(i) for i in file_info.readline().replace("  ", " ").replace("\n", "").split(" ")]
                     minor_axis_radius, major_axis_radius, angle, center_x, center_y, one = face
-                    max_radius = int(min(minor_axis_radius, major_axis_radius) * 2)
+                    max_radius = int(max(minor_axis_radius, major_axis_radius) * 2)
                     corner_y = max(int(center_x - max_radius/2.0), 0)
                     corner_x = max(int(center_y - max_radius/2.0), 0)
                     if image is not None:
@@ -46,7 +49,7 @@ def get_all_masks(image_max=10000, _all=False):
     image_max :  Nombre maximal d'images a traiter pour ne pas etre oblige de traiter tous les masques
     """
     list_images = []
-    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt")):
+    for f in sorted(glob.glob(path_to_image_folder + "FDDB-folds/*ellipseList.txt"))[:-1]:
         with open(f) as file_info:
             while (image_max >= 0) or (_all is True):
                 name_file = path_to_image_folder + file_info.readline().replace("\n", "") + ".jpg"
