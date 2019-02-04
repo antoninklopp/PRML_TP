@@ -24,13 +24,13 @@ def VGG_16(input_size):
     model.add(Conv2D(input_size, (3, 3), activation='relu'))
     model.add(ZeroPadding2D((1,1)))
     model.add(Conv2D(input_size, (3, 3), activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2), dim_ordering="th"))
+    model.add(MaxPooling2D((2,2), strides=(2,2), data_format="channels_last"))
 
     model.add(ZeroPadding2D((1,1)))
     model.add(Conv2D(128, (3, 3), activation='relu'))
     model.add(ZeroPadding2D((1,1)))
     model.add(Conv2D(128, (3, 3), activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2), dim_ordering="th"))
+    model.add(MaxPooling2D((2,2), strides=(2,2), data_format="channels_last"))
 
     model.add(ZeroPadding2D((1,1)))
     model.add(Conv2D(256, (3, 3), activation='relu'))
@@ -38,7 +38,7 @@ def VGG_16(input_size):
     model.add(Conv2D(256, (3, 3), activation='relu'))
     model.add(ZeroPadding2D((1,1)))
     model.add(Conv2D(256, (3, 3), activation='relu'))
-    model.add(MaxPooling2D((2,2), strides=(2,2), dim_ordering="th"))
+    model.add(MaxPooling2D((2,2), strides=(2,2), data_format="channels_last"))
 
     # model.add(ZeroPadding2D((1,1)))
     # model.add(Conv2D(512, (3, 3), activation='relu'))
@@ -62,7 +62,7 @@ def VGG_16(input_size):
 
     return model
 
-def get_faces_resized(size=16):
+def get_faces_resized(size=32):
     data = get_all_faces(1000)
     all_face = []
     index = 0
@@ -73,7 +73,7 @@ def get_faces_resized(size=16):
         for f in faces:
             resized = np.array(scipy.misc.imresize(f, (size, size)))
             cv2.imwrite("output_face/" + str(index) + ".png", resized)
-            resized = np.array([resized[:, :, 0], resized[:, :, 1], resized[:, :, 2]])
+            # resized = np.array([resized[:, :, 0], resized[:, :, 1], resized[:, :, 2]])
             resized = resized / 255.0
             all_face.append((resized, 1))
             index += 1
@@ -87,7 +87,7 @@ def get_faces_resized(size=16):
                     # if (number_good < number_bad):
                     #     break
                     resized = f[i:i+size, j:j+size]
-                    resized = np.array([resized[:, :, 0], resized[:, :, 1], resized[:, :, 2]])
+                    # resized = np.array([resized[:, :, 0], resized[:, :, 1], resized[:, :, 2]])
                     resized = resized / 255.0
                     all_face.append(((resized), 0))
                     number_bad += 1
@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     history = model.fit(X_train,
                         y_train, epochs = 3)
-
+    model.save("./modele/antoLeBest.h5")
     number_test = 0
     ## Test the model
     test_data = get_test_masks()[:10]
