@@ -30,11 +30,11 @@ def extract_mask(matrix, center, w, h):
             batch[w2+i][h2+j] = matrix[center[0] + i][center[1] + j]
             batch[i][h2+j] = matrix[center[0] -w2 + i+1][center[1] + j+1]
             batch[w2+i][j] = matrix[center[0] + i+1][center[1] -h2+ j+1]
-    return batch
-    # if np.sum(np.array(batch)) > 5:
-    #     return 1
-    # else:
-    #     return 0
+    # return batch
+    if np.sum(np.array(batch)) > 5:
+        return 1
+    else:
+        return 0
 
 
 def extract_batch(matrix, center, w, h):
@@ -135,7 +135,7 @@ def get_faces_resized(size=16):
                     resized = resized / 255.0
                     all_face.append(((resized), 0))
                     number_bad += 1
-    
+
     return all_face
 
 
