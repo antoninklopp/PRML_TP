@@ -24,10 +24,10 @@ model = Sequential()
 model.add(Conv2D(64, (3, 3), input_shape=input_size, padding='same',
 activation='relu'))
 model.add(Conv2D(64, (3, 3), padding='same', activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2,2)))
+model.add(MaxPooling2D(pool_size=(3, 3), strides=(2,2)))
 model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
 model.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
-model.add(MaxPooling2D(pool_size=(2, 2), strides=(2,2)))
+model.add(MaxPooling2D(pool_size=(3, 3), strides=(2,2)))
 model.add(Flatten())
 model.add(Dense(256, activation='relu'))
 model.add(Dense(2, activation="softmax"))
@@ -60,12 +60,11 @@ model.compile(optimizer='adam',
 
 # model.summary()
 X_train = np.array(X_train)
-print(X_train[:2])
 y_train = y_train
 
 print("x train shape", X_train.shape)
 
 history = model.fit(X_train,
                     y_train, epochs = 3)
-                    
-model.save("./modele/antoLeBest.h5")
+
+model.save("./modele/polling33.h5")

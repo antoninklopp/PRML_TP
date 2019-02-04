@@ -19,18 +19,12 @@ from random import shuffle
 import scipy
 from src.metrics.overlapping import overlapping
 
-model = load_model("./modele/antoLeBest.h5")
 
-model.compile(optimizer='adam',
-                  loss='sparse_categorical_crossentropy',
-                  metrics=['accuracy'])
-
-SIZE = 28
-number_test = 0
-## Test the model
-test_data = get_test_masks()[:10]
-index_i = 0
-for img_name, mask in test_data:
+def predict_rectangle(img_name, threshold=0.99):
+    """
+    renvoie la liste des rectangles predis
+    """
+    number_test = 0
     list_good = []
     list_to_predict = []
     list_bounds = []
@@ -59,13 +53,10 @@ for img_name, mask in test_data:
     prediction = model.predict(np.array(list_to_predict))
     print("prediction shape", prediction.shape)
     print("image", img_name)
-
-    img_reconstruct = cv2.imread(img_name)
-
     best_rectangles = []
 
     for i in range(prediction.shape[0]):
-        if (prediction[i][1]>0.99):
+        if (prediction[i][1]>0.8):
             print(prediction[i])
             w, h, s = list_bounds[i]
             h, w, s = int(w), int(h), int(s)
@@ -85,14 +76,41 @@ for img_name, mask in test_data:
                         best_rectangles[r2][1] = 0
                     else:
                         best_rectangles[r1][1] = 0
+    return best_rectangles
+
+def get_true_pred_test(nbr_img):
+    """
+    renvoi la liste des rectangles vrai et predis
+    """
+    test_data = get_all_rectangle()[:nbr_img]
+    index_i = 0
+    result = []
+    for img_name, rectangle_true in test_data:
+        best_rectangles = predict_rectangle(img_name, 0.90)
+        result.append((rectangle_true, best_rectangles))
+    return result
 
 
-    for r, p in best_rectangles:
-        if p != 0:
-            w, h, s, _ = r
-            cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
+if __name__ == "__main__":
 
+    model = load_model("./modele/cnn_vgg6.h5")
 
-    print("saved image", img_name[0] + "test_model.png")
-    cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
-    index_i += 1
+    model.compile(optimizer='adam',
+                      loss='sparse_categorical_crossentropy',
+                      metrics=['accuracy'])
+
+    SIZE = 28
+    ## Test the model
+    test_data = get_all_rectangle()[:10]
+    index_i = 0
+    for img_name, rectangle in test_data:
+        best_rectangles = predict_rectangle(img_name, 0.90)
+        img_reconstruct = cv2.imread(img_name)
+        for r, p in best_rectangles:
+            if p != 0:
+                w, h, s, _ = r
+                cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
+
+        print("saved image", img_name[0] + "test_model.png")
+        cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
+        index_i += 1
