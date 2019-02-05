@@ -23,10 +23,14 @@ from src.lab3.lab3 import train_model
 
 SIZE = 32
 
+index_i = 0
+
 def predict_rectangle(img_name, model, threshold=0.99):
     """
     renvoie la liste des rectangles predis
     """
+    global index_i
+    index_i += 1
     number_test = 0
     list_good = []
     list_to_predict = []
@@ -67,20 +71,68 @@ def predict_rectangle(img_name, model, threshold=0.99):
             best_rectangles.append([(w, h, s, s), prediction[i][1]])
             scores.append(prediction[i][1])
 
-    # Non max suppression
-    for r1 in range(len(best_rectangles)):
-        for r2 in range(r1):
-            if best_rectangles[r1][1] != 0 and best_rectangles[r2][1] != 0:
-                rectangle_1 = best_rectangles[r1][0]
-                rectangle_2 = best_rectangles[r2][0]
-                if rectangle_1[2] **2 > rectangle_2[2] ** 2:
-                    rectangle_1, rectangle_2 = rectangle_2, rectangle_1
-                # small rectangle is r1
-                if overlapping(best_rectangles[r1][0], best_rectangles[r2][0]) > 0.3:
-                    if best_rectangles[r1][1] > best_rectangles[r2][1]:
-                        best_rectangles[r2][1] = 0
-                    else:
-                        best_rectangles[r1][1] = 0
+    # Non max suppression
+    # for r1 in range(len(best_rectangles)):
+    #     for r2 in range(r1):
+    #         if best_rectangles[r1][1] != 0 and best_rectangles[r2][1] != 0:
+    #             rectangle_1 = best_rectangles[r1][0]
+    #             rectangle_2 = best_rectangles[r2][0]
+    #             if rectangle_1[2] **2 > rectangle_2[2] ** 2:
+    #                 rectangle_1, rectangle_2 = rectangle_2, rectangle_1
+    #             # small rectangle is r1
+    #             if overlapping(best_rectangles[r1][0], best_rectangles[r2][0]) > 0.3:
+    #                 if best_rectangles[r1][1] > best_rectangles[r2][1]:
+    #                     best_rectangles[r2][1] = 0
+    #                 else:
+    #                     best_rectangles[r1][1] = 0
+
+    # img_all_rec = cv2.imread(img_name)
+    # max_rectangles = 0
+
+    # for r1 in range(len(best_rectangles)):
+    #     (w, h, s, _), _ = best_rectangles[r1]
+    #     cv2.rectangle(img_all_rec, (w, h), (w+s, h+s), color=(0, 0, 255), thickness=1)
+    #     for r2 in range(r1):
+    #         if (abs(best_rectangles[r1][0][0] + best_rectangles[r1][0][2] - \
+    #             best_rectangles[r2][0][0] - best_rectangles[r2][0][2]) < min(best_rectangles[r1][0][2]/4, \
+    #             best_rectangles[r2][0][2]/4)) and \
+    #             (abs(best_rectangles[r1][0][0] + best_rectangles[r1][0][2] - \
+    #             best_rectangles[r2][0][0] - best_rectangles[r2][0][2]) < min(best_rectangles[r1][0][2]/4, \
+    #             best_rectangles[r2][0][2]/4)):
+    #             # same center
+    #             best_rectangles[r1][1] = int(best_rectangles[r1][1]) + 1
+    #             best_rectangles[r2][1] = int(best_rectangles[r2][1]) + 1
+
+    #             if best_rectangles[r1][1] > max_rectangles:
+    #                 max_rectangles = best_rectangles[r1][1]
+                
+    #             if best_rectangles[r2][1] > max_rectangles:
+    #                 max_rectangles = best_rectangles[r2][1]
+
+    img_reconstruct = cv2.imread(img_name)
+
+    # i = 0
+    # while i < len(best_rectangles):
+    #     print(best_rectangles[i][1], max_rectangles)
+    #     if best_rectangles[i][1] < max_rectangles/2:
+    #         best_rectangles.pop(i)
+    #         scores.pop(i)
+    #     else:
+    #         i+=1
+
+    # for r1 in range(len(best_rectangles)):
+    #     for r2 in range(r1):
+    #         if best_rectangles[r1][1] != 0 and best_rectangles[r2][1] != 0:
+    #             rectangle_1 = best_rectangles[r1][0]
+    #             rectangle_2 = best_rectangles[r2][0]
+    #             if rectangle_1[2] **2 > rectangle_2[2] ** 2:
+    #                 rectangle_1, rectangle_2 = rectangle_2, rectangle_1
+    #             # small rectangle is r1
+    #             if overlapping(best_rectangles[r1][0], best_rectangles[r2][0]) > 0.1:
+    #                 if scores[r1] > scores[r2]:
+    #                     best_rectangles[r2][1] = 0
+    #                 else:
+    #                     best_rectangles[r1][1] = 0
 
     i = 0
     while i < len(best_rectangles):
@@ -89,7 +141,12 @@ def predict_rectangle(img_name, model, threshold=0.99):
             scores.pop(i)
         else:
             best_rectangles[i] = best_rectangles[i][0]
+            w, h, s, _ = best_rectangles[i]
+            cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), color=(0, 0, 255), thickness=1)
             i += 1
+
+    cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
+
 
     return best_rectangles, scores
 
@@ -139,20 +196,10 @@ if __name__ == "__main__":
 
     model = train_model(SIZE)
 
-    test_model(model, 100)
+    # model = load_model("./modele/train_2000_vgg16.h5")
 
-    # SIZE = 28
-    # ## Test the model
-    # test_data = get_all_rectangle_test()[:10]
-    # index_i = 0
-    # for img_name, rectangle in test_data:
-    #     best_rectangles = predict_rectangle(img_name, 0.90)
-    #     img_reconstruct = cv2.imread(img_name)
-    #     for r, p in best_rectangles:
-    #         if p != 0:
-    #             w, h, s, _ = r
-    #             cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
+    # model.compile(optimizer='adam',
+    #                 loss='sparse_categorical_crossentropy',
+    #                 metrics=['accuracy'])
 
-    #     print("saved image", img_name[0] + "test_model.png")
-    #     cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
-    #     index_i += 1
+    test_model(model, 50)

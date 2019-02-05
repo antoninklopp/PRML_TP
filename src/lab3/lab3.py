@@ -63,7 +63,7 @@ def VGG_16(input_size):
     return model
 
 def get_faces_resized(size=32):
-    data = get_all_faces(1000)
+    data = get_all_faces(2000)
     all_face = []
     index = 0
     number_good = 0
@@ -126,6 +126,8 @@ def train_model(SIZE):
 
     history = model.fit(X_train,
                         y_train, epochs = 3)
+
+    model.save("modele/train_2000_vgg16.h5")
 
     return model
 
@@ -201,7 +203,7 @@ if __name__ == "__main__":
         for r, p in best_rectangles:
             if p != 0:
                 w, h, s, _ = r
-                cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
+                cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), (255, 0, 0), 1)
 
         print("saved image", img_name[0] + "test_model.png")
         cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
