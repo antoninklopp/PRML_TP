@@ -12,11 +12,10 @@ def overlapping(true_rectangle, predicted_rectangle):
     """
 
     middle_rec1 = (true_rectangle[0] + true_rectangle[2]/2.0, true_rectangle[1] + true_rectangle[3]/2.0)
-    print(predicted_rectangle)
     middle_rec2 = (predicted_rectangle[0] + predicted_rectangle[2]/2.0, predicted_rectangle[1] + predicted_rectangle[3]/2.0)
 
     # On prend la moitié du premier rectangle comme threshold pour l'overlapping
-    if dist(middle_rec1, middle_rec2) > true_rectangle[2]/2: 
+    if dist(middle_rec1, middle_rec2) > max(true_rectangle[2], predicted_rectangle[2]): 
         return -1 # La valeur de retour -1 indique que les deux rectangles ne s'overlappent pas. 
     
     # On trouve le rectangle correspondant à la coordonnée
@@ -25,7 +24,7 @@ def overlapping(true_rectangle, predicted_rectangle):
     max_y_l = max(true_rectangle[1], predicted_rectangle[1]) # max y, l (left corner)
 
     min_x_r = min(true_rectangle[0] + true_rectangle[2], predicted_rectangle[0] + predicted_rectangle[2]) # max x, l (left corner)
-    min_y_r = max(true_rectangle[1] + true_rectangle[3], predicted_rectangle[1] + predicted_rectangle[3]) # max y, l (left corner)
+    min_y_r = min(true_rectangle[1] + true_rectangle[3], predicted_rectangle[1] + predicted_rectangle[3]) # max y, l (left corner)
 
     # On trouve l'overlapping
     # Cela correpond à la plus grande coordonnées en des coins gauche 

@@ -158,7 +158,7 @@ def get_true_pred_test(model, nbr_img):
     index_i = 0
     result = []
     for img_name, rectangle_true in test_data:
-        best_rectangles, scores = predict_rectangle(img_name, model, 0.99)
+        best_rectangles, scores = predict_rectangle(img_name, model, 0.90)
         print(img_name, len(best_rectangles), len(scores))
         result.append((rectangle_true, best_rectangles, scores))
     return result
@@ -186,7 +186,7 @@ def test_model(model, nbr_img):
     precision = np.mean(np.array(precision))
     recall = np.mean(np.array(recall))
 
-    y_true = get_ground_truth(true_rec, predict_rec)
+    y_true = get_ground_truth(true_rec, predict_rec, 0.2)
     plot_roc(y_true, scores, "roc.png", True)
 
     print("precision", precision)
@@ -194,12 +194,12 @@ def test_model(model, nbr_img):
 
 if __name__ == "__main__":
 
-    model = train_model(SIZE)
+    # model = train_model(SIZE)
 
-    # model = load_model("./modele/train_2000_vgg16.h5")
+    model = load_model("./modele/train_2000_vgg16.h5")
 
-    # model.compile(optimizer='adam',
-    #                 loss='sparse_categorical_crossentropy',
-    #                 metrics=['accuracy'])
+    model.compile(optimizer='adam',
+                    loss='sparse_categorical_crossentropy',
+                    metrics=['accuracy'])
 
-    test_model(model, 50)
+    test_model(model, 20)
