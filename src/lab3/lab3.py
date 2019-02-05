@@ -20,7 +20,7 @@ from src.metrics.overlapping import overlapping
 ## https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3?fbclid=IwAR0RPbWXqKaZJGbeqS_keLAh6gb8nz92GQzxavn4flP22xRCxIznX77es_Q
 def VGG_16(input_size):
     model = Sequential()
-    model.add(ZeroPadding2D((1,1),input_shape=(3, input_size,input_size)))
+    model.add(ZeroPadding2D((1,1),input_shape=(input_size,input_size, 3)))
     model.add(Conv2D(input_size, (3, 3), activation='relu'))
     model.add(ZeroPadding2D((1,1)))
     model.add(Conv2D(input_size, (3, 3), activation='relu'))
@@ -94,11 +94,7 @@ def get_faces_resized(size=32):
 
     return all_face
 
-
-if __name__ == "__main__":
-
-    SIZE = 32
-
+def train_model(SIZE):
     # On crée les jeux d'entrainements....
     data = get_faces_resized(SIZE)
     X_train = []; y_train = []
@@ -130,11 +126,21 @@ if __name__ == "__main__":
 
     history = model.fit(X_train,
                         y_train, epochs = 3)
+
+    return model
+
+if __name__ == "__main__":
+
+    SIZE = 32
+
+    model = train_model(SIZE)
+
     model.save("./modele/antoLeBest.h5")
     number_test = 0
     ## Test the model
     test_data = get_test_masks()[:10]
     index_i = 0
+
     for img_name, mask in test_data:
         list_good = []
         list_to_predict = []
@@ -196,7 +202,6 @@ if __name__ == "__main__":
             if p != 0:
                 w, h, s, _ = r
                 cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
-
 
         print("saved image", img_name[0] + "test_model.png")
         cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)

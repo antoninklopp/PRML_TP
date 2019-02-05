@@ -18,9 +18,12 @@ import numpy as np
 from random import shuffle
 import scipy
 from src.metrics.overlapping import overlapping
+from src.metrics.metrics import get_precision_rectangle, get_recall_rectangle, get_ground_truth, plot_roc
+from src.lab3.lab3 import train_model
 
+SIZE = 32
 
-def predict_rectangle(img_name, threshold=0.99):
+def predict_rectangle(img_name, model, threshold=0.99):
     """
     renvoie la liste des rectangles predis
     """
@@ -33,6 +36,7 @@ def predict_rectangle(img_name, threshold=0.99):
     current_shape = min(img.shape[:2])
     current_scale = 1
     scale_factor = 1.2
+    scores = []
     while current_shape > SIZE:
         for w in range(0, img.shape[0] - size, 5):
             for h in range(0, img.shape[1] - size, 5):
@@ -56,11 +60,12 @@ def predict_rectangle(img_name, threshold=0.99):
     best_rectangles = []
 
     for i in range(prediction.shape[0]):
-        if (prediction[i][1]>0.8):
+        if (prediction[i][1]>threshold):
             print(prediction[i])
             w, h, s = list_bounds[i]
             h, w, s = int(w), int(h), int(s)
             best_rectangles.append([(w, h, s, s), prediction[i][1]])
+            scores.append(prediction[i][1])
 
     # Non max suppression
     for r1 in range(len(best_rectangles)):
@@ -76,41 +81,78 @@ def predict_rectangle(img_name, threshold=0.99):
                         best_rectangles[r2][1] = 0
                     else:
                         best_rectangles[r1][1] = 0
-    return best_rectangles
 
-def get_true_pred_test(nbr_img):
+    i = 0
+    while i < len(best_rectangles):
+        if best_rectangles[i][1] == 0:
+            best_rectangles.pop(i)
+            scores.pop(i)
+        else:
+            best_rectangles[i] = best_rectangles[i][0]
+            i += 1
+
+    return best_rectangles, scores
+
+def get_true_pred_test(model, nbr_img):
     """
     renvoi la liste des rectangles vrai et predis
     """
-    test_data = get_all_rectangle()[:nbr_img]
+    test_data = get_all_rectangle_test()[:nbr_img]
     index_i = 0
     result = []
     for img_name, rectangle_true in test_data:
-        best_rectangles = predict_rectangle(img_name, 0.90)
-        result.append((rectangle_true, best_rectangles))
+        best_rectangles, scores = predict_rectangle(img_name, model, 0.99)
+        print(img_name, len(best_rectangles), len(scores))
+        result.append((rectangle_true, best_rectangles, scores))
     return result
 
+def test_model(model, nbr_img):
+    """
+    Gives back metrics on the model
+    """
+    rectangles = get_true_pred_test(model, nbr_img)
+    true_rec = []
+    predict_rec = []
+    scores = []
+    for t, p, s in rectangles:
+        true_rec.append(np.array(t))
+        predict_rec.append(np.array(p))
+        scores.extend(s)
+
+    precision = []
+    recall = []
+    for t, p in zip(true_rec, predict_rec): 
+        if len(t) != 0 and len(p) != 0:
+            precision.append(get_precision_rectangle(t, p))
+            recall.append(get_recall_rectangle(t, p))
+
+    precision = np.mean(np.array(precision))
+    recall = np.mean(np.array(recall))
+
+    y_true = get_ground_truth(true_rec, predict_rec)
+    plot_roc(y_true, scores, "roc.png", True)
+
+    print("precision", precision)
+    print("recall", recall)
 
 if __name__ == "__main__":
 
-    model = load_model("./modele/cnn_vgg6.h5")
+    model = train_model(SIZE)
 
-    model.compile(optimizer='adam',
-                      loss='sparse_categorical_crossentropy',
-                      metrics=['accuracy'])
+    test_model(model, 100)
 
-    SIZE = 28
-    ## Test the model
-    test_data = get_all_rectangle()[:10]
-    index_i = 0
-    for img_name, rectangle in test_data:
-        best_rectangles = predict_rectangle(img_name, 0.90)
-        img_reconstruct = cv2.imread(img_name)
-        for r, p in best_rectangles:
-            if p != 0:
-                w, h, s, _ = r
-                cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
+    # SIZE = 28
+    # ## Test the model
+    # test_data = get_all_rectangle_test()[:10]
+    # index_i = 0
+    # for img_name, rectangle in test_data:
+    #     best_rectangles = predict_rectangle(img_name, 0.90)
+    #     img_reconstruct = cv2.imread(img_name)
+    #     for r, p in best_rectangles:
+    #         if p != 0:
+    #             w, h, s, _ = r
+    #             cv2.rectangle(img_reconstruct, (w, h), (w+s, h+s), 1, 1)
 
-        print("saved image", img_name[0] + "test_model.png")
-        cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
-        index_i += 1
+    #     print("saved image", img_name[0] + "test_model.png")
+    #     cv2.imwrite("test_model" + str(index_i) + ".png", img_reconstruct)
+    #     index_i += 1

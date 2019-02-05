@@ -12,6 +12,7 @@ def overlapping(true_rectangle, predicted_rectangle):
     """
 
     middle_rec1 = (true_rectangle[0] + true_rectangle[2]/2.0, true_rectangle[1] + true_rectangle[3]/2.0)
+    print(predicted_rectangle)
     middle_rec2 = (predicted_rectangle[0] + predicted_rectangle[2]/2.0, predicted_rectangle[1] + predicted_rectangle[3]/2.0)
 
     # On prend la moitié du premier rectangle comme threshold pour l'overlapping
