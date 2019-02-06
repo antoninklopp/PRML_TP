@@ -77,3 +77,9 @@ You can also check in lab2.py code to understand what it is done.
 
 
 <!--  TODO : put full instructions for lab2 here -->
+
+## LAB 3 : Face detection using Deep Learning
+
+We created a neural network with tensorflow to detect faces. Training and testing on the FDDB database.  
+After the training a sliding window with pyramid technique and non-maximum suppression is used to find faces accurately. 
+
