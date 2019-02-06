@@ -66,7 +66,7 @@ def get_precision_rectangle(rectangles_true, rectangles_predicted):
 
 def get_ground_truth(true_rectangles, predicted_rectangles, threshold=0.5):
     y_true = []
-    for image in range(len(true_rectangles)):
+    for image in range(len(predicted_rectangles)):
         if type(predicted_rectangles[image]) is not tuple:
             for r in predicted_rectangles[image]:
                 if r.shape[0] == 0 and true_rectangles[image].shape[0] != 0:
@@ -114,6 +114,9 @@ def plot_roc(Y_true, Y_proba, name="output/plot_roc.png", save=False):
     if MACHINE_ENSIMAG:
         print("Impossible to run this on Ensimag machines. Needs pyplot.")
         exit()
+
+    print(Y_true)
+    print(Y_proba)
 
     fpr, tpr, thresholds = met.roc_curve(Y_true, Y_proba)
     roc_auc = met.roc_auc_score(Y_true, Y_proba)

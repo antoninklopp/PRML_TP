@@ -26,3 +26,4 @@ output/*
 Images/**/*.jpg
 Images/**/*.png
 Images/
+.ipynb_checkpoints/
