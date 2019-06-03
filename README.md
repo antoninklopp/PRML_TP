@@ -65,13 +65,9 @@ me@machine:~$ find . -name \*.jpg -print | grep "Nimg/" | shuf -n 9438 > bg.txt
 
 ### Instructions
 
-WARNING : draft version (with some vulgarity)
-
 You can have a little example test by running the command IN THE FOLDER src/lab2/
 python3 lab2.py 200 2 4
 
-(if it works, the result image should be in output/img_output.png)
-(if it does not work ? I dunno bro, try other parameters dammit, I ain't no developper scrum master my ass !!)
 
 You can also check in lab2.py code to understand what it is done.
 
